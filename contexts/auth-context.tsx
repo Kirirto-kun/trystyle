@@ -13,7 +13,8 @@ interface AuthContextType {
   user: UserResponse | null
   token: string | null
   login: (email_or_username: string, password: string) => Promise<boolean>
-  register: (email: string, username: string, password: string) => Promise<boolean>
+  register: (email: string, username: string, password: string, verification_code: string) => Promise<boolean>
+  sendVerificationCode: (email: string) => Promise<boolean>
   googleLogin: (id_token: string) => Promise<boolean>
   logout: () => void
   isLoading: boolean
@@ -49,6 +50,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     initAuth()
   }, []) // Only on mount
+
+  const sendVerificationCode = async (email: string) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/send-verification-code`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        toast.error(`Failed: ${errorData.detail || response.statusText}`);
+        return false;
+      }
+
+      toast.success("Verification code sent to your email.");
+      return true;
+    } catch (error) {
+      console.error("Send verification code error:", error);
+      toast.error("Failed to send verification code. Please try again.");
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const login = async (email_or_username: string, password: string) => {
     setIsLoading(true)
@@ -87,7 +116,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }
 
-  const register = async (email: string, username: string, password: string) => {
+  const register = async (email: string, username: string, password: string, verification_code: string) => {
     setIsLoading(true)
     try {
       const response = await fetch(`${API_BASE_URL}/auth/register`, {
@@ -95,12 +124,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, username, password }),
+        body: JSON.stringify({ email, username, password, verification_code }),
       })
 
       if (!response.ok) {
         const errorData = await response.json()
-        toast.error(`Registration failed: ${errorData.detail?.[0]?.msg || response.statusText}`)
+        toast.error(`Registration failed: ${errorData.detail || "Unknown error"}`)
         return false
       }
 
@@ -165,6 +194,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         token, 
         login, 
         register, 
+        sendVerificationCode,
         googleLogin, 
         logout, 
         isLoading, 

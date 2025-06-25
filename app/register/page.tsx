@@ -14,11 +14,15 @@ import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google"
 import { MobileHeader } from "@/components/ui/mobile-header"
 import { FloatingNatureElements, LargeNatureDecoration, NaturePattern } from "@/components/ui/nature-decorations"
 
+type Step = 1 | 2;
+
 export default function RegisterPage() {
+  const [step, setStep] = useState<Step>(1);
   const [email, setEmail] = useState("")
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
-  const { register, isLoading, googleLogin, isAuthenticated } = useAuth()
+  const [verificationCode, setVerificationCode] = useState("");
+  const { register, sendVerificationCode, isLoading, googleLogin, isAuthenticated } = useAuth()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
 
@@ -28,10 +32,20 @@ export default function RegisterPage() {
     }
   }, [isLoading, isAuthenticated, router])
 
+  const handleSendVerificationCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    const success = await sendVerificationCode(email);
+    if (success) {
+      setStep(2);
+    }
+    setIsSubmitting(false);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    await register(email, username, password)
+    await register(email, username, password, verificationCode)
     setIsSubmitting(false)
   }
 
@@ -81,61 +95,106 @@ export default function RegisterPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-base font-medium">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="you@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
+              {step === 1 && (
+                <form onSubmit={handleSendVerificationCode} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email" className="text-base font-medium">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="you@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      disabled={isSubmitting || isLoading}
+                      className="h-12 text-base"
+                    />
+                  </div>
+                  <Button 
+                    type="submit" 
+                    className="w-full h-12 text-base font-medium" 
                     disabled={isSubmitting || isLoading}
-                    className="h-12 text-base"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="username" className="text-base font-medium">Username</Label>
-                  <Input
-                    id="username"
-                    type="text"
-                    placeholder="your_name"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Sending code...
+                      </>
+                    ) : (
+                      "Send Verification Code"
+                    )}
+                  </Button>
+                </form>
+              )}
+
+              {step === 2 && (
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email" className="text-base font-medium">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={email}
+                      required
+                      disabled={true}
+                      className="h-12 text-base"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="username" className="text-base font-medium">Username</Label>
+                    <Input
+                      id="username"
+                      type="text"
+                      placeholder="your_name"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      required
+                      disabled={isSubmitting || isLoading}
+                      className="h-12 text-base"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="password" className="text-base font-medium">Password</Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      disabled={isSubmitting || isLoading}
+                      className="h-12 text-base"
+                    />
+                  </div>
+                   <div className="space-y-2">
+                    <Label htmlFor="verificationCode" className="text-base font-medium">Verification Code</Label>
+                    <Input
+                      id="verificationCode"
+                      type="text"
+                      placeholder="123456"
+                      value={verificationCode}
+                      onChange={(e) => setVerificationCode(e.target.value)}
+                      required
+                      disabled={isSubmitting || isLoading}
+                      className="h-12 text-base"
+                    />
+                  </div>
+                  <Button 
+                    type="submit" 
+                    className="w-full h-12 text-base font-medium" 
                     disabled={isSubmitting || isLoading}
-                    className="h-12 text-base"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password" className="text-base font-medium">Password</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    disabled={isSubmitting || isLoading}
-                    className="h-12 text-base"
-                  />
-                </div>
-                <Button 
-                  type="submit" 
-                  className="w-full h-12 text-base font-medium" 
-                  disabled={isSubmitting || isLoading}
-                >
-                  {isSubmitting || isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Creating account...
-                    </>
-                  ) : (
-                    "Register"
-                  )}
-                </Button>
-              </form>
+                  >
+                    {isSubmitting || isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Creating account...
+                      </>
+                    ) : (
+                      "Register"
+                    )}
+                  </Button>
+                </form>
+              )}
               
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
