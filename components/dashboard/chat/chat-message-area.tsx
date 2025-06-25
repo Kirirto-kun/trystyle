@@ -58,7 +58,7 @@ export default function ChatMessageArea({
           <Sparkles className="h-8 w-8 md:h-12 md:w-12 text-primary" />
         </div>
         <div className="space-y-2 md:space-y-3 max-w-md">
-          <h2 className="text-lg md:text-xl font-semibold">Welcome to ClosetMind</h2>
+          <h2 className="text-lg md:text-xl font-semibold">Welcome to TryStyle</h2>
           <p className="text-sm md:text-base text-muted-foreground">
             Select an existing conversation or create a new one to start chatting with your AI stylist.
           </p>
@@ -103,7 +103,7 @@ export default function ChatMessageArea({
                 {selectedChat.title}
               </h2>
               <p className="text-xs md:text-sm text-muted-foreground">
-                ClosetMind AI Assistant
+                TryStyle AI Assistant
               </p>
             </div>
           </div>

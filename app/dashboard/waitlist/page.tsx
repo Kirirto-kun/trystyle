@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import WaitlistContainer from "@/components/dashboard/waitlist/WaitlistContainer"
 
 export const metadata: Metadata = {
-  title: "Waitlist - ClosetMind",
+  title: "Waitlist - TryStyle",
   description: "Manage your virtual try-on waitlist",
 }
 

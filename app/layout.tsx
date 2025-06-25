@@ -9,7 +9,7 @@ import { Toaster } from "sonner"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "ClosetMind AI",
+  title: "TryStyle AI",
   description: "Your personal AI fashion assistant",
   generator: 'v0.dev'
 }

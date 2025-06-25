@@ -29,7 +29,7 @@ const LandingNavbar = () => {
     <>
       {/* Mobile Header */}
       <div className="md:hidden">
-        <MobileHeader title="ClosetMind" showNav={false} />
+        <MobileHeader title="TryStyle" showNav={false} />
       </div>
 
       {/* Desktop Navigation */}
@@ -42,7 +42,7 @@ const LandingNavbar = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2 group">
             <Bot className="h-7 w-7 text-primary transition-transform group-hover:scale-110" />
-            <span className="text-xl font-semibold">ClosetMind</span>
+            <span className="text-xl font-semibold">TryStyle</span>
           </Link>
           <div className="flex items-center space-x-2">
             <ThemeToggle />
@@ -65,7 +65,7 @@ const LandingFooter = () => {
   return (
     <footer className="border-t py-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-muted-foreground">
-        <p>&copy; {new Date().getFullYear()} ClosetMind. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} TryStyle. All rights reserved.</p>
       </div>
     </footer>
   )
@@ -126,7 +126,7 @@ export default function LandingPage() {
     {
       name: "Jessica L.",
       title: "Fashion Enthusiast",
-      quote: "ClosetMind has completely changed how I get dressed in the morning. The virtual try-on is a game-changer! It's like having a personal stylist in my pocket.",
+      quote: "TryStyle has completely changed how I get dressed in the morning. The virtual try-on is a game-changer! It's like having a personal stylist in my pocket.",
     },
     {
       name: "David M.",
@@ -371,7 +371,7 @@ export default function LandingPage() {
                 className="max-w-xl mx-auto text-muted-foreground mt-2 mb-6"
                 variants={FADE_IN_ANIMATION_VARIANTS}
               >
-                Ready to take control of your closet and unlock your personal style? Get started with ClosetMind for free.
+                Ready to take control of your closet and unlock your personal style? Get started with TryStyle for free.
               </motion.p>
               <motion.div variants={FADE_IN_ANIMATION_VARIANTS}>
                 <motion.div

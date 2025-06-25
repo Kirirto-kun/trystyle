@@ -45,7 +45,7 @@ export default function Sidebar() {
         </div>
         <div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-sidebar-foreground to-primary bg-clip-text text-transparent">
-            ClosetMind
+            TryStyle
           </h1>
           <p className="text-sm text-muted-foreground">AI Fashion Assistant</p>
         </div>

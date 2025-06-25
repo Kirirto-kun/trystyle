@@ -51,7 +51,7 @@ export function MobileNav() {
           {/* Header */}
           <div className="flex items-center space-x-2 px-6 py-4 border-b border-border">
             <Bot className="h-6 w-6 text-primary" />
-            <span className="text-lg font-semibold text-foreground">ClosetMind</span>
+            <span className="text-lg font-semibold text-foreground">TryStyle</span>
           </div>
 
           {/* Navigation */}

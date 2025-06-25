@@ -23,7 +23,7 @@ export function MobileHeader({ title, showNav = true }: MobileHeaderProps) {
           <Link href={isAuthenticated ? "/dashboard" : "/"} className="flex items-center space-x-2">
             <Bot className="h-6 w-6 text-primary" />
             <span className="text-lg font-semibold">
-              {title || "ClosetMind"}
+              {title || "TryStyle"}
             </span>
           </Link>
         </div>

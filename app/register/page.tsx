@@ -91,7 +91,7 @@ export default function RegisterPage() {
                 Create an account
               </CardTitle>
               <CardDescription className="text-center text-base text-muted-foreground">
-                Join ClosetMind AI and revolutionize your style.
+                Join TryStyle AI and revolutionize your style.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">

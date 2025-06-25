@@ -64,7 +64,7 @@ export default function ChatDemo() {
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-8">
       <div className="text-center space-y-4">
-        <h1 className="text-3xl font-bold">ClosetMind Chat - Demonstration</h1>
+        <h1 className="text-3xl font-bold">TryStyle Chat - Demonstration</h1>
         <p className="text-muted-foreground">
           Examples of responses from all three system agents
         </p>
