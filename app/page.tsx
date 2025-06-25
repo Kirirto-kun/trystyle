@@ -318,13 +318,13 @@ export default function LandingPage() {
               {testimonials.map((testimonial, index) => (
                 <motion.div
                   key={index}
-                  className="bg-muted/50 p-6 rounded-lg border border-transparent transition-colors hover:border-primary/20"
+                  className="bg-muted/50 p-6 rounded-lg border border-transparent transition-all duration-300 hover:border-primary/20 hover:shadow-lg"
                   initial="initial"
                   whileInView="animate"
                   transition={{ delay: index * 0.1 }}
                   variants={FADE_IN_ANIMATION_VARIANTS}
                   viewport={{ once: true }}
-                  whileHover={{ y: -5, scale: 1.03, shadow: "lg" }}
+                  whileHover={{ y: -5, scale: 1.03 }}
                 >
                   <div className="flex items-center mb-4">
                     <div className="flex text-primary">

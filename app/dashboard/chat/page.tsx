@@ -11,8 +11,10 @@ import type {
 import ChatList from "@/components/dashboard/chat/chat-list"
 import ChatMessageArea from "@/components/dashboard/chat/chat-message-area"
 import { toast } from "sonner"
+import { useRealViewportHeight } from "@/hooks/use-real-vp-height"
 
 export default function ChatPage() {
+  useRealViewportHeight();
   const [chats, setChats] = useState<Chat[]>([])
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null)
   const [messages, setMessages] = useState<UIMessage[]>([])
@@ -219,7 +221,7 @@ export default function ChatPage() {
   return (
     <>
       {/* Mobile Layout */}
-      <div className="md:hidden h-[calc(100vh-3.5rem)]">
+      <div className="md:hidden h-[calc(var(--vh,1vh)*100-3.5rem)]">
         {showChatList ? (
           <div className="h-full">
             <ChatList
@@ -249,15 +251,22 @@ export default function ChatPage() {
                 {selectedChat?.title || "Chat"}
               </h1>
             </div>
-
             <div className="flex-1 min-h-0">
-              <ChatMessageArea
-                selectedChat={selectedChat}
-                messages={messages}
-                onSendMessage={handleSendMessage}
-                isLoadingMessages={isLoadingMessages}
-                isSendingMessage={isSendingMessage}
-              />
+              {selectedChat && (
+                <ChatMessageArea
+                  selectedChat={selectedChat}
+                  messages={messages}
+                  onSendMessage={handleSendMessage}
+                  isLoadingMessages={isLoadingMessages}
+                  isSendingMessage={isSendingMessage}
+                  showTitle={false}
+                />
+              )}
+              {!selectedChat && !isLoadingMessages && (
+                <div className="flex-1 flex items-center justify-center text-muted-foreground">
+                  No chat selected
+                </div>
+              )}
             </div>
           </div>
         )}

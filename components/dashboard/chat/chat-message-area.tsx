@@ -16,6 +16,7 @@ interface ChatMessageAreaProps {
   onSendMessage: (chatId: number, messageContent: string) => Promise<void>
   isLoadingMessages: boolean
   isSendingMessage: boolean
+  showTitle?: boolean
 }
 
 export default function ChatMessageArea({
@@ -24,6 +25,7 @@ export default function ChatMessageArea({
   onSendMessage,
   isLoadingMessages,
   isSendingMessage,
+  showTitle = true,
 }: ChatMessageAreaProps) {
   const [input, setInput] = useState("")
   const scrollAreaRef = useRef<HTMLDivElement>(null)
@@ -92,23 +94,25 @@ export default function ChatMessageArea({
 
   return (
     <div className="relative flex flex-col h-full">
-      <header className="flex-shrink-0 p-3 md:p-4 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2 md:space-x-3 min-w-0">
-            <div className="p-1.5 md:p-2 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex-shrink-0">
-              <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-primary" />
-            </div>
-            <div className="min-w-0">
-              <h2 className="text-base md:text-lg font-semibold truncate" title={selectedChat.title}>
-                {selectedChat.title}
-              </h2>
-              <p className="text-xs md:text-sm text-muted-foreground">
-                TryStyle AI Assistant
-              </p>
+      {showTitle && (
+        <header className="flex-shrink-0 p-3 md:p-4 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2 md:space-x-3 min-w-0">
+              <div className="p-1.5 md:p-2 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex-shrink-0">
+                <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+              </div>
+              <div className="min-w-0">
+                <h2 className="text-base md:text-lg font-semibold truncate" title={selectedChat.title}>
+                  {selectedChat.title}
+                </h2>
+                <p className="text-xs md:text-sm text-muted-foreground">
+                  TryStyle AI Assistant
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
+      )}
 
       <ScrollArea className="flex-1 p-3 md:p-4" ref={scrollAreaRef}>
         {isLoadingMessages && (
