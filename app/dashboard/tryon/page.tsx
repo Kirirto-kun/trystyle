@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Loader2, AlertTriangle, Trash } from "lucide-react";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 const API_BASE_URL = "https://www.closetmind.studio";
 
@@ -32,9 +33,33 @@ export default function TryOnPage() {
   const { token, isAuthenticated, isLoading } = useAuth();
   const [open, setOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [currentTryon, setCurrentTryon] = useState<TryOn | null>(null);
+  const [humanImageDimensions, setHumanImageDimensions] = useState<{width: number, height: number} | null>(null);
+  const [isLoadingDimensions, setIsLoadingDimensions] = useState(false);
+  const [resizedImageUrl, setResizedImageUrl] = useState<string | null>(null);
 
-  const openImageDialog = (imageUrl: string) => {
+  const openImageDialog = (imageUrl: string, tryon?: TryOn) => {
     setSelectedImage(imageUrl);
+    setCurrentTryon(tryon || null);
+    
+    // Если открываем результат примерки, загружаем размеры оригинального изображения человека
+    if (tryon && imageUrl === tryon.result_url) {
+      setIsLoadingDimensions(true);
+      const img = new Image();
+      img.onload = () => {
+        setHumanImageDimensions({ width: img.width, height: img.height });
+        setIsLoadingDimensions(false);
+      };
+      img.onerror = () => {
+        setIsLoadingDimensions(false);
+        setHumanImageDimensions(null);
+      };
+      img.src = tryon.human_image_url;
+    } else {
+      setHumanImageDimensions(null);
+      setIsLoadingDimensions(false);
+    }
+    
     setOpen(true);
   };
 
@@ -159,11 +184,13 @@ export default function TryOnPage() {
             <div className="space-y-2">
               <Label htmlFor="human" className="text-base font-medium">Photo of person</Label>
               {humanFilePreview && (
-                <div 
-                  className="aspect-square rounded-lg overflow-hidden border cursor-pointer"
-                  onClick={() => openImageDialog(humanFilePreview)}
-                >
-                  <img src={humanFilePreview} alt="Preview of person's photo" className="w-full h-full object-cover transition hover:scale-105" />
+                <div className="flex justify-center">
+                  <div 
+                    className="max-w-xs rounded-lg overflow-hidden border cursor-pointer bg-muted/10"
+                    onClick={() => openImageDialog(humanFilePreview)}
+                  >
+                    <img src={humanFilePreview} alt="Preview of person's photo" className="w-full h-auto object-contain transition hover:scale-105" />
+                  </div>
                 </div>
               )}
               <Input
@@ -178,11 +205,13 @@ export default function TryOnPage() {
             <div className="space-y-2">
               <Label htmlFor="clothing" className="text-base font-medium">Photo of clothing</Label>
               {clothingFilePreview && (
-                <div 
-                  className="aspect-square rounded-lg overflow-hidden border cursor-pointer"
-                  onClick={() => openImageDialog(clothingFilePreview)}
-                >
-                  <img src={clothingFilePreview} alt="Preview of clothing photo" className="w-full h-full object-cover transition hover:scale-105" />
+                <div className="flex justify-center">
+                  <div 
+                    className="max-w-xs rounded-lg overflow-hidden border cursor-pointer bg-muted/10"
+                    onClick={() => openImageDialog(clothingFilePreview)}
+                  >
+                    <img src={clothingFilePreview} alt="Preview of clothing photo" className="w-full h-auto object-contain transition hover:scale-105" />
+                  </div>
                 </div>
               )}
               <Input
@@ -251,18 +280,20 @@ export default function TryOnPage() {
               </div>
               
               <div className="flex justify-center">
-                <div className="relative w-32 h-32 md:w-40 md:h-40 object-cover rounded border flex items-center justify-center bg-muted/20">
+                <div className="relative w-full max-w-[200px] md:max-w-[250px]">
                   {tryon.result_url ? (
                     <img
                       src={tryon.result_url}
                       alt="Result"
-                      className="w-full h-full object-cover rounded cursor-pointer transition hover:scale-105"
-                      onClick={() => openImageDialog(tryon.result_url)}
+                      className="w-full h-auto object-contain rounded border cursor-pointer transition hover:scale-105"
+                      onClick={() => openImageDialog(tryon.result_url, tryon)}
                     />
                   ) : (
-                    <div className="flex flex-col items-center text-center text-muted-foreground p-2">
-                      <Loader2 className="h-6 w-6 md:h-8 md:h-8 animate-spin" />
-                      <span className="text-xs mt-2">Processing...</span>
+                    <div className="w-32 h-32 md:w-40 md:h-40 rounded border flex items-center justify-center bg-muted/20">
+                      <div className="flex flex-col items-center text-center text-muted-foreground p-2">
+                        <Loader2 className="h-6 w-6 md:h-8 md:h-8 animate-spin" />
+                        <span className="text-xs mt-2">Processing...</span>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -292,14 +323,80 @@ export default function TryOnPage() {
         )}
       </div>
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-3xl flex flex-col items-center">
+      <Dialog open={open} onOpenChange={(isOpen) => {
+        setOpen(isOpen);
+        if (!isOpen) {
+          setHumanImageDimensions(null);
+          setCurrentTryon(null);
+          setIsLoadingDimensions(false);
+        }
+      }}>
+        <DialogContent className="max-w-[95vw] max-h-[95vh] w-auto h-auto flex flex-col items-center justify-center p-4 bg-background/95 backdrop-blur-sm">
           {selectedImage && (
-            <img 
-              src={selectedImage} 
-              alt="Try-on full" 
-              className="max-h-[80vh] w-auto rounded shadow-lg" 
-            />
+            <div className="relative flex items-center justify-center">
+              {isLoadingDimensions ? (
+                <div className="flex items-center justify-center p-8">
+                  <Loader2 className="h-8 w-8 animate-spin" />
+                  <span className="ml-2">Loading original dimensions...</span>
+                </div>
+              ) : humanImageDimensions && currentTryon && selectedImage === currentTryon.result_url ? (
+                // Отображение try-on результата с точными размерами оригинала человека
+                (() => {
+                  // Вычисляем коэффициент масштабирования чтобы поместить на экран
+                  const maxScreenWidth = window.innerWidth * 0.9;
+                  const maxScreenHeight = window.innerHeight * 0.8;
+                  
+                  const scaleX = maxScreenWidth / humanImageDimensions.width;
+                  const scaleY = maxScreenHeight / humanImageDimensions.height;
+                  const scale = Math.min(scaleX, scaleY, 1); // не увеличиваем, только уменьшаем
+                  
+                  return (
+                    <div className="relative">
+                      <div
+                        className="relative"
+                        style={{
+                          width: `${humanImageDimensions.width}px`,
+                          height: `${humanImageDimensions.height}px`,
+                          transform: `scale(${scale})`,
+                          transformOrigin: 'center center'
+                        }}
+                      >
+                        <img 
+                          src={selectedImage} 
+                          alt="Try-on result in exact original human dimensions" 
+                          className="rounded border shadow-lg"
+                          style={{
+                            width: `${humanImageDimensions.width}px`,
+                            height: `${humanImageDimensions.height}px`,
+                            objectFit: 'fill',
+                            display: 'block'
+                          }}
+                        />
+                        <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                          Original: {humanImageDimensions.width}×{humanImageDimensions.height}px
+                          {scale < 1 && (
+                            <div>Scaled: {Math.round(scale * 100)}%</div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()
+              ) : (
+                // Отображение обычных изображений с ограничениями
+                <img 
+                  src={selectedImage} 
+                  alt="Full image" 
+                  className="rounded border shadow-lg"
+                  style={{ 
+                    maxHeight: '80vh', 
+                    maxWidth: '90vw', 
+                    width: 'auto', 
+                    height: 'auto' 
+                  }}
+                />
+              )}
+            </div>
           )}
         </DialogContent>
       </Dialog>
