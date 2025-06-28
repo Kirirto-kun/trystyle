@@ -1,0 +1,79 @@
+{
+  "brand": {
+    "name": "TryStyle",
+    "tagline": "Your Personal AI Stylist"
+  },
+  "hero": {
+    "title": "Your Personal AI Stylist",
+    "subtitle": "Effortlessly manage your wardrobe, get personalized outfit advice, virtually try on clothes, and discover your next favorite piece.",
+    "cta": "Get Started For Free"
+  },
+  "features": {
+    "title": "How It Works",
+    "subtitle": "All your fashion needs, one simple platform.",
+    "wardrobe": {
+      "title": "Your Digital Wardrobe",
+      "description": "Add your clothes and see your entire collection in one place."
+    },
+    "aiChat": {
+      "title": "AI Stylist Chat", 
+      "description": "Get outfit advice based on your own clothes."
+    },
+    "tryon": {
+      "title": "Virtual Try-On",
+      "description": "See how new items look on you before you buy."
+    },
+    "shopping": {
+      "title": "Shopping Assistant",
+      "description": "Ask your AI to find where to buy the clothes you want."
+    },
+    "waitlist": {
+      "title": "Curate a Waitlist",
+      "description": "Save items you love and plan your future purchases."
+    },
+    "askAnything": {
+      "title": "Ask Anything",
+      "description": "Your AI assistant can answer any fashion-related question."
+    }
+  },
+  "spotlight": {
+    "tryon": {
+      "title": "See It On Before You Buy",
+      "description": "No more guessing games. Upload your photo and a picture of any clothing item to see a realistic preview of how it will look on you. Make confident purchase decisions from the comfort of your home.",
+      "cta": "Try it now"
+    },
+    "aiChat": {
+      "title": "Your 24/7 Fashion Expert",
+      "description": "\"What should I wear tonight?\" \"Does this match?\" \"Where can I find a red dress under $100?\" Get instant answers from your AI stylist that knows your wardrobe and your taste.",
+      "cta": "Start a conversation"
+    }
+  },
+  "testimonials": {
+    "title": "Loved by Fashion Forward People",
+    "reviews": [
+      {
+        "name": "Jessica L.",
+        "title": "Fashion Enthusiast",
+        "quote": "TryStyle has completely changed how I get dressed in the morning. The virtual try-on is a game-changer! It's like having a personal stylist in my pocket."
+      },
+      {
+        "name": "Michael R.",
+        "title": "Busy Professional", 
+        "quote": "I never knew what to wear. Now I just ask the AI stylist, and it creates amazing outfits from my own clothes. I save so much time and always look great."
+      },
+      {
+        "name": "Samantha K.",
+        "title": "Savvy Shopper",
+        "quote": "The shopping assistant found me the perfect dress for a wedding and even discovered a discount code! I'm curating my dream wardrobe with the waitlist feature."
+      }
+    ]
+  },
+  "finalCta": {
+    "title": "Transform Your Style Today",
+    "subtitle": "Ready to take control of your closet and unlock your personal style? Get started with TryStyle for free.",
+    "cta": "Sign Up For Free"
+  },
+  "footer": {
+    "copyright": "All rights reserved."
+  }
+} 

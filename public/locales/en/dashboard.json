@@ -1,0 +1,221 @@
+{
+  "tryon": {
+    "title": "Try-On: Clothing Fitting",
+    "upload": {
+      "person": {
+        "title": "Person Photo",
+        "subtitle": "Upload a full-body photo of a person",
+        "dragText": "Click or drag & drop your file",
+        "dropText": "Drop your file here",
+        "formats": "Supported formats: JPG, PNG, WebP",
+        "changeButton": "Change"
+      },
+      "clothing": {
+        "title": "Clothing Photo", 
+        "subtitle": "Upload a photo of clothing on transparent background",
+        "dragText": "Click or drag & drop your file",
+        "dropText": "Drop your file here",
+        "formats": "Supported formats: JPG, PNG, WebP",
+        "changeButton": "Change"
+      }
+    },
+    "submit": "Create try-on",
+    "history": {
+      "title": "My try-ons",
+      "empty": "No try-ons",
+      "processing": "Processing...",
+      "created": "Created"
+    },
+    "errors": {
+      "loadingHistory": "Error loading try-on history",
+      "creating": "Error creating try-on",
+      "deleting": "Error deleting try-on"
+    },
+    "loading": "Loading your try-ons...",
+    "noResults": "No try-on results yet",
+    "noResultsSubtitle": "Upload photos to create your first try-on!",
+    "dialog": {
+      "title": "Image Viewer",
+      "originalDimensions": "Original: {{width}}×{{height}}px",
+      "scaled": "Scaled: {{scale}}%",
+      "loadingDimensions": "Loading original dimensions..."
+    }
+  },
+  "chat": {
+    "title": "AI Chat",
+    "newChat": "New Chat",
+    "createFirst": "Create Your First Chat",
+    "conversations": "Conversations",
+    "creating": "Creating...",
+    "loadingChats": "Loading chats...",
+    "loadingMessages": "Loading messages...",
+    "noConversations": "No conversations yet",
+    "deleteConfirm": "Are you sure you want to delete this chat and all its messages?",
+    "deleteButton": "Delete chat",
+    "selectMessage": "Select an existing conversation or create a new one to start chatting with your AI stylist.",
+    "welcomeTitle": "Welcome to AI Stylist!",
+    "welcomeToTryStyle": "Welcome to TryStyle",
+    "welcome": {
+      "title": "Welcome to your AI Fashion Assistant!",
+      "subtitle": "I can help you with outfit suggestions, wardrobe management, shopping advice, and more.",
+      "features": [
+        {
+          "title": "Outfit Suggestions",
+          "description": "Get personalized outfit recommendations based on your wardrobe",
+          "prompt": "What should I wear today?"
+        },
+        {
+          "title": "Wardrobe Analysis", 
+          "description": "Analyze your clothing collection and get style insights",
+          "prompt": "Analyze my wardrobe"
+        },
+        {
+          "title": "Shopping Assistant",
+          "description": "Find the perfect items to complement your style",
+          "prompt": "Help me find a new jacket"
+        },
+        {
+          "title": "Style Questions",
+          "description": "Ask any fashion or style-related question",
+          "prompt": "How do I style this outfit?"
+        }
+      ]
+    },
+    "input": {
+      "placeholder": "Ask me anything about fashion and style...",
+      "send": "Send"
+    },
+    "errors": {
+      "loadingChats": "Error loading chats",
+      "creatingChat": "Error creating chat", 
+      "sendingMessage": "Error sending message",
+      "deletingChat": "Error deleting chat"
+    }
+  },
+  "wardrobe": {
+    "title": "My Wardrobe",
+    "upload": "Upload New Item",
+    "categories": {
+      "tops": "Tops",
+      "bottoms": "Bottoms", 
+      "dresses": "Dresses",
+      "outerwear": "Outerwear",
+      "shoes": "Shoes",
+      "accessories": "Accessories"
+    },
+    "empty": {
+      "title": "Your wardrobe is empty",
+      "subtitle": "Start by uploading your first clothing item",
+      "button": "Upload Your First Item"
+    },
+    "item": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "confirmDelete": "Are you sure you want to delete this item?"
+    },
+    "errors": {
+      "loading": "Error loading wardrobe",
+      "uploading": "Error uploading item",
+      "deleting": "Error deleting item"
+    },
+    "achievements": {
+      "nextAchievement": "Next Achievement",
+      "achievementUnlocked": "Achievement Unlocked!",
+      "moreToGo": "more to go",
+      "congratulations": "✨ Congratulations! Achievement completed!",
+      "tiers": {
+        "gettingStarted": {
+          "title": "Getting Started",
+          "description": "Upload your first 10 items"
+        },
+        "fashionExplorer": {
+          "title": "Fashion Explorer", 
+          "description": "Build a solid wardrobe"
+        },
+        "styleEnthusiast": {
+          "title": "Style Enthusiast",
+          "description": "Create a diverse collection"
+        },
+        "fashionMaster": {
+          "title": "Fashion Master",
+          "description": "Complete wardrobe collection"
+        },
+        "ultimateStylist": {
+          "title": "Ultimate Stylist",
+          "description": "Fashion guru level"
+        }
+      }
+    }
+  },
+  "waitlist": {
+    "title": "My Waitlist",
+    "subtitle": "Items you want to buy in the future",
+    "empty": {
+      "title": "Your waitlist is empty",
+      "subtitle": "Save items you love for future purchases"
+    },
+    "add": "Add to Waitlist",
+    "remove": "Remove from Waitlist",
+    "errors": {
+      "loading": "Error loading waitlist",
+      "adding": "Error adding to waitlist",
+      "removing": "Error removing from waitlist"
+    }
+  },
+  "profile": {
+    "title": "Profile Settings",
+    "personal": {
+      "title": "Personal Information",
+      "name": "Full Name",
+      "email": "Email Address",
+      "username": "Username"
+    },
+    "preferences": {
+      "title": "Preferences",
+      "language": "Language",
+      "theme": "Theme",
+      "notifications": "Notifications"
+    },
+    "save": "Save Changes",
+    "saved": "Settings saved successfully!"
+  },
+  "overview": {
+    "welcome": "Welcome to TryStyle",
+    "subtitle": "Your personal AI fashion assistant",
+    "gettingStarted": {
+      "title": "Getting Started with TryStyle",
+      "description": "Start by building your digital wardrobe, then chat with your AI stylist for personalized advice, try on new clothes virtually, or save items to your wishlist for future purchases.",
+      "buildWardrobe": "Build Wardrobe",
+      "askStylist": "Ask AI Stylist",
+      "tryClothes": "Try On Clothes"
+    },
+    "features": {
+      "chat": {
+        "description": "Get personalized fashion advice from your AI stylist"
+      },
+      "tryon": {
+        "description": "Virtually try on clothes before you buy them"
+      },
+      "wardrobe": {
+        "description": "Organize and manage your clothing collection"
+      },
+      "waitlist": {
+        "description": "Save items you want to buy in the future"
+      }
+    },
+    "stats": {
+      "aiChat": {
+        "title": "AI Chat",
+        "description": "Get personalized advice"
+      },
+      "virtualTryon": {
+        "title": "Virtual Try-On",
+        "description": "See clothes on you"
+      },
+      "smartWardrobe": {
+        "title": "Smart Wardrobe",
+        "description": "Organize your clothes"
+      }
+    }
+  }
+} 

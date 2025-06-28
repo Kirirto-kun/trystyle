@@ -1,0 +1,61 @@
+{
+  "navigation": {
+    "dashboard": "Панель управления",
+    "wardrobe": "Гардероб", 
+    "tryon": "Примерка",
+    "chat": "AI Чат",
+    "waitlist": "Список желаний",
+    "signOut": "Выйти",
+    "settings": "Настройки"
+  },
+  "buttons": {
+    "getStarted": "Начать",
+    "signIn": "Войти",
+    "signUp": "Регистрация",
+    "submit": "Отправить",
+    "cancel": "Отмена",
+    "save": "Сохранить",
+    "delete": "Удалить",
+    "edit": "Редактировать",
+    "upload": "Загрузить",
+    "create": "Создать",
+    "back": "Назад",
+    "next": "Далее",
+    "loading": "Загрузка...",
+    "tryNow": "Попробовать сейчас",
+    "startConversation": "Начать разговор",
+    "newChat": "Новый чат",
+    "creating": "Создание...",
+    "tryAgain": "Попробовать снова"
+  },
+  "common": {
+    "welcome": "Добро пожаловать",
+    "error": "Ошибка",
+    "success": "Успешно",
+    "warning": "Предупреждение",
+    "info": "Информация",
+    "close": "Закрыть",
+    "search": "Поиск",
+    "filter": "Фильтр",
+    "sort": "Сортировка",
+    "date": "Дата",
+    "name": "Имя",
+    "type": "Тип",
+    "status": "Статус",
+    "actions": "Действия",
+    "all": "Все",
+    "uncategorized": "Без категории"
+  },
+  "language": {
+    "english": "Английский",
+    "russian": "Русский",
+    "switchTo": "Переключить на {{language}}"
+  },
+  "sidebar": {
+    "title": "TryStyle",
+    "subtitle": "AI Модный Помощник",
+    "navigation": "Навигация",
+    "signOut": "Выйти",
+    "signedInAs": "Вошли как"
+  }
+} 

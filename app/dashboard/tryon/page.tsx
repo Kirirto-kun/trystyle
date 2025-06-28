@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Loader2, AlertTriangle, Trash, User, Shirt, Upload, Camera } from "lucide-react";
 import { getImageDimensions, type ImageDimensions } from "@/lib/image-utils";
+import { useTranslations } from "@/contexts/language-context";
 
 const API_BASE_URL = "https://www.closetmind.studio";
 
@@ -29,6 +30,8 @@ export default function TryOnPage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const { token, isAuthenticated, isLoading } = useAuth();
+  const tDashboard = useTranslations('dashboard');
+  const tCommon = useTranslations('common');
   const [open, setOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [currentTryon, setCurrentTryon] = useState<TryOn | null>(null);
@@ -127,7 +130,11 @@ export default function TryOnPage() {
     onDrop, 
     onClick, 
     inputRef, 
-    onChange 
+    onChange,
+    dragText,
+    dropText,
+    formatsText,
+    changeText
   }: {
     title: string;
     subtitle: string;
@@ -141,6 +148,10 @@ export default function TryOnPage() {
     onClick: () => void;
     inputRef: React.RefObject<HTMLInputElement>;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    dragText: string;
+    dropText: string;
+    formatsText: string;
+    changeText: string;
   }) => {
          return (
        <div className="space-y-3 w-80 mx-auto">
@@ -187,7 +198,7 @@ export default function TryOnPage() {
                      }}
                    >
                      <Camera className="w-4 h-4 mr-2" />
-                     Change
+                     {changeText}
                    </Button>
                  </div>
                </div>
@@ -206,11 +217,11 @@ export default function TryOnPage() {
               </div>
               
                              <p className="text-base font-medium text-gray-900 dark:text-white mb-2">
-                 {dragActive ? 'Drop your file here' : 'Click or drag & drop your file'}
+                 {dragActive ? dropText : dragText}
                </p>
                
                <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
-                 Supported formats: JPG, PNG, WebP
+                 {formatsText}
                </p>
               
               <div className="mt-4">
@@ -346,15 +357,15 @@ export default function TryOnPage() {
   };
 
   return (
-    <div className="space-y-6 md:space-y-8">
-      <h1 className="text-2xl md:text-3xl font-bold">Try-On: Clothing Fitting</h1>
+    <div className="space-y-6 md:space-y-8 bg-white dark:bg-gray-900 min-h-screen p-4 md:p-6 overflow-x-hidden">
+      <h1 className="text-2xl md:text-3xl font-bold">{tDashboard('tryon.title')}</h1>
       
       <Card className="p-4 md:p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 justify-items-center">
             <ImageUploadArea
-              title="Person Photo"
-              subtitle="Upload a full-body photo of a person"
+              title={tDashboard('tryon.upload.person.title')}
+              subtitle={tDashboard('tryon.upload.person.subtitle')}
               icon={User}
               file={humanFile}
               preview={humanFilePreview}
@@ -365,11 +376,15 @@ export default function TryOnPage() {
               onClick={() => humanFileInputRef.current?.click()}
               inputRef={humanFileInputRef}
               onChange={handleHumanFileChange}
+              dragText={tDashboard('tryon.upload.person.dragText')}
+              dropText={tDashboard('tryon.upload.person.dropText')}
+              formatsText={tDashboard('tryon.upload.person.formats')}
+              changeText={tDashboard('tryon.upload.person.changeButton')}
             />
             
             <ImageUploadArea
-              title="Clothing Photo"
-              subtitle="Upload a photo of clothing on transparent background"
+              title={tDashboard('tryon.upload.clothing.title')}
+              subtitle={tDashboard('tryon.upload.clothing.subtitle')}
               icon={Shirt}
               file={clothingFile}
               preview={clothingFilePreview}
@@ -380,6 +395,10 @@ export default function TryOnPage() {
               onClick={() => clothingFileInputRef.current?.click()}
               inputRef={clothingFileInputRef}
               onChange={handleClothingFileChange}
+              dragText={tDashboard('tryon.upload.clothing.dragText')}
+              dropText={tDashboard('tryon.upload.clothing.dropText')}
+              formatsText={tDashboard('tryon.upload.clothing.formats')}
+              changeText={tDashboard('tryon.upload.clothing.changeButton')}
             />
           </div>
           
@@ -391,10 +410,10 @@ export default function TryOnPage() {
             {loading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Loading...
+                {tCommon('buttons.loading')}
               </>
             ) : (
-              "Create try-on"
+              tDashboard('tryon.submit')
             )}
           </Button>
           
@@ -408,13 +427,13 @@ export default function TryOnPage() {
       </Card>
 
       <div>
-        <h2 className="text-xl md:text-2xl font-semibold mb-4">My try-ons</h2>
+        <h2 className="text-xl md:text-2xl font-semibold mb-4">{tDashboard('tryon.history.title')}</h2>
         
         {loading && (
           <div className="flex justify-center items-center py-12">
             <div className="text-center">
               <Loader2 className="h-10 w-10 animate-spin text-primary mx-auto mb-3" />
-              <p className="text-base">Loading...</p>
+              <p className="text-base">{tDashboard('tryon.loading')}</p>
             </div>
           </div>
         )}
@@ -450,7 +469,7 @@ export default function TryOnPage() {
                     <div className="w-32 h-32 md:w-40 md:h-40 rounded border flex items-center justify-center bg-muted/20">
                       <div className="flex flex-col items-center text-center text-muted-foreground p-2">
                         <Loader2 className="h-6 w-6 md:h-8 md:h-8 animate-spin" />
-                        <span className="text-xs mt-2">Processing...</span>
+                        <span className="text-xs mt-2">{tDashboard('tryon.history.processing')}</span>
                       </div>
                     </div>
                   )}
@@ -476,7 +495,7 @@ export default function TryOnPage() {
         
         {tryons.length === 0 && !loading && (
           <div className="text-center py-12 text-muted-foreground">
-            <p>No try-ons</p>
+            <p>{tDashboard('tryon.history.empty')}</p>
           </div>
         )}
       </div>
@@ -491,7 +510,7 @@ export default function TryOnPage() {
       }}>
         <DialogContent className="max-w-[95vw] max-h-[95vh] w-auto h-auto flex flex-col items-center justify-center p-4 bg-background/95 backdrop-blur-sm">
           <DialogTitle className="sr-only">
-            Image Viewer
+            {tDashboard('tryon.dialog.title')}
           </DialogTitle>
           {selectedImage && (
             <div className="relative flex items-center justify-center">

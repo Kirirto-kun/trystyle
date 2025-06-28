@@ -8,21 +8,24 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/s
 import { Menu, X, Bot, MessageSquare, Shirt, ListChecks, LogOut, Download } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { LanguageSwitcher } from "@/components/language-switcher"
+import { useTranslations } from "@/contexts/language-context"
 import { cn } from "@/lib/utils"
 
 const API_BASE_URL = "https://www.closetmind.studio"
-
-const navItems = [
-  { href: "/dashboard/chat", label: "AI Chat", icon: MessageSquare },
-  { href: "/dashboard/tryon", label: "Try-On", icon: Shirt },
-  { href: "/dashboard/wardrobe", label: "My Wardrobe", icon: Shirt },
-  { href: "/dashboard/waitlist", label: "Wishlist", icon: ListChecks },
-]
 
 export function MobileNav() {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
   const { logout, user } = useAuth()
+  const tCommon = useTranslations('common')
+  
+  const navItems = [
+    { href: "/dashboard/chat", label: tCommon('navigation.chat'), icon: MessageSquare },
+    { href: "/dashboard/tryon", label: tCommon('navigation.tryon'), icon: Shirt },
+    { href: "/dashboard/wardrobe", label: tCommon('navigation.wardrobe'), icon: Shirt },
+    { href: "/dashboard/waitlist", label: tCommon('navigation.waitlist'), icon: ListChecks },
+  ]
 
   const handleDownloadExtension = () => {
     window.location.href = `${API_BASE_URL}/waitlist/download-extension`
@@ -51,7 +54,7 @@ export function MobileNav() {
           {/* Header */}
           <div className="flex items-center space-x-2 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
             <Bot className="h-6 w-6 text-primary" />
-            <span className="text-lg font-semibold text-gray-900 dark:text-white">TryStyle</span>
+            <span className="text-lg font-semibold text-gray-900 dark:text-white">{tCommon('sidebar.title')}</span>
           </div>
 
           {/* Navigation */}
@@ -84,14 +87,15 @@ export function MobileNav() {
                 onClick={handleLogout}
               >
                 <LogOut className="mr-3 h-5 w-5" />
-                Sign Out
+                {tCommon('sidebar.signOut')}
               </Button>
+              <LanguageSwitcher variant="ghost" size="icon" showText={false} />
               <ThemeToggle />
             </div>
 
             {user && (
               <div className="text-xs text-gray-600 dark:text-gray-400 text-center pt-2 border-t border-gray-200 dark:border-gray-700">
-                Signed in as {user.username || user.email}
+                {tCommon('sidebar.signedInAs')} {user.username || user.email}
               </div>
             )}
           </div>

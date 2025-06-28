@@ -4,6 +4,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/contexts/auth-context"
+import { LanguageProvider } from "@/contexts/language-context"
 import { Toaster } from "sonner"
 import { Analytics } from "@vercel/analytics/next"
 
@@ -23,22 +24,24 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem={true}
-          disableTransitionOnChange
-          storageKey="closetmind-theme"
-        >
-          <AuthProvider>
-            <div className="min-h-screen">
-              {children}
-            </div>
-            <Toaster />
-          </AuthProvider>
-        </ThemeProvider>
+        <LanguageProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem={true}
+            disableTransitionOnChange
+            storageKey="closetmind-theme"
+          >
+            <AuthProvider>
+              <div className="min-h-screen">
+                {children}
+              </div>
+              <Toaster />
+            </AuthProvider>
+          </ThemeProvider>
+        </LanguageProvider>
         <Analytics />
       </body>
     </html>
   )
-}
+} 

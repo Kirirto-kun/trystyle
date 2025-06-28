@@ -5,6 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { PlusCircle, MessageSquare, Trash2, Loader2 } from "lucide-react"
 import type { Chat } from "@/lib/types"
 import { cn } from "@/lib/utils"
+import { useTranslations } from "@/contexts/language-context"
 
 interface ChatListProps {
   chats: Chat[]
@@ -27,7 +28,7 @@ export default function ChatList({
   isCreatingChat,
   isDeletingChat,
 }: ChatListProps) {
-  // State for create action not needed anymore
+  const t = useTranslations('dashboard')
 
   const handleCreate = async () => {
     const createdChat = await onCreateChat("")
@@ -38,7 +39,7 @@ export default function ChatList({
 
   const handleDelete = async (chatId: number, e: React.MouseEvent) => {
     e.stopPropagation()
-    const confirmed = window.confirm("Are you sure you want to delete this chat and all its messages?")
+    const confirmed = window.confirm(t('chat.deleteConfirm'))
     if (confirmed) {
       await onDeleteChat(chatId)
     }
@@ -47,22 +48,22 @@ export default function ChatList({
   return (
     <div className="w-full border-r border-gray-200 dark:border-gray-700 flex flex-col bg-white dark:bg-gray-800 h-full">
       <div className="p-3 md:p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-white dark:bg-gray-900">
-        <h2 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white">Conversations</h2>
+        <h2 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white">{t('chat.conversations')}</h2>
         <Button 
           size="sm" 
           onClick={handleCreate} 
           disabled={isCreatingChat}
-          className="bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl px-3 py-2 md:px-4 md:py-2 h-auto font-medium"
+          className="bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl px-3 py-2 md:px-4 md:py-2 h-10 md:h-auto font-medium text-sm"
         >
           {isCreatingChat ? (
             <>
-              <Loader2 className="h-4 w-4 md:h-5 md:w-5 animate-spin mr-2" />
-              <span className="hidden md:inline">Creating...</span>
+              <Loader2 className="h-4 w-4 md:h-5 md:w-5 animate-spin mr-1 md:mr-2" />
+              <span className="text-xs md:text-sm">{t('chat.creating')}</span>
             </>
           ) : (
             <>
-              <PlusCircle className="h-4 w-4 md:h-5 md:w-5 mr-2" />
-              <span className="hidden md:inline">New Chat</span>
+              <PlusCircle className="h-4 w-4 md:h-5 md:w-5 mr-1 md:mr-2" />
+              <span className="text-xs md:text-sm">{t('chat.newChat')}</span>
             </>
           )}
         </Button>
@@ -72,7 +73,7 @@ export default function ChatList({
         {isLoadingChats && (
           <div className="p-4 text-center text-gray-600 dark:text-gray-300">
             <Loader2 className="h-5 w-5 md:h-6 md:w-6 animate-spin mx-auto mb-2" />
-            <p className="text-sm">Loading chats...</p>
+            <p className="text-sm">{t('chat.loadingChats')}</p>
           </div>
         )}
 
@@ -82,7 +83,7 @@ export default function ChatList({
               <MessageSquare className="h-6 w-6 md:h-8 md:w-8 text-gray-700 dark:text-gray-300" />
             </div>
             <div>
-              <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">No conversations yet</p>
+              <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">{t('chat.noConversations')}</p>
               <Button 
                 size="lg"
                 onClick={handleCreate}
@@ -92,12 +93,12 @@ export default function ChatList({
                 {isCreatingChat ? (
                   <>
                     <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                    Creating your first chat...
+                    {t('chat.creating')}
                   </>
                 ) : (
                   <>
                     <PlusCircle className="h-5 w-5 mr-2" />
-                    Create Your First Chat
+                    {t('chat.createFirst')}
                   </>
                 )}
               </Button>
@@ -134,7 +135,7 @@ export default function ChatList({
                   ) : (
                     <Trash2 className="h-3 w-3 md:h-4 md:w-4 text-red-600 dark:text-red-400" />
                   )}
-                  <span className="sr-only">Delete Chat</span>
+                  <span className="sr-only">{t('chat.deleteButton')}</span>
                 </Button>
               </div>
             ))}

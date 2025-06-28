@@ -1,129 +1,153 @@
 "use client"
-import { useState, useEffect, useCallback } from "react"
-import { apiCall } from "@/lib/api"
-import type {
-  Chat,
-  ChatWithMessages,
-  ChatMessageResponse,
-  UIMessage,
-  SendMessagePayload,
-} from "@/lib/types"
+
+import React, { useState, useEffect } from "react"
 import ChatList from "@/components/dashboard/chat/chat-list"
 import ChatMessageArea from "@/components/dashboard/chat/chat-message-area"
+import { apiCall } from "@/lib/api"
+import type { Chat, UIMessage, ChatMessageResponse } from "@/lib/types"
 import { toast } from "sonner"
-import { useRealViewportHeight } from "@/hooks/use-real-vp-height"
+import { useTranslations } from "@/contexts/language-context"
 
 export default function ChatPage() {
-  useRealViewportHeight();
+  const t = useTranslations('dashboard')
   const [chats, setChats] = useState<Chat[]>([])
-  const [selectedChat, setSelectedChat] = useState<Chat | null>(null)
+  const [selectedChatId, setSelectedChatId] = useState<number | null>(null)
   const [messages, setMessages] = useState<UIMessage[]>([])
+  const [isLoadingChats, setIsLoadingChats] = useState(true)
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false)
+  const [isCreatingChat, setIsCreatingChat] = useState(false)
+  const [isSendingMessage, setIsSendingMessage] = useState(false)
+  const [isDeletingChat, setIsDeletingChat] = useState<Set<number>>(new Set())
+  const [isNewChatMode, setIsNewChatMode] = useState(false)
+  // Мобильное состояние для переключения между списком чатов и областью сообщений
   const [showChatList, setShowChatList] = useState(true)
 
-  const [isLoadingChats, setIsLoadingChats] = useState(true)
-  const [isCreatingChat, setIsCreatingChat] = useState(false)
-  const [isDeletingChat, setIsDeletingChat] = useState<Set<number>>(new Set())
-  const [isLoadingMessages, setIsLoadingMessages] = useState(false)
-  const [isSendingMessage, setIsSendingMessage] = useState(false)
-
-  const fetchChats = useCallback(async () => {
+  // Загрузка списка чатов
+  const fetchChats = async () => {
     setIsLoadingChats(true)
     try {
-      const fetchedChats = await apiCall<Chat[]>("/api/v1/chats/")
-      setChats(
-        fetchedChats.sort(
-          (a, b) => new Date(b.updated_at || b.created_at).getTime() - new Date(a.updated_at || a.created_at).getTime(),
-        ),
-      )
+      const data = await apiCall<Chat[]>('/api/v1/chats/')
+      setChats(data)
     } catch (error) {
-      toast.error("Failed to load conversations.")
-      console.error("Fetch chats error:", error)
+      console.error('Error fetching chats:', error)
+      toast.error('Failed to load chats')
     } finally {
       setIsLoadingChats(false)
     }
-  }, [])
-
-  useEffect(() => {
-    fetchChats()
-  }, [fetchChats])
-
-  const handleSelectChat = useCallback(
-    async (chatId: number) => {
-      const chat = chats.find((c) => c.id === chatId)
-      if (!chat) {
-        console.warn(`Chat with ID ${chatId} not found in local list.`)
-        return
-      }
-
-      setSelectedChat(chat)
-      setShowChatList(false) // Hide chat list on mobile when chat is selected
-      setIsLoadingMessages(true)
-      setMessages([])
-      try {
-        console.log(`Fetching messages for chat ID: ${chatId}`)
-        const chatDetails = await apiCall<ChatWithMessages>(`/api/v1/chats/${chatId}`)
-        console.log("Fetched chat details with messages:", chatDetails)
-        const uiMessages: UIMessage[] = (chatDetails.messages || [])
-          .map((msg) => ({
-            id: msg.id,
-            content: msg.content,
-            role: msg.role,
-            createdAt: msg.created_at,
-          }))
-          .sort((a, b) => new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime())
-        setMessages(uiMessages)
-      } catch (error) {
-        toast.error(`Failed to load messages for "${chat.title}".`)
-        console.error(`Fetch messages error for chat ${chatId}:`, error)
-        setSelectedChat(null)
-        setShowChatList(true)
-      } finally {
-        setIsLoadingMessages(false)
-      }
-    },
-    [chats],
-  )
-
-  const handleCreateChat = async (_unused: string): Promise<Chat | null> => {
-    setIsCreatingChat(true)
-    const draftId = -Date.now()
-    const draftChat: Chat = {
-      id: draftId,
-      title: "New Chat",
-      user_id: 0,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    }
-    setChats((prev) => [draftChat, ...prev])
-    setSelectedChat(draftChat)
-    setMessages([])
-    setShowChatList(false)
-    setIsCreatingChat(false)
-    return draftChat
   }
 
-  const handleDeleteChat = async (chatId: number): Promise<boolean> => {
-    setIsDeletingChat((prev) => new Set(prev).add(chatId))
+  // Загрузка сообщений для выбранного чата
+  const fetchMessages = async (chatId: number) => {
+    setIsLoadingMessages(true)
     try {
-      console.log(`Deleting chat ID: ${chatId}`)
-      await apiCall<{ message: string }>(`/api/v1/chats/${chatId}`, {
-        method: "DELETE",
-      })
-      console.log(`Chat ID: ${chatId} deleted successfully from API.`)
-      setChats((prev) => prev.filter((c) => c.id !== chatId))
-      if (selectedChat?.id === chatId) {
-        setSelectedChat(null)
-        setMessages([])
-        setShowChatList(true) // Show chat list when current chat is deleted
+      const data = await apiCall<ChatMessageResponse[]>(`/api/v1/chats/${chatId}/messages`)
+      const uiMessages: UIMessage[] = data.map(msg => ({
+        id: msg.id,
+        role: msg.role,
+        content: msg.content,
+        createdAt: msg.created_at
+      }))
+      setMessages(uiMessages)
+    } catch (error) {
+      console.error('Error fetching messages:', error)
+      toast.error('Failed to load messages')
+    } finally {
+      setIsLoadingMessages(false)
+    }
+  }
+
+  // Переключение в режим нового чата
+  const handleCreateChat = async (title: string): Promise<Chat | null> => {
+    setSelectedChatId(null)
+    setMessages([])
+    setIsNewChatMode(true)
+    setShowChatList(false) // Переключаемся на область сообщений на мобильных
+    return null // Чат создается только при отправке первого сообщения
+  }
+
+  // Отправка сообщения
+  const handleSendMessage = async (chatId: number | null, messageContent: string) => {
+    if (!messageContent.trim()) return
+    
+    // Оптимистичное обновление UI
+    const optimisticMessage: UIMessage = {
+      id: `temp-${Date.now()}`,
+      role: 'user',
+      content: messageContent,
+      createdAt: new Date().toISOString()
+    }
+    setMessages(prev => [...prev, optimisticMessage])
+    
+    setIsSendingMessage(true)
+    try {
+      let actualChatId = chatId
+      
+      // Если это новый чат, создаем его с первым сообщением
+      if (isNewChatMode || !chatId) {
+        const payload = { message: messageContent }
+        const response = await apiCall<any>('/api/v1/chats/init', {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        })
+        
+        // Создаем новый чат в списке
+        const newChat: Chat = {
+          id: response.id,
+          title: response.title,
+          user_id: response.user_id,
+          created_at: response.created_at,
+          updated_at: response.updated_at
+        }
+        
+        setChats(prev => [newChat, ...prev])
+        setSelectedChatId(newChat.id)
+        setIsNewChatMode(false)
+        actualChatId = newChat.id
+        
+        // Загружаем сообщения из ответа API
+        await fetchMessages(newChat.id)
+        toast.success('New chat created')
+      } else {
+        // Обычная отправка сообщения в существующий чат
+        const payload = { message: messageContent }
+        const response = await apiCall<ChatMessageResponse>(`/api/v1/chats/${actualChatId}/messages`, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        })
+        
+        // Перезагружаем сообщения для получения ответа
+        await fetchMessages(actualChatId!)
       }
-      toast.success("Chat deleted successfully.")
+    } catch (error) {
+      console.error('Error sending message:', error)
+      toast.error('Failed to send message')
+      // Удаляем оптимистичное сообщение при ошибке
+      setMessages(prev => prev.filter(msg => msg.id !== optimisticMessage.id))
+    } finally {
+      setIsSendingMessage(false)
+    }
+  }
+
+  // Удаление чата
+  const handleDeleteChat = async (chatId: number): Promise<boolean> => {
+    setIsDeletingChat(prev => new Set(prev.add(chatId)))
+    try {
+      await apiCall(`/api/v1/chats/${chatId}`, {
+        method: 'DELETE'
+      })
+      setChats(prev => prev.filter(chat => chat.id !== chatId))
+      if (selectedChatId === chatId) {
+        setSelectedChatId(null)
+        setMessages([])
+      }
+      toast.success('Chat deleted')
       return true
     } catch (error) {
-      toast.error("Failed to delete chat.")
-      console.error(`Delete chat error for ID ${chatId}:`, error)
+      console.error('Error deleting chat:', error)
+      toast.error('Failed to delete chat')
       return false
     } finally {
-      setIsDeletingChat((prev) => {
+      setIsDeletingChat(prev => {
         const newSet = new Set(prev)
         newSet.delete(chatId)
         return newSet
@@ -131,154 +155,48 @@ export default function ChatPage() {
     }
   }
 
-  const handleSendMessage = async (chatId: number, messageContent: string) => {
-    if (!selectedChat) return;
-
-    const optimisticUserMessage: UIMessage = {
-      id: `optimistic-${Date.now()}`,
-      role: "user",
-      content: messageContent,
-      createdAt: new Date().toISOString(),
-    }
-    setMessages((prev) => [...prev, optimisticUserMessage])
-    setIsSendingMessage(true)
-
-    // If chat is draft (negative id), use init endpoint
-    const isDraft = selectedChat.id < 0
-
-    try {
-      if (isDraft) {
-        const endpoint = `/api/v1/chats/init`
-        const payload: SendMessagePayload = { message: messageContent }
-        const chatWithMessages = await apiCall<any>(endpoint, {
-          method: "POST",
-          body: JSON.stringify(payload),
-        })
-
-        const { id, title, user_id, created_at, updated_at, messages: serverMessages } = chatWithMessages
-
-        // Convert server messages to UIMessage[]
-        const uiMsgs: UIMessage[] = serverMessages.map((m: any) => ({
-          id: m.id,
-          role: m.role,
-          content: m.content,
-          createdAt: m.created_at,
-        }))
-
-        const newChat: Chat = { id, title, user_id, created_at, updated_at }
-
-        // Replace draft chat in list
-        setChats((prev) => {
-          const withoutDraft = prev.filter((c) => c.id !== selectedChat.id)
-          return [newChat, ...withoutDraft]
-        })
-        setSelectedChat(newChat)
-        setMessages(uiMsgs)
-      } else {
-        // Existing chat
-        const endpoint = `/api/v1/chats/${chatId}/messages`
-        const payload: SendMessagePayload = { message: messageContent }
-        const assistantResponse = await apiCall<ChatMessageResponse>(endpoint, {
-          method: "POST",
-          body: JSON.stringify(payload),
-        })
-
-        const newAssistantMessage: UIMessage = {
-          id: assistantResponse.id,
-          role: assistantResponse.role,
-          content: assistantResponse.content,
-          createdAt: assistantResponse.created_at,
-        }
-
-        setMessages((prevMessages) => [...prevMessages, newAssistantMessage])
-
-        // Update chats order
-        setChats((prevChats) =>
-          prevChats
-            .map((c) => (c.id === chatId ? { ...c, updated_at: newAssistantMessage.createdAt || new Date().toISOString() } : c))
-            .sort(
-              (a, b) =>
-                new Date(b.updated_at || b.created_at).getTime() - new Date(a.updated_at || a.created_at).getTime(),
-            ),
-        )
-      }
-    } catch (error) {
-      console.error("Send message error:", error)
-      setMessages((prev) => prev.filter((m) => m.id !== optimisticUserMessage.id))
-    } finally {
-      setIsSendingMessage(false)
-    }
+  // Выбор чата
+  const handleSelectChat = (chatId: number) => {
+    setSelectedChatId(chatId)
+    setIsNewChatMode(false)
+    setShowChatList(false) // Переключаемся на область сообщений на мобильных
+    fetchMessages(chatId)
   }
 
+  // Возврат к списку чатов (для мобильных)
+  const handleBackToChatList = () => {
+    setShowChatList(true)
+  }
+
+  // Загрузка чатов при монтировании
   useEffect(() => {
-    if (!selectedChat && chats.length > 0 && !isLoadingChats && !isLoadingMessages) {
-      if (chats[0] && selectedChat?.id !== chats[0].id) {
-        handleSelectChat(chats[0].id)
-      }
-    }
-  }, [chats, selectedChat, isLoadingChats, isLoadingMessages, handleSelectChat])
+    fetchChats()
+  }, [])
+
+  const selectedChat = chats.find(chat => chat.id === selectedChatId) || null
+  
+  // Создаем псевдо-чат для режима нового чата
+  const displayChat = isNewChatMode ? {
+    id: 0,
+    title: "New Chat",
+    user_id: 0,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  } : selectedChat
+
+  // Обертка для handleSendMessage, передающая правильный chatId
+  const wrappedHandleSendMessage = async (chatId: number, messageContent: string) => {
+    const actualChatId = isNewChatMode ? null : chatId
+    await handleSendMessage(actualChatId, messageContent)
+  }
 
   return (
-    <>
-      {/* Mobile Layout */}
-      <div className="md:hidden h-[calc(var(--vh,1vh)*100-3.5rem)] bg-white dark:bg-gray-900">
-        {showChatList ? (
-          <div className="h-full">
-            <ChatList
-              chats={chats}
-              selectedChatId={selectedChat?.id || null}
-              onSelectChat={handleSelectChat}
-              onCreateChat={handleCreateChat}
-              onDeleteChat={handleDeleteChat}
-              isLoadingChats={isLoadingChats}
-              isCreatingChat={isCreatingChat}
-              isDeletingChat={isDeletingChat}
-            />
-          </div>
-        ) : (
-          <div className="h-full flex flex-col">
-            {/* Mobile chat header with back button */}
-            <div className="flex items-center p-3 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-              <button
-                onClick={() => setShowChatList(true)}
-                className="mr-3 p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <h1 className="text-lg font-semibold truncate text-gray-900 dark:text-white">
-                {selectedChat?.title || "Chat"}
-              </h1>
-            </div>
-            <div className="flex-1 min-h-0">
-              {selectedChat && (
-                <ChatMessageArea
-                  selectedChat={selectedChat}
-                  messages={messages}
-                  onSendMessage={handleSendMessage}
-                  isLoadingMessages={isLoadingMessages}
-                  isSendingMessage={isSendingMessage}
-                  showTitle={false}
-                />
-              )}
-              {!selectedChat && !isLoadingMessages && (
-                <div className="flex-1 flex items-center justify-center text-gray-600 dark:text-gray-400">
-                  No chat selected
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Desktop Layout */}
-      <div className="hidden md:grid md:grid-cols-[320px_1fr] h-[calc(100vh-3.5rem)] bg-white dark:bg-gray-900">
-        {/* Desktop - Chat List */}
-        <div className="border-r border-gray-200 dark:border-gray-700 h-full overflow-y-auto bg-gray-50 dark:bg-gray-800">
+    <div className="flex h-[calc(100vh-4rem)] bg-white dark:bg-gray-900">
+      {/* Боковая панель со списком чатов */}
+      <div className="hidden md:flex md:w-80 lg:w-96">
         <ChatList
           chats={chats}
-          selectedChatId={selectedChat?.id || null}
+          selectedChatId={selectedChatId}
           onSelectChat={handleSelectChat}
           onCreateChat={handleCreateChat}
           onDeleteChat={handleDeleteChat}
@@ -286,19 +204,44 @@ export default function ChatPage() {
           isCreatingChat={isCreatingChat}
           isDeletingChat={isDeletingChat}
         />
-        </div>
-
-        {/* Desktop - Chat Area */}
-        <div className="flex flex-col h-full min-h-0 bg-white dark:bg-gray-900">
+      </div>
+      
+      {/* Основная область чата - только для десктопа */}
+      <div className="hidden md:flex md:flex-1 md:flex-col">
         <ChatMessageArea
-          selectedChat={selectedChat}
+          selectedChat={displayChat}
           messages={messages}
-          onSendMessage={handleSendMessage}
+          onSendMessage={wrappedHandleSendMessage}
           isLoadingMessages={isLoadingMessages}
           isSendingMessage={isSendingMessage}
         />
-        </div>
       </div>
-    </>
+      
+      {/* Мобильная версия - переключение между списком чатов и областью сообщений */}
+      <div className="md:hidden w-full h-full">
+        {showChatList ? (
+          <ChatList
+            chats={chats}
+            selectedChatId={selectedChatId}
+            onSelectChat={handleSelectChat}
+            onCreateChat={handleCreateChat}
+            onDeleteChat={handleDeleteChat}
+            isLoadingChats={isLoadingChats}
+            isCreatingChat={isCreatingChat}
+            isDeletingChat={isDeletingChat}
+          />
+        ) : (
+          <ChatMessageArea
+            selectedChat={displayChat}
+            messages={messages}
+            onSendMessage={wrappedHandleSendMessage}
+            isLoadingMessages={isLoadingMessages}
+            isSendingMessage={isSendingMessage}
+            onBackToList={handleBackToChatList}
+            showBackButton={true}
+          />
+        )}
+      </div>
+    </div>
   )
-}
+} 

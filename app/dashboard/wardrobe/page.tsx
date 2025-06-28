@@ -9,6 +9,7 @@ import WardrobeItemCard from "@/components/dashboard/wardrobe/wardrobe-item-card
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Progress } from "@/components/ui/progress"
 import { toast } from "sonner"
+import { useTranslations } from "@/contexts/language-context"
 
 interface GroupedItems {
   [category: string]: (ClothingItemResponse | ProcessingItem)[]
@@ -24,7 +25,24 @@ interface ProcessingItem {
 const UNCATEGORIZED_KEY = "Uncategorized"
 const PROCESSING_CATEGORY = "Processing"
 
+// Категории маппинг для перевода
+const getCategoryTranslation = (category: string, t: any): string => {
+  const categoryMap: { [key: string]: string } = {
+    'Tops': t('wardrobe.categories.tops'),
+    'Bottoms': t('wardrobe.categories.bottoms'),
+    'Dresses': t('wardrobe.categories.dresses'),
+    'Outerwear': t('wardrobe.categories.outerwear'),
+    'Shoes': t('wardrobe.categories.shoes'),
+    'Accessories': t('wardrobe.categories.accessories'),
+    'Uncategorized': t('common.common.uncategorized'),
+    'Processing': t('common.buttons.loading')
+  }
+  return categoryMap[category] || category
+}
+
 export default function WardrobePage() {
+  const tDashboard = useTranslations('dashboard')
+  const tCommon = useTranslations('common')
   const [items, setItems] = useState<ClothingItemResponse[]>([])
   const [processingItems, setProcessingItems] = useState<ProcessingItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -113,7 +131,7 @@ export default function WardrobePage() {
     initialItemCountRef.current = items.length;
     const newProcessingItems: ProcessingItem[] = Array.from({ length: count }, (_, i) => ({
       id: `processing-${Date.now()}-${i}`,
-      name: "Processing...",
+      name: tCommon('buttons.loading'),
       isProcessing: true,
       category: PROCESSING_CATEGORY,
     }))
@@ -150,11 +168,11 @@ export default function WardrobePage() {
 
   // Achievement system
   const achievementTiers = [
-    { target: 10, title: "Getting Started", description: "Upload your first 10 items" },
-    { target: 25, title: "Fashion Explorer", description: "Build a solid wardrobe" },
-    { target: 50, title: "Style Enthusiast", description: "Create a diverse collection" },
-    { target: 100, title: "Fashion Master", description: "Complete wardrobe collection" },
-    { target: 200, title: "Ultimate Stylist", description: "Fashion guru level" }
+    { target: 10, title: tDashboard('wardrobe.achievements.tiers.gettingStarted.title'), description: tDashboard('wardrobe.achievements.tiers.gettingStarted.description') },
+    { target: 25, title: tDashboard('wardrobe.achievements.tiers.fashionExplorer.title'), description: tDashboard('wardrobe.achievements.tiers.fashionExplorer.description') },
+    { target: 50, title: tDashboard('wardrobe.achievements.tiers.styleEnthusiast.title'), description: tDashboard('wardrobe.achievements.tiers.styleEnthusiast.description') },
+    { target: 100, title: tDashboard('wardrobe.achievements.tiers.fashionMaster.title'), description: tDashboard('wardrobe.achievements.tiers.fashionMaster.description') },
+    { target: 200, title: tDashboard('wardrobe.achievements.tiers.ultimateStylist.title'), description: tDashboard('wardrobe.achievements.tiers.ultimateStylist.description') }
   ]
 
   const currentItemCount = items.length
@@ -163,15 +181,15 @@ export default function WardrobePage() {
   const remainingItems = currentTier ? Math.max(currentTier.target - currentItemCount, 0) : 0
 
   return (
-    <div className="space-y-4 md:space-y-6 bg-white dark:bg-gray-900 min-h-screen p-4 md:p-6">
+    <div className="space-y-4 md:space-y-6 bg-white dark:bg-gray-900 min-h-screen p-4 md:p-6 overflow-x-hidden">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-gray-900 dark:text-white">My Wardrobe</h2>
+        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-gray-900 dark:text-white">{tDashboard('wardrobe.title')}</h2>
         <Button 
           onClick={() => setIsDialogOpen(true)}
           className="w-full sm:w-auto h-11 md:h-10 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-100"
         >
           <ImageUp className="mr-2 h-4 w-4 md:h-5 md:w-5" /> 
-          Upload Photos
+          {tDashboard('wardrobe.upload')}
         </Button>
       </div>
 
@@ -181,7 +199,7 @@ export default function WardrobePage() {
           <div className="flex items-center justify-between mb-2">
             <div>
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-                {progress >= 100 ? "Achievement Unlocked!" : "Next Achievement"}
+                {progress >= 100 ? tDashboard('wardrobe.achievements.achievementUnlocked') : tDashboard('wardrobe.achievements.nextAchievement')}
               </h3>
               <p className="text-xs text-gray-600 dark:text-gray-400">
                 {currentTier.title} - {currentTier.description}
@@ -193,7 +211,7 @@ export default function WardrobePage() {
               </p>
               {progress < 100 && (
                 <p className="text-xs text-gray-600 dark:text-gray-400">
-                  {remainingItems} more to go
+                  {remainingItems} {tDashboard('wardrobe.achievements.moreToGo')}
                 </p>
               )}
             </div>
@@ -204,7 +222,7 @@ export default function WardrobePage() {
           />
           {progress >= 100 && currentItemCount >= currentTier.target && (
             <p className="text-xs text-green-600 dark:text-green-400 mt-1 font-medium">
-              ✨ Congratulations! Achievement completed!
+              {tDashboard('wardrobe.achievements.congratulations')}
             </p>
           )}
         </div>
@@ -214,7 +232,7 @@ export default function WardrobePage() {
         <div className="flex justify-center items-center py-12 md:py-16">
           <div className="text-center">
             <Loader2 className="h-10 w-10 md:h-12 md:w-12 animate-spin text-primary mx-auto mb-3" />
-            <p className="text-base md:text-lg text-gray-900 dark:text-white">Loading your wardrobe...</p>
+            <p className="text-base md:text-lg text-gray-900 dark:text-white">{tCommon('buttons.loading')}</p>
           </div>
         </div>
       )}
@@ -224,7 +242,7 @@ export default function WardrobePage() {
           <AlertTriangle className="h-8 w-8 md:h-10 md:w-10 mb-2" />
           <p className="text-base md:text-lg font-medium text-center">{error}</p>
           <Button onClick={() => fetchItems(true)} variant="outline" className="mt-4 border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
-            Try Again
+            {tCommon('buttons.tryAgain')}
           </Button>
         </div>
       )}
@@ -232,38 +250,40 @@ export default function WardrobePage() {
       {!isLoading && !error && items.length === 0 && processingItems.length === 0 && (
         <div className="flex flex-col items-center justify-center text-center py-12 md:py-16 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800">
           <Shirt className="h-12 w-12 md:h-16 md:w-16 text-gray-400 dark:text-gray-500 mb-4" />
-          <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">Your wardrobe is empty!</h3>
-          <p className="text-gray-600 dark:text-gray-300 mt-1 mb-6">Start by uploading photos of your clothing items.</p>
+          <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">{tDashboard('wardrobe.empty.title')}</h3>
+          <p className="text-gray-600 dark:text-gray-300 mt-1 mb-6">{tDashboard('wardrobe.empty.subtitle')}</p>
           <Button 
             onClick={() => setIsDialogOpen(true)} 
             className="w-full sm:w-auto bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-100"
           >
             <ImageUp className="mr-2 h-4 w-4 md:h-5 md:w-5" /> 
-            Upload First Photos
+            {tDashboard('wardrobe.empty.button')}
           </Button>
         </div>
       )}
 
       {!isLoading && !error && (items.length > 0 || processingItems.length > 0) && (
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <div className="w-full overflow-x-auto tabs-scrollbar">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full overflow-hidden">
+          <div className="w-full overflow-x-auto scrollbar-hide">
             <TabsList className="flex h-8 md:h-10 p-0.5 md:p-1 gap-1 w-max min-w-full">
-              <TabsTrigger value="all" className="flex-shrink-0 text-xs md:text-sm font-medium px-2 md:px-3 py-1 md:py-1.5 h-7 md:h-8 min-w-fit">
-                All ({items.length + processingItems.length})
+              <TabsTrigger value="all" className="flex-shrink-0 text-xs font-medium px-1.5 md:px-3 py-1 md:py-1.5 h-7 md:h-8 whitespace-nowrap">
+                <span className="hidden sm:inline">{tCommon('common.all')} ({items.length + processingItems.length})</span>
+                <span className="sm:hidden">{tCommon('common.all')}</span>
               </TabsTrigger>
-              {categoryOrder.map((category) => (
-                <TabsTrigger key={category} value={category} className="flex-shrink-0 text-xs md:text-sm font-medium capitalize px-2 md:px-3 py-1 md:py-1.5 h-7 md:h-8 min-w-fit">
-                  {category} ({groupedItems[category].length})
-                  {category === PROCESSING_CATEGORY && (
-                    <Loader2 className="ml-1 md:ml-2 h-2.5 w-2.5 md:h-3 md:w-3 animate-spin" />
-                  )}
-                </TabsTrigger>
-              ))}
+                              {categoryOrder.map((category) => (
+                  <TabsTrigger key={category} value={category} className="flex-shrink-0 text-xs font-medium capitalize px-1.5 md:px-3 py-1 md:py-1.5 h-7 md:h-8 whitespace-nowrap">
+                    <span className="hidden sm:inline">{getCategoryTranslation(category, tDashboard)} ({groupedItems[category].length})</span>
+                    <span className="sm:hidden">{getCategoryTranslation(category, tDashboard)}</span>
+                    {category === PROCESSING_CATEGORY && (
+                      <Loader2 className="ml-1 md:ml-2 h-2.5 w-2.5 md:h-3 md:w-3 animate-spin" />
+                    )}
+                  </TabsTrigger>
+                ))}
             </TabsList>
           </div>
           
           <TabsContent value="all" className="mt-6">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4 w-full max-w-full">
               {[...processingItems, ...items].map((item) => (
                 <WardrobeItemCard 
                   key={item.id} 
@@ -277,7 +297,7 @@ export default function WardrobePage() {
           
           {categoryOrder.map((category) => (
             <TabsContent key={category} value={category} className="mt-6">
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4 w-full max-w-full">
                 {groupedItems[category].map((item) => (
                   <WardrobeItemCard 
                     key={item.id} 

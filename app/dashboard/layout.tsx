@@ -1,83 +1,64 @@
 "use client"
 
 import type React from "react"
-import { useEffect } from "react"
-import { useRouter, usePathname } from "next/navigation"
 import { useAuth } from "@/contexts/auth-context"
-import { Loader2 } from "lucide-react"
-import { MobileHeader } from "@/components/ui/mobile-header"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 import Sidebar from "@/components/dashboard/sidebar"
-import { cn } from "@/lib/utils"
+import { MobileHeader } from "@/components/ui/mobile-header"
+import { Loader2 } from "lucide-react"
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const { isAuthenticated, isLoading } = useAuth()
+  const { isLoading, isAuthenticated } = useAuth()
   const router = useRouter()
-  const pathname = usePathname()
-
-  const isChatPage = pathname === "/dashboard/chat"
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.replace("/login")
+      router.push("/login")
     }
-  }, [isAuthenticated, isLoading, router])
-  
-  useEffect(() => {
-    const handleResize = () => {
-      if (isChatPage && window.innerWidth < 768) {
-        document.body.classList.add("overflow-hidden")
-      } else {
-        document.body.classList.remove("overflow-hidden")
-      }
-    }
-    handleResize()
-    window.addEventListener("resize", handleResize)
-    return () => {
-      window.removeEventListener("resize", handleResize)
-      document.body.classList.remove("overflow-hidden")
-    }
-  }, [isChatPage])
+  }, [isLoading, isAuthenticated, router])
 
-  if (isLoading || !isAuthenticated) {
+  if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-white dark:bg-gray-900">
-        <div className="text-center space-y-4">
-          <div className="relative">
-            <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto" />
-          </div>
-          <p className="text-gray-600 dark:text-gray-300">Loading your stylish world...</p>
+      <div className="flex h-screen items-center justify-center bg-white dark:bg-gray-900">
+        <div className="text-center">
+          <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
+          <p className="text-gray-600 dark:text-gray-400">Loading dashboard...</p>
         </div>
+      </div>
+    )
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-white dark:bg-gray-900">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
       </div>
     )
   }
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
+      {/* Mobile Header - плавающий для всех страниц */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50">
+        <MobileHeader title="Dashboard" />
+      </div>
+
       <div className="flex h-screen">
-        {/* Sidebar for Desktop */}
-        <aside className="hidden md:block w-72 flex-shrink-0">
+        {/* Desktop Sidebar - Fixed */}
+        <div className="hidden lg:block w-72 flex-shrink-0 fixed left-0 top-0 h-full z-40">
           <Sidebar />
-        </aside>
-
-        {/* Main Content Area */}
-        <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Mobile Header */}
-          <div className="md:hidden">
-            <MobileHeader />
-          </div>
-
-          <main className={cn(
-            "flex-1 overflow-y-auto",
-            isChatPage ? "" : ""
-          )}>
-            {children}
-          </main>
         </div>
+
+        {/* Main Content */}
+        <main className="flex-1 min-h-screen pt-14 lg:pt-0 lg:ml-72 overflow-auto">
+          {children}
+        </main>
       </div>
     </div>
   )
-}
+} 

@@ -4,6 +4,7 @@ import Link from "next/link"
 import { Bot } from "lucide-react"
 import { MobileNav } from "./mobile-nav"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { LanguageSwitcher } from "@/components/language-switcher"
 import { useAuth } from "@/contexts/auth-context"
 
 interface MobileHeaderProps {
@@ -28,7 +29,12 @@ export function MobileHeader({ title, showNav = true }: MobileHeaderProps) {
           </Link>
         </div>
 
-        {!showNav && <ThemeToggle />}
+        {!showNav && (
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher variant="ghost" size="icon" showText={false} />
+            <ThemeToggle />
+          </div>
+        )}
       </div>
     </header>
   )

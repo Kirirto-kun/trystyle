@@ -4,9 +4,11 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/auth-context"
+import { useTranslations } from "@/contexts/language-context"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { LanguageSwitcher } from "@/components/language-switcher"
 import Link from "next/link"
 import { Loader2, Eye, EyeOff } from "lucide-react"
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google"
@@ -20,6 +22,8 @@ export default function LoginPage() {
   const { login, isLoading, googleLogin, isAuthenticated } = useAuth()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
+  const tAuth = useTranslations('auth')
+  const t = useTranslations('common')
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
@@ -39,13 +43,13 @@ export default function LoginPage() {
       try {
         await googleLogin(credentialResponse.credential)
       } catch (error) {
-        toast.error("Google login failed. Please try again.")
+        toast.error(tAuth('errors.networkError'))
       }
     }
   }
 
   const handleGoogleError = () => {
-    toast.error("Google login failed. Please try again.")
+    toast.error(tAuth('errors.networkError'))
   }
 
   if (isLoading || isAuthenticated) {
@@ -60,34 +64,39 @@ export default function LoginPage() {
     <div className="min-h-screen bg-white dark:bg-gray-900">
       {/* Mobile Header */}
       <div className="lg:hidden">
-        <MobileHeader title="Sign In" showNav={false} />
+        <MobileHeader title={tAuth('login.title')} showNav={false} />
       </div>
 
       <div className="flex min-h-screen">
         {/* Left Side - Form */}
         <div className="w-full lg:w-2/5 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
           <div className="w-full max-w-lg space-y-10">
+            {/* Language Switcher */}
+            <div className="flex justify-end lg:hidden">
+              <LanguageSwitcher variant="ghost" size="sm" />
+            </div>
+
             {/* Header */}
             <div className="text-center lg:text-left">
               <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-                Welcome back!
+                {tAuth('login.title')}
               </h1>
               <p className="text-gray-600 dark:text-gray-300 text-xl lg:text-2xl leading-relaxed">
-                Simplify your workflow and boost your productivity with TryStyle App. Get started for free.
+                {tAuth('login.subtitle')}
               </p>
             </div>
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-8">
               <div>
-                <Label htmlFor="email" className="sr-only">Username</Label>
+                <Label htmlFor="email" className="sr-only">{tAuth('login.form.email')}</Label>
                 <Input
                   id="email"
                   name="email"
                   type="text"
                   autoComplete="username"
                   required
-                  placeholder="Username"
+                  placeholder={tAuth('login.form.email')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={isSubmitting || isLoading}
@@ -96,14 +105,14 @@ export default function LoginPage() {
               </div>
 
               <div className="relative">
-                <Label htmlFor="password" className="sr-only">Password</Label>
+                <Label htmlFor="password" className="sr-only">{tAuth('login.form.password')}</Label>
                 <Input
                   id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
                   required
-                  placeholder="Password"
+                  placeholder={tAuth('login.form.password')}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isSubmitting || isLoading}
@@ -127,7 +136,7 @@ export default function LoginPage() {
                   href="/forgot-password" 
                   className="text-lg text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
                 >
-                  Forgot Password?
+                  {tAuth('login.form.forgotPassword')}
                 </Link>
               </div>
 
@@ -139,10 +148,10 @@ export default function LoginPage() {
                 {isSubmitting || isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-6 w-6 animate-spin" />
-                    Logging in...
+                    {t('buttons.loading')}
                   </>
                 ) : (
-                  "Login"
+                  tAuth('login.form.submit')
                 )}
               </Button>
             </form>
@@ -153,7 +162,9 @@ export default function LoginPage() {
                 <div className="w-full border-t border-gray-300 dark:border-gray-600" />
               </div>
               <div className="relative flex justify-center text-lg">
-                <span className="px-4 bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400">or continue with</span>
+                <span className="px-4 bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400">
+                  {tAuth('login.social.title')}
+                </span>
               </div>
             </div>
 
@@ -177,12 +188,12 @@ export default function LoginPage() {
 
             {/* Register Link */}
             <div className="text-center">
-              <span className="text-gray-600 dark:text-gray-400 text-xl">Not a member? </span>
+              <span className="text-gray-600 dark:text-gray-400 text-xl">{tAuth('login.register.text')} </span>
               <Link 
                 href="/register" 
                 className="font-medium text-black dark:text-white hover:text-gray-700 dark:hover:text-gray-300 transition-colors text-xl"
               >
-                Register now
+                {tAuth('login.register.link')}
               </Link>
             </div>
           </div>
@@ -190,6 +201,11 @@ export default function LoginPage() {
 
         {/* Right Side - Illustration */}
         <div className="hidden lg:flex lg:w-3/5 bg-gradient-to-br from-green-100 to-emerald-50 dark:from-gray-800 dark:to-gray-700 relative overflow-hidden">
+          {/* Language Switcher for Desktop */}
+          <div className="absolute top-4 right-4 z-10">
+            <LanguageSwitcher variant="ghost" size="sm" />
+          </div>
+
           {/* Decorative elements - more pastel */}
           <div className="absolute top-10 left-10 w-16 h-16 bg-green-100 dark:bg-gray-600 rounded-full opacity-40 dark:opacity-30"></div>
           <div className="absolute top-32 right-20 w-8 h-8 bg-emerald-200 dark:bg-gray-500 rounded-full opacity-50 dark:opacity-40"></div>
@@ -198,7 +214,7 @@ export default function LoginPage() {
           
           {/* Main content */}
           <div className="flex flex-col items-center justify-center w-full p-12 text-center">
-            {/* Illustration placeholder - you can replace with actual illustration */}
+            {/* Illustration placeholder */}
             <div className="relative mb-8">
               <div className="w-80 h-80 bg-gradient-to-br from-green-100 to-emerald-150 dark:from-gray-600 dark:to-gray-500 rounded-full flex items-center justify-center relative overflow-hidden">
                 {/* Person illustration placeholder */}
@@ -229,4 +245,4 @@ export default function LoginPage() {
       </div>
     </div>
   )
-}
+} 

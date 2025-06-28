@@ -7,20 +7,23 @@ import { Button } from "@/components/ui/button"
 import { useAuth } from "@/contexts/auth-context"
 import { cn } from "@/lib/utils"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { LanguageSwitcher } from "@/components/language-switcher"
+import { useTranslations } from "@/contexts/language-context"
 
 const API_BASE_URL = "https://www.closetmind.studio"
-
-const navItems = [
-  { href: "/dashboard/chat", label: "AI Chat", icon: MessageSquare },
-  { href: "/dashboard/tryon", label: "Try-On", icon: Shirt },
-  { href: "/dashboard/wardrobe", label: "My Wardrobe", icon: Shirt },
-  { href: "/dashboard/waitlist", label: "Wishlist", icon: ListChecks },
-]
 
 export default function Sidebar() {
   const pathname = usePathname()
   const { logout, user } = useAuth()
   const router = useRouter()
+  const tCommon = useTranslations('common')
+  
+  const navItems = [
+    { href: "/dashboard/chat", label: tCommon('navigation.chat'), icon: MessageSquare },
+    { href: "/dashboard/tryon", label: tCommon('navigation.tryon'), icon: Shirt },
+    { href: "/dashboard/wardrobe", label: tCommon('navigation.wardrobe'), icon: Shirt },
+    { href: "/dashboard/waitlist", label: tCommon('navigation.waitlist'), icon: ListChecks },
+  ]
 
   const handleLogout = () => {
     logout()
@@ -31,12 +34,12 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="h-full w-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg flex flex-col border-r border-gray-200/50 dark:border-gray-700/50 shadow-xl relative overflow-hidden">
+    <aside className="h-screen w-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg flex flex-col border-r border-gray-200/50 dark:border-gray-700/50 shadow-xl relative overflow-hidden">
       {/* Decorative background */}
       <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-gray-100/50 dark:from-gray-800/50 dark:to-gray-900/50"></div>
       
       {/* Logo */}
-      <Link href="/dashboard" className="relative p-6 pb-4 flex items-center space-x-3 hover:opacity-80 transition-all duration-300 group">
+      <Link href="/dashboard" className="relative p-6 pb-4 flex items-center space-x-3 hover:opacity-80 transition-all duration-300 group flex-shrink-0">
         <div className="relative">
           <Bot className="h-12 w-12 text-primary group-hover:scale-110 transition-transform duration-300" />
           <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
@@ -44,17 +47,17 @@ export default function Sidebar() {
         </div>
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            TryStyle
+            {tCommon('sidebar.title')}
           </h1>
-          <p className="text-sm text-gray-600 dark:text-gray-400">AI Fashion Assistant</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">{tCommon('sidebar.subtitle')}</p>
         </div>
       </Link>
 
-      {/* Navigation */}
-      <nav className="relative flex-grow px-6 space-y-3">
+      {/* Navigation - Scrollable */}
+      <nav className="relative flex-grow px-6 space-y-3 overflow-y-auto">
         <div className="mb-6">
           <h2 className="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-4">
-            Navigation
+            {tCommon('sidebar.navigation')}
           </h2>
         </div>
         {navItems.map((item) => (
@@ -82,8 +85,8 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      {/* Bottom section */}
-      <div className="relative p-6 space-y-4 border-t border-gray-200/30 dark:border-gray-700/30">
+      {/* Bottom section - Fixed */}
+      <div className="relative p-6 space-y-4 border-t border-gray-200/30 dark:border-gray-700/30 flex-shrink-0">
         
         <div className="flex items-center gap-3">
           <Button
@@ -92,8 +95,11 @@ export default function Sidebar() {
             onClick={handleLogout}
           >
             <LogOut className="mr-3 h-5 w-5" />
-            Sign Out
+            {tCommon('sidebar.signOut')}
           </Button>
+          <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-2">
+            <LanguageSwitcher variant="ghost" size="icon" showText={false} />
+          </div>
           <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-2">
             <ThemeToggle />
           </div>
@@ -101,7 +107,7 @@ export default function Sidebar() {
         
         {user && (
           <div className="text-center p-4 bg-gray-100/50 dark:bg-gray-800/50 rounded-lg border border-gray-200/30 dark:border-gray-700/30">
-            <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">Signed in as</p>
+            <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">{tCommon('sidebar.signedInAs')}</p>
             <p className="text-sm font-medium text-gray-900 dark:text-white">
               {user.username || user.email}
             </p>
