@@ -21,19 +21,19 @@ export default function ProductCard({ product }: ProductCardProps) {
   }
 
   return (
-    <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20 w-full">
+    <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20 w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardContent className="p-3 md:p-4">
         <div className="space-y-2 md:space-y-3">
           <div className="flex items-start justify-between gap-2">
-            <h3 className="font-semibold text-sm md:text-base line-clamp-2 flex-1" title={product.name}>
+            <h3 className="font-semibold text-sm md:text-base line-clamp-2 flex-1 text-gray-900 dark:text-white" title={product.name}>
               {product.name}
             </h3>
-            <Badge variant="secondary" className="font-bold text-xs md:text-sm flex-shrink-0">
+            <Badge variant="secondary" className="font-bold text-xs md:text-sm flex-shrink-0 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white">
               {product.price}
             </Badge>
           </div>
           
-          <p className="text-xs md:text-sm text-muted-foreground line-clamp-3" title={product.description}>
+          <p className="text-xs md:text-sm text-gray-600 dark:text-gray-300 line-clamp-3" title={product.description}>
             {product.description}
           </p>
         </div>
@@ -42,7 +42,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       <CardFooter className="p-3 md:p-4 pt-0">
         <Button 
           onClick={handleOpenLink}
-          className="w-full group-hover:shadow-md transition-all duration-300 h-9 md:h-10 text-sm md:text-base"
+          className="w-full group-hover:shadow-md transition-all duration-300 h-9 md:h-10 text-sm md:text-base bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-100"
           size="sm"
         >
           <ShoppingCart className="w-3 h-3 md:w-4 md:h-4 mr-2" />

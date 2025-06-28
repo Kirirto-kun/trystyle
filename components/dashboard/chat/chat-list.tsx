@@ -45,46 +45,61 @@ export default function ChatList({
   }
 
   return (
-    <div className="w-full border-r border-border flex flex-col bg-card h-full">
-      <div className="p-3 md:p-4 border-b border-border flex justify-between items-center bg-background">
-        <h2 className="text-base md:text-lg font-semibold">Conversations</h2>
+    <div className="w-full border-r border-gray-200 dark:border-gray-700 flex flex-col bg-white dark:bg-gray-800 h-full">
+      <div className="p-3 md:p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-white dark:bg-gray-900">
+        <h2 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white">Conversations</h2>
         <Button 
-          size="icon" 
-          variant="ghost" 
+          size="sm" 
           onClick={handleCreate} 
           disabled={isCreatingChat}
-          className="hover:bg-primary/10 hover:text-primary transition-colors h-8 w-8 md:h-10 md:w-10"
+          className="bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl px-3 py-2 md:px-4 md:py-2 h-auto font-medium"
         >
           {isCreatingChat ? (
-            <Loader2 className="h-4 w-4 md:h-5 md:w-5 animate-spin" />
+            <>
+              <Loader2 className="h-4 w-4 md:h-5 md:w-5 animate-spin mr-2" />
+              <span className="hidden md:inline">Creating...</span>
+            </>
           ) : (
-            <PlusCircle className="h-4 w-4 md:h-5 md:w-5" />
+            <>
+              <PlusCircle className="h-4 w-4 md:h-5 md:w-5 mr-2" />
+              <span className="hidden md:inline">New Chat</span>
+            </>
           )}
-          <span className="sr-only">New chat</span>
         </Button>
       </div>
 
       <ScrollArea className="flex-1">
         {isLoadingChats && (
-          <div className="p-4 text-center text-muted-foreground">
+          <div className="p-4 text-center text-gray-600 dark:text-gray-300">
             <Loader2 className="h-5 w-5 md:h-6 md:w-6 animate-spin mx-auto mb-2" />
             <p className="text-sm">Loading chats...</p>
           </div>
         )}
 
         {!isLoadingChats && chats.length === 0 && (
-          <div className="p-4 text-center text-muted-foreground space-y-3">
-            <div className="p-2 md:p-3 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 w-fit mx-auto">
-              <MessageSquare className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+          <div className="p-4 text-center text-gray-600 dark:text-gray-300 space-y-4">
+            <div className="p-3 md:p-4 rounded-full bg-gradient-to-br from-black/10 to-black/5 dark:from-white/10 dark:to-white/5 w-fit mx-auto">
+              <MessageSquare className="h-6 w-6 md:h-8 md:w-8 text-gray-700 dark:text-gray-300" />
             </div>
             <div>
-              <p className="mb-2 text-sm">No conversations yet</p>
+              <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">No conversations yet</p>
               <Button 
-                variant="link" 
-                className="p-0 h-auto text-primary text-sm" 
+                size="lg"
                 onClick={handleCreate}
+                disabled={isCreatingChat}
+                className="bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl px-6 py-3 font-medium"
               >
-                Create the first chat!
+                {isCreatingChat ? (
+                  <>
+                    <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                    Creating your first chat...
+                  </>
+                ) : (
+                  <>
+                    <PlusCircle className="h-5 w-5 mr-2" />
+                    Create Your First Chat
+                  </>
+                )}
               </Button>
             </div>
           </div>
@@ -98,8 +113,8 @@ export default function ChatList({
                 className={cn(
                   "w-full h-auto py-2 md:py-3 px-2 md:px-3 text-left rounded-md cursor-pointer transition-colors flex items-center justify-between gap-2",
                   selectedChatId === chat.id
-                    ? "bg-secondary text-secondary-foreground"
-                    : "hover:bg-accent hover:text-accent-foreground"
+                    ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
+                    : "hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                 )}
                 onClick={() => onSelectChat(chat.id)}
               >
@@ -117,7 +132,7 @@ export default function ChatList({
                   {isDeletingChat.has(chat.id) ? (
                     <Loader2 className="h-3 w-3 md:h-4 md:w-4 animate-spin" />
                   ) : (
-                    <Trash2 className="h-3 w-3 md:h-4 md:w-4 text-destructive" />
+                    <Trash2 className="h-3 w-3 md:h-4 md:w-4 text-red-600 dark:text-red-400" />
                   )}
                   <span className="sr-only">Delete Chat</span>
                 </Button>

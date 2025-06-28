@@ -55,35 +55,35 @@ export default function ChatMessageArea({
 
   if (!selectedChat) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-4 md:p-8 text-center bg-gradient-to-br from-muted/30 to-background h-full">
+      <div className="flex-1 flex flex-col items-center justify-center p-4 md:p-8 text-center bg-gray-50 dark:bg-gray-800 h-full">
         <div className="p-4 md:p-6 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 mb-4 md:mb-6">
           <Sparkles className="h-8 w-8 md:h-12 md:w-12 text-primary" />
         </div>
         <div className="space-y-2 md:space-y-3 max-w-md">
-          <h2 className="text-lg md:text-xl font-semibold">Welcome to TryStyle</h2>
-          <p className="text-sm md:text-base text-muted-foreground">
+          <h2 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">Welcome to TryStyle</h2>
+          <p className="text-sm md:text-base text-gray-600 dark:text-gray-300">
             Select an existing conversation or create a new one to start chatting with your AI stylist.
           </p>
         </div>
         <div className="mt-6 md:mt-8 grid grid-cols-1 gap-3 md:gap-4 max-w-lg w-full">
-          <div className="p-3 md:p-4 rounded-lg border border-border/50 bg-card">
+          <div className="p-3 md:p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
             <div className="text-xl md:text-2xl mb-2">🛍️</div>
-            <h3 className="font-medium text-sm md:text-base">Product Search</h3>
-            <p className="text-xs md:text-sm text-muted-foreground mt-1">
+            <h3 className="font-medium text-sm md:text-base text-gray-900 dark:text-white">Product Search</h3>
+            <p className="text-xs md:text-sm text-gray-600 dark:text-gray-300 mt-1">
               Find clothes in online stores
             </p>
           </div>
-          <div className="p-3 md:p-4 rounded-lg border border-border/50 bg-card">
+          <div className="p-3 md:p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
             <div className="text-xl md:text-2xl mb-2">👗</div>
-            <h3 className="font-medium text-sm md:text-base">Stylish Outfits</h3>
-            <p className="text-xs md:text-sm text-muted-foreground mt-1">
+            <h3 className="font-medium text-sm md:text-base text-gray-900 dark:text-white">Stylish Outfits</h3>
+            <p className="text-xs md:text-sm text-gray-600 dark:text-gray-300 mt-1">
               Outfit suggestions from your wardrobe
             </p>
           </div>
-          <div className="p-3 md:p-4 rounded-lg border border-border/50 bg-card">
+          <div className="p-3 md:p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
             <div className="text-xl md:text-2xl mb-2">💬</div>
-            <h3 className="font-medium text-sm md:text-base">Fashion Advice</h3>
-            <p className="text-xs md:text-sm text-muted-foreground mt-1">
+            <h3 className="font-medium text-sm md:text-base text-gray-900 dark:text-white">Fashion Advice</h3>
+            <p className="text-xs md:text-sm text-gray-600 dark:text-gray-300 mt-1">
               General questions about style
             </p>
           </div>
@@ -95,17 +95,17 @@ export default function ChatMessageArea({
   return (
     <div className="relative flex flex-col h-full">
       {showTitle && (
-        <header className="flex-shrink-0 p-3 md:p-4 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <header className="flex-shrink-0 p-3 md:p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 backdrop-blur">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2 md:space-x-3 min-w-0">
               <div className="p-1.5 md:p-2 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex-shrink-0">
                 <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-primary" />
               </div>
               <div className="min-w-0">
-                <h2 className="text-base md:text-lg font-semibold truncate" title={selectedChat.title}>
+                <h2 className="text-base md:text-lg font-semibold truncate text-gray-900 dark:text-white" title={selectedChat.title}>
                   {selectedChat.title}
                 </h2>
-                <p className="text-xs md:text-sm text-muted-foreground">
+                <p className="text-xs md:text-sm text-gray-600 dark:text-gray-300">
                   TryStyle AI Assistant
                 </p>
               </div>
@@ -121,8 +121,8 @@ export default function ChatMessageArea({
               <Loader2 className="h-6 w-6 md:h-8 md:w-8 animate-spin text-primary" />
             </div>
             <div className="text-center">
-              <p className="text-muted-foreground text-sm md:text-base">Loading messages...</p>
-              <p className="text-xs text-muted-foreground/60 mt-1">This will only take a second</p>
+              <p className="text-gray-600 dark:text-gray-300 text-sm md:text-base">Loading messages...</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">This will only take a second</p>
             </div>
           </div>
         )}
@@ -133,22 +133,22 @@ export default function ChatMessageArea({
               <Sparkles className="w-8 h-8 md:w-12 md:h-12 text-primary" />
             </div>
             <div className="space-y-2">
-              <h3 className="text-base md:text-lg font-semibold">Hi! I'm your AI stylist</h3>
-              <p className="text-sm md:text-base text-muted-foreground max-w-md">
+              <h3 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white">Hi! I'm your AI stylist</h3>
+              <p className="text-sm md:text-base text-gray-600 dark:text-gray-300 max-w-md">
                 I can help you find clothes, put together an outfit, or just chat about fashion. 
                 Ask any question!
               </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3 max-w-lg w-full">
-              <div className="p-2 md:p-3 rounded-lg border border-border/50 bg-muted/30">
-                <h4 className="font-medium text-xs md:text-sm mb-1">🛍️ Product Search</h4>
-                <p className="text-xs text-muted-foreground">
+              <div className="p-2 md:p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-700">
+                <h4 className="font-medium text-xs md:text-sm mb-1 text-gray-900 dark:text-white">🛍️ Product Search</h4>
+                <p className="text-xs text-gray-600 dark:text-gray-300">
                   "Find black jeans"
                 </p>
               </div>
-              <div className="p-2 md:p-3 rounded-lg border border-border/50 bg-muted/30">
-                <h4 className="font-medium text-xs md:text-sm mb-1">👗 Outfits</h4>
-                <p className="text-xs text-muted-foreground">
+              <div className="p-2 md:p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-700">
+                <h4 className="font-medium text-xs md:text-sm mb-1 text-gray-900 dark:text-white">👗 Outfits</h4>
+                <p className="text-xs text-gray-600 dark:text-gray-300">
                   "What to wear to work?"
                 </p>
               </div>
@@ -181,9 +181,9 @@ export default function ChatMessageArea({
                 </div>
                 
                 {msg.role === "user" && (
-                  <Avatar className="h-7 w-7 md:h-9 md:w-9 border-2 border-muted flex-shrink-0">
-                    <AvatarFallback className="bg-gradient-to-br from-muted to-background">
-                      {user?.username?.[0]?.toUpperCase() || <User size={16} className="md:w-5 md:h-5" />}
+                  <Avatar className="h-7 w-7 md:h-9 md:w-9 border-2 border-gray-300 dark:border-gray-600 flex-shrink-0">
+                    <AvatarFallback className="bg-gray-100 dark:bg-gray-700">
+                      {user?.username?.[0]?.toUpperCase() || <User size={16} className="md:w-5 md:h-5 text-gray-600 dark:text-gray-300" />}
                     </AvatarFallback>
                   </Avatar>
                 )}
@@ -197,10 +197,10 @@ export default function ChatMessageArea({
                     <Sparkles size={16} className="text-primary md:w-5 md:h-5" />
                   </AvatarFallback>
                 </Avatar>
-                <div className="bg-muted p-3 md:p-4 rounded-2xl rounded-tl-md shadow-sm">
+                <div className="bg-gray-100 dark:bg-gray-700 p-3 md:p-4 rounded-2xl rounded-tl-md shadow-sm">
                   <div className="flex items-center space-x-2">
                     <Loader2 className="h-3 w-3 md:h-4 md:w-4 animate-spin text-primary" />
-                    <span className="text-xs md:text-sm text-muted-foreground">Processing your request...</span>
+                    <span className="text-xs md:text-sm text-gray-600 dark:text-gray-300">Processing your request...</span>
                   </div>
                 </div>
               </div>
@@ -209,7 +209,7 @@ export default function ChatMessageArea({
         )}
       </ScrollArea>
 
-      <footer className="flex-shrink-0 p-3 md:p-4 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <footer className="flex-shrink-0 p-3 md:p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 backdrop-blur">
         <form onSubmit={handleSubmit} className="flex items-end space-x-2 md:space-x-3">
           <div className="flex-1 relative">
             <Input
@@ -218,7 +218,7 @@ export default function ChatMessageArea({
               value={input}
               onChange={(e) => setInput(e.target.value)}
               disabled={isSendingMessage || isLoadingMessages}
-              className="min-h-[2.75rem] md:min-h-[2.5rem] px-3 md:px-4 py-2 md:py-3 pr-12 md:pr-12 rounded-2xl border-2 focus:border-primary/50 transition-all duration-200 text-base"
+              className="min-h-[2.75rem] md:min-h-[2.5rem] px-3 md:px-4 py-2 md:py-3 pr-12 md:pr-12 rounded-2xl border-2 focus:border-primary/50 transition-all duration-200 text-base bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white"
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault()
@@ -226,14 +226,14 @@ export default function ChatMessageArea({
                 }
               }}
             />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-500 dark:text-gray-400">
               {input.length}/500
             </div>
           </div>
           <Button 
             type="submit" 
             disabled={isSendingMessage || isLoadingMessages || !input.trim()}
-            className="h-11 w-11 md:h-10 md:w-10 rounded-full p-0 shadow-lg hover:shadow-xl transition-all duration-200 flex-shrink-0"
+            className="h-11 w-11 md:h-10 md:w-10 rounded-full p-0 shadow-lg hover:shadow-xl transition-all duration-200 flex-shrink-0 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-100"
             size="sm"
           >
             {isSendingMessage ? (
@@ -247,7 +247,7 @@ export default function ChatMessageArea({
         
         {messages.length === 0 && !isLoadingMessages && (
           <div className="mt-3 md:mt-4 space-y-2">
-            <p className="text-xs text-muted-foreground">Try asking:</p>
+            <p className="text-xs text-gray-600 dark:text-gray-300">Try asking:</p>
             <div className="flex flex-wrap gap-1 md:gap-2">
               {[
                 "Find me a black t-shirt",
@@ -259,7 +259,7 @@ export default function ChatMessageArea({
                   key={suggestion}
                   variant="outline"
                   size="sm"
-                  className="text-xs h-7 md:h-7 rounded-full px-2 md:px-3"
+                  className="text-xs h-7 md:h-7 rounded-full px-2 md:px-3 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                   onClick={() => setInput(suggestion)}
                   disabled={isSendingMessage || isLoadingMessages}
                 >

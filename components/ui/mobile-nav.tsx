@@ -39,19 +39,19 @@ export function MobileNav() {
       <SheetTrigger asChild>
         <Button
           variant="ghost"
-          className="mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
+          className="mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden text-gray-900 dark:text-white"
         >
           <Menu className="h-6 w-6" />
           <span className="sr-only">Open menu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="pr-0 w-[280px] bg-background border-border">
+      <SheetContent side="left" className="pr-0 w-[280px] bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
         <SheetTitle className="sr-only">Menu Navigation</SheetTitle>
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="flex items-center space-x-2 px-6 py-4 border-b border-border">
+          <div className="flex items-center space-x-2 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
             <Bot className="h-6 w-6 text-primary" />
-            <span className="text-lg font-semibold text-foreground">TryStyle</span>
+            <span className="text-lg font-semibold text-gray-900 dark:text-white">TryStyle</span>
           </div>
 
           {/* Navigation */}
@@ -63,12 +63,9 @@ export function MobileNav() {
                 onClick={() => setOpen(false)}
                 className={cn(
                   "flex items-center space-x-3 px-3 py-3 rounded-lg text-base font-medium transition-colors",
-                  "hover:bg-accent hover:text-accent-foreground",
-                  "focus:bg-accent focus:text-accent-foreground focus:outline-none",
-                  "active:bg-accent active:text-accent-foreground",
                   pathname === item.href
-                    ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                    : "text-muted-foreground"
+                    ? "bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-100"
+                    : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white"
                 )}
               >
                 <item.icon className="h-5 w-5" />
@@ -78,12 +75,12 @@ export function MobileNav() {
           </nav>
 
           {/* Footer Actions */}
-          <div className="px-4 py-6 border-t border-border space-y-3">
+          <div className="px-4 py-6 border-t border-gray-200 dark:border-gray-700 space-y-3">
             
             <div className="flex items-center gap-2">
               <Button
                 variant="ghost"
-                className="flex-1 justify-start text-left h-12"
+                className="flex-1 justify-start text-left h-12 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
                 onClick={handleLogout}
               >
                 <LogOut className="mr-3 h-5 w-5" />
@@ -93,7 +90,7 @@ export function MobileNav() {
             </div>
 
             {user && (
-              <div className="text-xs text-muted-foreground text-center pt-2 border-t border-border">
+              <div className="text-xs text-gray-600 dark:text-gray-400 text-center pt-2 border-t border-gray-200 dark:border-gray-700">
                 Signed in as {user.username || user.email}
               </div>
             )}

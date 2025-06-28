@@ -34,7 +34,7 @@ const LandingNavbar = () => {
 
       {/* Desktop Navigation */}
       <motion.nav 
-        className="hidden md:block fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-lg border-b border-border/50"
+        className="hidden md:block fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-b border-gray-200/50 dark:border-gray-700/50"
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
@@ -42,14 +42,14 @@ const LandingNavbar = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2 group">
             <Bot className="h-7 w-7 text-primary transition-transform group-hover:scale-110" />
-            <span className="text-xl font-semibold">TryStyle</span>
+            <span className="text-xl font-semibold text-gray-900 dark:text-white">TryStyle</span>
           </Link>
           <div className="flex items-center space-x-2">
             <ThemeToggle />
-            <Button variant="ghost" asChild>
+            <Button variant="ghost" asChild className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
               <Link href="/login">Sign In</Link>
             </Button>
-            <Button asChild>
+            <Button asChild className="bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-100">
               <Link href="/register">
                 Get Started <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
@@ -63,8 +63,8 @@ const LandingNavbar = () => {
 
 const LandingFooter = () => {
   return (
-    <footer className="border-t py-8">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-muted-foreground">
+    <footer className="border-t border-gray-200 dark:border-gray-700 py-8 bg-white dark:bg-gray-900">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-600 dark:text-gray-400">
         <p>&copy; {new Date().getFullYear()} TryStyle. All rights reserved.</p>
       </div>
     </footer>
@@ -83,7 +83,7 @@ export default function LandingPage() {
 
   if (isLoading || isAuthenticated) {
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex h-screen items-center justify-center bg-white dark:bg-gray-900">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
       </div>
     );
@@ -148,12 +148,12 @@ export default function LandingPage() {
   const heroTitle = "Your Personal AI Stylist".split(" ")
 
   return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground">
+    <div className="flex flex-col min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
       <LandingNavbar />
 
       <main className="flex-grow pt-16">
         {/* Hero Section */}
-        <section className="py-20 md:py-24">
+        <section className="py-20 md:py-24 bg-white dark:bg-gray-900">
           <motion.div
             className="container mx-auto px-4 sm:px-6 lg:px-8 text-center"
             initial="initial"
@@ -161,7 +161,7 @@ export default function LandingPage() {
             transition={{ staggerChildren: 0.1 }}
           >
             <motion.h1
-              className="text-5xl md:text-6xl font-extrabold tracking-tighter mb-4"
+              className="text-5xl md:text-6xl font-extrabold tracking-tighter mb-4 text-gray-900 dark:text-white"
               variants={{
                 animate: { transition: { staggerChildren: 0.08 } }
               }}
@@ -181,7 +181,7 @@ export default function LandingPage() {
               ))}
             </motion.h1>
             <motion.p
-              className="max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground mb-8"
+              className="max-w-2xl mx-auto text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8"
               variants={FADE_IN_ANIMATION_VARIANTS}
             >
               Effortlessly manage your wardrobe, get personalized outfit advice, virtually try on clothes, and discover your next favorite piece.
@@ -192,7 +192,7 @@ export default function LandingPage() {
                 whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Button size="lg" asChild className="text-base">
+                <Button size="lg" asChild className="text-base bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-100">
                   <Link href="/register">
                     Get Started For Free <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
@@ -203,7 +203,7 @@ export default function LandingPage() {
         </section>
 
         {/* Features Section */}
-        <section id="features" className="py-20 bg-muted/50">
+        <section id="features" className="py-20 bg-gray-50 dark:bg-gray-800">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               className="text-center mb-12"
@@ -212,8 +212,8 @@ export default function LandingPage() {
               variants={FADE_IN_ANIMATION_VARIANTS}
               viewport={{ once: true, amount: 0.3 }}
             >
-              <h2 className="text-3xl md:text-4xl font-bold">How It Works</h2>
-              <p className="max-w-xl mx-auto text-muted-foreground mt-2">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">How It Works</h2>
+              <p className="max-w-xl mx-auto text-gray-600 dark:text-gray-300 mt-2">
                 All your fashion needs, one simple platform.
               </p>
             </motion.div>
@@ -227,15 +227,15 @@ export default function LandingPage() {
               {features.map((feature) => (
                 <motion.div
                   key={feature.title}
-                  className="text-center p-4 md:p-6 rounded-lg border border-transparent hover:border-primary/20 hover:bg-background/50 transition-all duration-300 hover:shadow-lg"
+                  className="text-center p-4 md:p-6 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-primary/20 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all duration-300 hover:shadow-lg"
                   variants={FADE_IN_ANIMATION_VARIANTS}
                   whileHover={{ y: -5, scale: 1.03 }}
                 >
-                  <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 mb-4 mx-auto">
+                  <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 dark:bg-primary/20 mb-4 mx-auto">
                     {feature.icon}
                   </div>
-                  <h3 className="text-lg md:text-xl font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-muted-foreground text-sm">{feature.description}</p>
+                  <h3 className="text-lg md:text-xl font-semibold mb-2 text-gray-900 dark:text-white">{feature.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-300 text-sm">{feature.description}</p>
                 </motion.div>
               ))}
             </motion.div>
@@ -243,7 +243,7 @@ export default function LandingPage() {
         </section>
 
         {/* Feature Spotlight: Virtual Try-On */}
-        <section className="py-20 overflow-hidden">
+        <section className="py-20 overflow-hidden bg-white dark:bg-gray-900">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <motion.div
@@ -252,11 +252,11 @@ export default function LandingPage() {
                 transition={{ duration: 0.6, ease: "easeOut" }}
                 viewport={{ once: true, amount: 0.5 }}
               >
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">See It On Before You Buy</h2>
-                <p className="text-muted-foreground text-base md:text-lg mb-6">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 dark:text-white">See It On Before You Buy</h2>
+                <p className="text-gray-600 dark:text-gray-300 text-base md:text-lg mb-6">
                   No more guessing games. Upload your photo and a picture of any clothing item to see a realistic preview of how it will look on you. Make confident purchase decisions from the comfort of your home.
                 </p>
-                <Button variant="outline" asChild>
+                <Button variant="outline" asChild className="border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800">
                   <motion.div
                      whileHover={{ scale: 1.05 }}
                      whileTap={{ scale: 0.95 }}
@@ -273,7 +273,7 @@ export default function LandingPage() {
         </section>
         
         {/* Feature Spotlight: AI Stylist */}
-        <section className="py-20 bg-muted/50 overflow-hidden">
+        <section className="py-20 bg-gray-50 dark:bg-gray-800 overflow-hidden">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div className="md:order-last">
@@ -285,11 +285,11 @@ export default function LandingPage() {
                 transition={{ duration: 0.6, ease: "easeOut" }}
                 viewport={{ once: true, amount: 0.5 }}
               >
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">Your 24/7 Fashion Expert</h2>
-                <p className="text-muted-foreground text-base md:text-lg mb-6">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 dark:text-white">Your 24/7 Fashion Expert</h2>
+                <p className="text-gray-600 dark:text-gray-300 text-base md:text-lg mb-6">
                   "What should I wear tonight?" "Does this match?" "Where can I find a red dress under $100?" Get instant answers from your AI stylist that knows your wardrobe and your taste.
                 </p>
-                <Button variant="outline" asChild>
+                <Button variant="outline" asChild className="border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800">
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -303,7 +303,7 @@ export default function LandingPage() {
         </section>
 
         {/* Testimonials Section */}
-        <section id="testimonials" className="py-20">
+        <section id="testimonials" className="py-20 bg-white dark:bg-gray-900">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               className="text-center mb-12"
@@ -312,13 +312,13 @@ export default function LandingPage() {
               variants={FADE_IN_ANIMATION_VARIANTS}
               viewport={{ once: true, amount: 0.3 }}
             >
-              <h2 className="text-3xl md:text-4xl font-bold">Loved by Fashion Forward People</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Loved by Fashion Forward People</h2>
             </motion.div>
             <div className="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3">
               {testimonials.map((testimonial, index) => (
                 <motion.div
                   key={index}
-                  className="bg-muted/50 p-6 rounded-lg border border-transparent transition-all duration-300 hover:border-primary/20 hover:shadow-lg"
+                  className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-600 transition-all duration-300 hover:border-primary/20 hover:shadow-lg"
                   initial="initial"
                   whileInView="animate"
                   transition={{ delay: index * 0.1 }}
@@ -336,15 +336,15 @@ export default function LandingPage() {
                             transition={{ delay: (index * 0.1) + (i * 0.05) + 0.2 }}
                             viewport={{ once: true }}
                           >
-                            <Star className="h-5 w-5" />
+                            <Star className="h-5 w-5 fill-current" />
                           </motion.div>
                       ))}
                     </div>
                   </div>
-                  <p className="text-muted-foreground mb-4">"{testimonial.quote}"</p>
+                  <p className="text-gray-600 dark:text-gray-300 mb-4">"{testimonial.quote}"</p>
                   <div>
-                    <p className="font-semibold">{testimonial.name}</p>
-                    <p className="text-sm text-muted-foreground">{testimonial.title}</p>
+                    <p className="font-semibold text-gray-900 dark:text-white">{testimonial.name}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{testimonial.title}</p>
                   </div>
                 </motion.div>
               ))}
@@ -353,7 +353,7 @@ export default function LandingPage() {
         </section>
 
         {/* Final CTA Section */}
-        <section className="py-20 bg-primary/5">
+        <section className="py-20 bg-gradient-to-br from-primary/5 to-primary/10 dark:from-gray-800 dark:to-gray-700">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <motion.div
                 initial="initial"
@@ -362,13 +362,13 @@ export default function LandingPage() {
                 viewport={{ once: true, amount: 0.5 }}
             >
               <motion.h2
-                className="text-3xl md:text-4xl font-bold"
+                className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white"
                 variants={FADE_IN_ANIMATION_VARIANTS}
               >
                 Transform Your Style Today
               </motion.h2>
               <motion.p
-                className="max-w-xl mx-auto text-muted-foreground mt-2 mb-6"
+                className="max-w-xl mx-auto text-gray-600 dark:text-gray-300 mt-2 mb-6"
                 variants={FADE_IN_ANIMATION_VARIANTS}
               >
                 Ready to take control of your closet and unlock your personal style? Get started with TryStyle for free.
@@ -379,7 +379,7 @@ export default function LandingPage() {
                   whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Button size="lg" asChild className="text-base">
+                  <Button size="lg" asChild className="text-base bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-100">
                     <Link href="/register">
                       Sign Up Now <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>

@@ -25,133 +25,133 @@ body {
     right: -10px;
     width: 20px;
     height: 20px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232e8c49'%3E%3Cpath d='M12 2L12.09 8.26L22 9L12.09 15.74L12 22L1.91 15.74L2 9L11.91 8.26L12 2Z'/%3E%3C/svg%3E") no-repeat center;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23c4938a'%3E%3Cpath d='M12 2L12.09 8.26L22 9L12.09 15.74L12 22L1.91 15.74L2 9L11.91 8.26L12 2Z'/%3E%3C/svg%3E") no-repeat center;
     background-size: cover;
     opacity: 0.3;
     animation: float 3s ease-in-out infinite;
   }
   
   .dots-pattern {
-    background-image: radial-gradient(circle at 1px 1px, rgba(46, 140, 73, 0.15) 1px, transparent 0);
+    background-image: radial-gradient(circle at 1px 1px, rgba(196, 147, 138, 0.15) 1px, transparent 0);
     background-size: 20px 20px;
   }
   
   .nature-gradient {
-    background: linear-gradient(135deg, #fef7ed 0%, #f0fdf4 50%, #ecfdf5 100%);
+    background: linear-gradient(135deg, #faf7f2 0%, #f5f1eb 50%, #f9f6f1 100%);
   }
   
   .card-nature {
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(46, 140, 73, 0.2);
-    box-shadow: 0 8px 32px rgba(46, 140, 73, 0.1);
+    border: 1px solid rgba(196, 147, 138, 0.2);
+    box-shadow: 0 8px 32px rgba(196, 147, 138, 0.1);
   }
   .card-nature-dark {
-    background: rgba(34, 56, 43, 0.96); /* denser */
+    background: rgba(54, 44, 40, 0.96);
     backdrop-filter: blur(18px);
-    border: 1px solid rgba(46, 140, 73, 0.18);
-    box-shadow: 0 8px 32px rgba(34, 56, 43, 0.18), 0 1px 0 rgba(255,255,255,0.02) inset;
+    border: 1px solid rgba(196, 147, 138, 0.18);
+    box-shadow: 0 8px 32px rgba(54, 44, 40, 0.18), 0 1px 0 rgba(255,255,255,0.02) inset;
   }
   .gradient-title-dark {
-    background: linear-gradient(90deg, #fff 60%, #2e8c49 100%);
+    background: linear-gradient(90deg, #fff 60%, #c4938a 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     text-fill-color: transparent;
-    filter: drop-shadow(0 2px 8px #2e8c4922);
+    filter: drop-shadow(0 2px 8px #c4938a22);
   }
 }
 
 @layer base {
   :root {
-    /* Primary colors - with new green #2e8c49 */
-    --background: 46 77% 97%; /* Very light beige */
-    --foreground: 156 22% 20%; /* Dark green for text */
+    /* Clean modern palette - grays and blacks */
+    --background: 0 0% 100%; /* Pure white */
+    --foreground: 0 0% 11%; /* Near black for text */
     
     /* Cards and popovers */
     --card: 0 0% 100%; /* Pure white */
-    --card-foreground: 156 22% 20%;
+    --card-foreground: 0 0% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 156 22% 20%;
+    --popover-foreground: 0 0% 11%;
     
-    /* Primary accents - new green #2e8c49 */
-    --primary: 156 49% 36%; /* #2e8c49 */
-    --primary-foreground: 0 0% 100%;
+    /* Primary accents - clean blacks */
+    --primary: 0 0% 9%; /* Clean black */
+    --primary-foreground: 0 0% 98%;
     
-    /* Secondary colors - soft pastels */
-    --secondary: 46 87% 95%; /* Very light beige */
-    --secondary-foreground: 156 22% 25%;
+    /* Secondary colors - light grays */
+    --secondary: 0 0% 96%; /* Light gray */
+    --secondary-foreground: 0 0% 15%;
     
     /* Muted colors */
-    --muted: 46 67% 92%; /* Light beige */
-    --muted-foreground: 156 14% 50%;
+    --muted: 0 0% 96%; /* Light gray */
+    --muted-foreground: 0 0% 45%;
     
-    /* Accent colors - very soft */
-    --accent: 156 49% 90%; /* Very light green based on #2e8c49 */
-    --accent-foreground: 156 22% 25%;
+    /* Accent colors */
+    --accent: 0 0% 96%; /* Light gray */
+    --accent-foreground: 0 0% 15%;
     
-    /* Destructive actions - soft pink */
-    --destructive: 0 65% 85%;
-    --destructive-foreground: 0 45% 25%;
+    /* Destructive actions - red */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
     
-    /* Borders and input elements - softer */
-    --border: 156 49% 85%; /* Light greenish borders based on #2e8c49 */
-    --input: 156 49% 92%;
-    --ring: 156 49% 36%;
+    /* Borders and input elements */
+    --border: 0 0% 89%; /* Light gray borders */
+    --input: 0 0% 96%;
+    --ring: 0 0% 9%;
     
-    /* Charts - soft natural colors */
-    --chart-1: 156 49% 36%; /* #2e8c49 */
-    --chart-2: 46 87% 75%; /* Light beige */
-    --chart-3: 172 55% 78%; /* Light mint */
-    --chart-4: 39 85% 82%; /* Light yellow */
-    --chart-5: 320 55% 82%; /* Light pink */
+    /* Charts - modern grays */
+    --chart-1: 0 0% 9%; /* Black */
+    --chart-2: 0 0% 45%; /* Medium gray */
+    --chart-3: 0 0% 70%; /* Light gray */
+    --chart-4: 0 0% 85%; /* Very light gray */
+    --chart-5: 0 0% 60%; /* Medium gray */
     
-    /* Sidebar - softer tones */
-    --sidebar-background: 46 77% 98%;
-    --sidebar-foreground: 156 22% 25%;
-    --sidebar-primary: 156 49% 36%; /* #2e8c49 */
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 156 49% 90%;
-    --sidebar-accent-foreground: 156 22% 25%;
-    --sidebar-border: 156 49% 85%;
-    --sidebar-ring: 156 49% 36%;
+    /* Sidebar - clean grays */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 0 0% 15%;
+    --sidebar-primary: 0 0% 9%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 0 0% 96%;
+    --sidebar-accent-foreground: 0 0% 15%;
+    --sidebar-border: 0 0% 89%;
+    --sidebar-ring: 0 0% 9%;
     
-    --radius: 12px; /* Increased radius for softness */
+    --radius: 0.5rem;
   }
   
   .dark {
-    --background: 156 20% 12%;
+    --background: 0 0% 9%;
     --foreground: 0 0% 98%;
-    --card: 156 18% 13%;
+    --card: 0 0% 9%;
     --card-foreground: 0 0% 98%;
-    --popover: 156 18% 13%;
+    --popover: 0 0% 9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 156 49% 45%;
-    --primary-foreground: 156 25% 8%;
-    --secondary: 156 15% 7%; /* even darker */
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 156 10% 7%; /* even darker */
-    --muted-foreground: 156 10% 70%; /* light, but not white */
-    --accent: 156 15% 7%; /* even darker */
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 0 0% 14%;
     --accent-foreground: 0 0% 98%;
-    --destructive: 0 65% 55%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 156 15% 10%; /* even darker */
-    --input: 156 15% 10%; /* even darker */
-    --ring: 156 49% 45%;
-    --chart-1: 156 49% 45%;
-    --chart-2: 46 87% 65%;
-    --chart-3: 172 55% 68%;
-    --chart-4: 39 85% 72%;
-    --chart-5: 320 55% 72%;
-    --sidebar-background: 156 20% 7%; /* even darker */
+    --border: 0 0% 27%;
+    --input: 0 0% 27%;
+    --ring: 0 0% 83%;
+    --chart-1: 0 0% 98%;
+    --chart-2: 0 0% 65%;
+    --chart-3: 0 0% 45%;
+    --chart-4: 0 0% 35%;
+    --chart-5: 0 0% 55%;
+    --sidebar-background: 0 0% 4%;
     --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 156 49% 45%;
-    --sidebar-primary-foreground: 156 25% 8%;
-    --sidebar-accent: 156 15% 7%; /* even darker */
+    --sidebar-primary: 0 0% 98%;
+    --sidebar-primary-foreground: 0 0% 9%;
+    --sidebar-accent: 0 0% 14%;
     --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 156 15% 10%;
-    --sidebar-ring: 156 49% 45%;
+    --sidebar-border: 0 0% 27%;
+    --sidebar-ring: 0 0% 83%;
   }
 }
 
@@ -186,5 +186,40 @@ body {
   
   ::-webkit-scrollbar-thumb:hover {
     background: hsl(var(--primary) / 0.5);
+  }
+  
+  /* Thin scrollbar for tabs */
+  .tabs-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(209, 213, 219, 0.6) transparent;
+  }
+  
+  .tabs-scrollbar::-webkit-scrollbar {
+    height: 6px;
+  }
+  
+  .tabs-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .tabs-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(209, 213, 219, 0.6);
+    border-radius: 3px;
+  }
+  
+  .tabs-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(156, 163, 175, 0.8);
+  }
+  
+  .dark .tabs-scrollbar {
+    scrollbar-color: rgba(75, 85, 99, 0.6) transparent;
+  }
+  
+  .dark .tabs-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(75, 85, 99, 0.6);
+  }
+  
+  .dark .tabs-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(107, 114, 128, 0.8);
   }
 }

@@ -6,7 +6,8 @@ import { apiCall } from "@/lib/api"
 import type { ClothingItemResponse } from "@/lib/types"
 import AddWardrobeItemDialog from "@/components/dashboard/wardrobe/add-item-dialog"
 import WardrobeItemCard from "@/components/dashboard/wardrobe/wardrobe-item-card"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { Progress } from "@/components/ui/progress"
 import { toast } from "sonner"
 
 interface GroupedItems {
@@ -29,7 +30,7 @@ export default function WardrobePage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [activeAccordionItems, setActiveAccordionItems] = useState<string[]>([])
+  const [activeTab, setActiveTab] = useState<string>("all")
   const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const initialItemCountRef = useRef(0);
 
@@ -99,8 +100,10 @@ export default function WardrobePage() {
 
   useEffect(() => {
     const categories = Object.keys(groupedItems);
-    setActiveAccordionItems(categories);
-  }, [groupedItems])
+    if (categories.length > 0 && !categories.includes(activeTab) && activeTab !== "all") {
+      setActiveTab("all");
+    }
+  }, [groupedItems, activeTab])
 
   const handleItemAdded = () => {
     fetchItems(false)
@@ -145,46 +148,95 @@ export default function WardrobePage() {
     return order
   }, [groupedItems])
 
+  // Achievement system
+  const achievementTiers = [
+    { target: 10, title: "Getting Started", description: "Upload your first 10 items" },
+    { target: 25, title: "Fashion Explorer", description: "Build a solid wardrobe" },
+    { target: 50, title: "Style Enthusiast", description: "Create a diverse collection" },
+    { target: 100, title: "Fashion Master", description: "Complete wardrobe collection" },
+    { target: 200, title: "Ultimate Stylist", description: "Fashion guru level" }
+  ]
+
+  const currentItemCount = items.length
+  const currentTier = achievementTiers.find(tier => currentItemCount < tier.target) || achievementTiers[achievementTiers.length - 1]
+  const progress = currentTier ? Math.min((currentItemCount / currentTier.target) * 100, 100) : 100
+  const remainingItems = currentTier ? Math.max(currentTier.target - currentItemCount, 0) : 0
+
   return (
-    <div className="space-y-4 md:space-y-6">
+    <div className="space-y-4 md:space-y-6 bg-white dark:bg-gray-900 min-h-screen p-4 md:p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">My Wardrobe</h2>
+        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-gray-900 dark:text-white">My Wardrobe</h2>
         <Button 
           onClick={() => setIsDialogOpen(true)}
-          className="w-full sm:w-auto h-11 md:h-10"
+          className="w-full sm:w-auto h-11 md:h-10 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-100"
         >
           <ImageUp className="mr-2 h-4 w-4 md:h-5 md:w-5" /> 
           Upload Photos
         </Button>
       </div>
 
+      {/* Achievement Progress */}
+      {currentItemCount >= 0 && (
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                {progress >= 100 ? "Achievement Unlocked!" : "Next Achievement"}
+              </h3>
+              <p className="text-xs text-gray-600 dark:text-gray-400">
+                {currentTier.title} - {currentTier.description}
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="text-sm font-medium text-gray-900 dark:text-white">
+                {currentItemCount}/{currentTier.target}
+              </p>
+              {progress < 100 && (
+                <p className="text-xs text-gray-600 dark:text-gray-400">
+                  {remainingItems} more to go
+                </p>
+              )}
+            </div>
+          </div>
+          <Progress 
+            value={progress} 
+            className="h-2 bg-gray-200 dark:bg-gray-700"
+          />
+          {progress >= 100 && currentItemCount >= currentTier.target && (
+            <p className="text-xs text-green-600 dark:text-green-400 mt-1 font-medium">
+              ✨ Congratulations! Achievement completed!
+            </p>
+          )}
+        </div>
+      )}
+
       {isLoading && (
         <div className="flex justify-center items-center py-12 md:py-16">
           <div className="text-center">
             <Loader2 className="h-10 w-10 md:h-12 md:w-12 animate-spin text-primary mx-auto mb-3" />
-            <p className="text-base md:text-lg">Loading your wardrobe...</p>
+            <p className="text-base md:text-lg text-gray-900 dark:text-white">Loading your wardrobe...</p>
           </div>
         </div>
       )}
 
       {!isLoading && error && (
-        <div className="flex flex-col items-center justify-center text-destructive bg-destructive/10 p-6 md:p-8 rounded-md">
+        <div className="flex flex-col items-center justify-center text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-6 md:p-8 rounded-md border border-red-200 dark:border-red-800">
           <AlertTriangle className="h-8 w-8 md:h-10 md:w-10 mb-2" />
           <p className="text-base md:text-lg font-medium text-center">{error}</p>
-          <Button onClick={() => fetchItems(true)} variant="outline" className="mt-4">
+          <Button onClick={() => fetchItems(true)} variant="outline" className="mt-4 border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
             Try Again
           </Button>
         </div>
       )}
 
       {!isLoading && !error && items.length === 0 && processingItems.length === 0 && (
-        <div className="flex flex-col items-center justify-center text-center py-12 md:py-16 border-2 border-dashed border-border rounded-lg">
-          <Shirt className="h-12 w-12 md:h-16 md:w-16 text-muted-foreground mb-4" />
-          <h3 className="text-lg md:text-xl font-semibold text-muted-foreground">Your wardrobe is empty!</h3>
-          <p className="text-muted-foreground mt-1 mb-6">Start by uploading photos of your clothing items.</p>
+        <div className="flex flex-col items-center justify-center text-center py-12 md:py-16 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800">
+          <Shirt className="h-12 w-12 md:h-16 md:w-16 text-gray-400 dark:text-gray-500 mb-4" />
+          <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">Your wardrobe is empty!</h3>
+          <p className="text-gray-600 dark:text-gray-300 mt-1 mb-6">Start by uploading photos of your clothing items.</p>
           <Button 
             onClick={() => setIsDialogOpen(true)} 
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-100"
           >
             <ImageUp className="mr-2 h-4 w-4 md:h-5 md:w-5" /> 
             Upload First Photos
@@ -193,40 +245,51 @@ export default function WardrobePage() {
       )}
 
       {!isLoading && !error && (items.length > 0 || processingItems.length > 0) && (
-        <Accordion
-          type="multiple"
-          className="w-full space-y-2"
-          value={activeAccordionItems}
-          onValueChange={setActiveAccordionItems}
-        >
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <div className="w-full overflow-x-auto tabs-scrollbar">
+            <TabsList className="flex h-8 md:h-10 p-0.5 md:p-1 gap-1 w-max min-w-full">
+              <TabsTrigger value="all" className="flex-shrink-0 text-xs md:text-sm font-medium px-2 md:px-3 py-1 md:py-1.5 h-7 md:h-8 min-w-fit">
+                All ({items.length + processingItems.length})
+              </TabsTrigger>
+              {categoryOrder.map((category) => (
+                <TabsTrigger key={category} value={category} className="flex-shrink-0 text-xs md:text-sm font-medium capitalize px-2 md:px-3 py-1 md:py-1.5 h-7 md:h-8 min-w-fit">
+                  {category} ({groupedItems[category].length})
+                  {category === PROCESSING_CATEGORY && (
+                    <Loader2 className="ml-1 md:ml-2 h-2.5 w-2.5 md:h-3 md:w-3 animate-spin" />
+                  )}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
+          
+          <TabsContent value="all" className="mt-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4">
+              {[...processingItems, ...items].map((item) => (
+                <WardrobeItemCard 
+                  key={item.id} 
+                  item={item as ClothingItemResponse} 
+                  onDelete={handleDeleteItem}
+                  isProcessing={(item as ProcessingItem).isProcessing}
+                />
+              ))}
+            </div>
+          </TabsContent>
+          
           {categoryOrder.map((category) => (
-            <AccordionItem value={category} key={category} className="border bg-card rounded-md">
-              <AccordionTrigger className="px-3 md:px-4 py-3 hover:no-underline">
-                <div className="flex items-center">
-                  <Layers className="mr-2 md:mr-3 h-4 w-4 md:h-5 md:w-5 text-primary" />
-                  <span className="text-base md:text-lg font-medium capitalize">
-                    {category} ({groupedItems[category].length})
-                    {category === PROCESSING_CATEGORY && (
-                      <Loader2 className="ml-2 h-4 w-4 animate-spin inline" />
-                    )}
-                  </span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="px-3 md:px-4 pt-0 pb-4">
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4 pt-2">
-                  {groupedItems[category].map((item) => (
-                    <WardrobeItemCard 
-                      key={item.id} 
-                      item={item as ClothingItemResponse} 
-                      onDelete={handleDeleteItem}
-                      isProcessing={(item as ProcessingItem).isProcessing}
-                    />
-                  ))}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
+            <TabsContent key={category} value={category} className="mt-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4">
+                {groupedItems[category].map((item) => (
+                  <WardrobeItemCard 
+                    key={item.id} 
+                    item={item as ClothingItemResponse} 
+                    onDelete={handleDeleteItem}
+                    isProcessing={(item as ProcessingItem).isProcessing}
+                  />
+                ))}
+              </div>
+            </TabsContent>
           ))}
-        </Accordion>
+        </Tabs>
       )}
 
       <AddWardrobeItemDialog 

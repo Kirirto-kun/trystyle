@@ -221,7 +221,7 @@ export default function ChatPage() {
   return (
     <>
       {/* Mobile Layout */}
-      <div className="md:hidden h-[calc(var(--vh,1vh)*100-3.5rem)]">
+      <div className="md:hidden h-[calc(var(--vh,1vh)*100-3.5rem)] bg-white dark:bg-gray-900">
         {showChatList ? (
           <div className="h-full">
             <ChatList
@@ -238,16 +238,16 @@ export default function ChatPage() {
         ) : (
           <div className="h-full flex flex-col">
             {/* Mobile chat header with back button */}
-            <div className="flex items-center p-3 border-b bg-background">
+            <div className="flex items-center p-3 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
               <button
                 onClick={() => setShowChatList(true)}
-                className="mr-3 p-1 hover:bg-muted rounded"
+                className="mr-3 p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
-              <h1 className="text-lg font-semibold truncate">
+              <h1 className="text-lg font-semibold truncate text-gray-900 dark:text-white">
                 {selectedChat?.title || "Chat"}
               </h1>
             </div>
@@ -263,7 +263,7 @@ export default function ChatPage() {
                 />
               )}
               {!selectedChat && !isLoadingMessages && (
-                <div className="flex-1 flex items-center justify-center text-muted-foreground">
+                <div className="flex-1 flex items-center justify-center text-gray-600 dark:text-gray-400">
                   No chat selected
                 </div>
               )}
@@ -273,9 +273,9 @@ export default function ChatPage() {
       </div>
 
       {/* Desktop Layout */}
-      <div className="hidden md:grid md:grid-cols-[320px_1fr] h-[calc(100vh-3.5rem)]">
+      <div className="hidden md:grid md:grid-cols-[320px_1fr] h-[calc(100vh-3.5rem)] bg-white dark:bg-gray-900">
         {/* Desktop - Chat List */}
-        <div className="border-r h-full overflow-y-auto">
+        <div className="border-r border-gray-200 dark:border-gray-700 h-full overflow-y-auto bg-gray-50 dark:bg-gray-800">
         <ChatList
           chats={chats}
           selectedChatId={selectedChat?.id || null}
@@ -289,7 +289,7 @@ export default function ChatPage() {
         </div>
 
         {/* Desktop - Chat Area */}
-        <div className="flex flex-col h-full min-h-0">
+        <div className="flex flex-col h-full min-h-0 bg-white dark:bg-gray-900">
         <ChatMessageArea
           selectedChat={selectedChat}
           messages={messages}

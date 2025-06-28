@@ -23,9 +23,9 @@ interface OutfitDisplayProps {
 
 export default function OutfitDisplay({ outfit }: OutfitDisplayProps) {
   return (
-    <Card className="w-full">
+    <Card className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
       <CardHeader className="pb-3 md:pb-4">
-        <CardTitle className="flex items-center gap-2 text-base md:text-lg">
+        <CardTitle className="flex items-center gap-2 text-base md:text-lg text-gray-900 dark:text-white">
           <Shirt className="w-4 h-4 md:w-5 md:h-5 text-primary" />
           {outfit.outfit_description}
         </CardTitle>
@@ -36,9 +36,9 @@ export default function OutfitDisplay({ outfit }: OutfitDisplayProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
           {outfit.items.map((item, index) => (
             <div key={index} className="group relative">
-              <Card className="hover:shadow-md transition-all duration-300 border-2 hover:border-primary/20">
+              <Card className="hover:shadow-md transition-all duration-300 border-2 hover:border-primary/20 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                 <CardContent className="p-3 md:p-4">
-                  <div className="aspect-square mb-2 md:mb-3 bg-muted rounded-lg flex items-center justify-center overflow-hidden">
+                  <div className="aspect-square mb-2 md:mb-3 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden">
                     {item.image_url ? (
                       <img 
                         src={item.image_url} 
@@ -51,17 +51,17 @@ export default function OutfitDisplay({ outfit }: OutfitDisplayProps) {
                         }}
                       />
                     ) : null}
-                    <div className={`flex flex-col items-center justify-center text-muted-foreground ${item.image_url ? 'hidden' : ''}`}>
+                    <div className={`flex flex-col items-center justify-center text-gray-500 dark:text-gray-400 ${item.image_url ? 'hidden' : ''}`}>
                       <Shirt className="w-6 h-6 md:w-8 md:h-8 mb-2" />
                       <span className="text-xs">Photo unavailable</span>
                     </div>
                   </div>
                   
                   <div className="space-y-1 md:space-y-2">
-                    <h4 className="font-medium text-xs md:text-sm line-clamp-2" title={item.name}>
+                    <h4 className="font-medium text-xs md:text-sm line-clamp-2 text-gray-900 dark:text-white" title={item.name}>
                       {item.name}
                     </h4>
-                    <Badge variant="outline" className="text-xs">
+                    <Badge variant="outline" className="text-xs border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300">
                       {item.category}
                     </Badge>
                   </div>
@@ -71,15 +71,15 @@ export default function OutfitDisplay({ outfit }: OutfitDisplayProps) {
           ))}
         </div>
         
-        <Separator />
+        <Separator className="border-gray-200 dark:border-gray-700" />
         
         {/* Reasoning Section */}
-        <div className="bg-muted/50 rounded-lg p-3 md:p-4">
+        <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-3 md:p-4">
           <div className="flex items-start gap-2 md:gap-3">
             <Lightbulb className="w-4 h-4 md:w-5 md:h-5 text-amber-500 mt-0.5 flex-shrink-0" />
             <div className="flex-1">
-              <h4 className="font-medium text-sm md:text-base mb-1 md:mb-2">Why this look?</h4>
-              <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
+              <h4 className="font-medium text-sm md:text-base mb-1 md:mb-2 text-gray-900 dark:text-white">Why this look?</h4>
+              <p className="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
                 {outfit.reasoning}
               </p>
             </div>
@@ -88,11 +88,11 @@ export default function OutfitDisplay({ outfit }: OutfitDisplayProps) {
         
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-2">
-          <Button variant="outline" size="sm" className="flex-1 h-9 md:h-10 text-sm">
+          <Button variant="outline" size="sm" className="flex-1 h-9 md:h-10 text-sm border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">
             <Heart className="w-3 h-3 md:w-4 md:h-4 mr-2" />
             Save outfit
           </Button>
-          <Button variant="outline" size="sm" className="flex-1 h-9 md:h-10 text-sm">
+          <Button variant="outline" size="sm" className="flex-1 h-9 md:h-10 text-sm border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">
             <Shirt className="w-3 h-3 md:w-4 md:h-4 mr-2" />
             Create similar
           </Button>

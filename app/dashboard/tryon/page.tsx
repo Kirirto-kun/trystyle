@@ -1,14 +1,12 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Loader2, AlertTriangle, Trash } from "lucide-react";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Loader2, AlertTriangle, Trash, User, Shirt, Upload, Camera } from "lucide-react";
+import { getImageDimensions, type ImageDimensions } from "@/lib/image-utils";
 
 const API_BASE_URL = "https://www.closetmind.studio";
 
@@ -34,33 +32,206 @@ export default function TryOnPage() {
   const [open, setOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [currentTryon, setCurrentTryon] = useState<TryOn | null>(null);
-  const [humanImageDimensions, setHumanImageDimensions] = useState<{width: number, height: number} | null>(null);
+  const [humanImageDimensions, setHumanImageDimensions] = useState<ImageDimensions | null>(null);
   const [isLoadingDimensions, setIsLoadingDimensions] = useState(false);
-  const [resizedImageUrl, setResizedImageUrl] = useState<string | null>(null);
+  
+  // New drag states for enhanced UX
+  const [humanDragActive, setHumanDragActive] = useState(false);
+  const [clothingDragActive, setClothingDragActive] = useState(false);
+  
+  // File input refs for programmatic access
+  const humanFileInputRef = useRef<HTMLInputElement>(null);
+  const clothingFileInputRef = useRef<HTMLInputElement>(null);
 
-  const openImageDialog = (imageUrl: string, tryon?: TryOn) => {
+  const openImageDialog = async (imageUrl: string, tryon?: TryOn, imageType?: 'human' | 'clothing' | 'result') => {
     setSelectedImage(imageUrl);
     setCurrentTryon(tryon || null);
+    setOpen(true);
     
-    // Если открываем результат примерки, загружаем размеры оригинального изображения человека
-    if (tryon && imageUrl === tryon.result_url) {
+    // Сбрасываем состояния
+    setHumanImageDimensions(null);
+    setIsLoadingDimensions(false);
+    
+    // Только для результатов try-on загружаем размеры оригинала человека
+    if (tryon && imageType === 'result') {
       setIsLoadingDimensions(true);
-      const img = new Image();
-      img.onload = () => {
-        setHumanImageDimensions({ width: img.width, height: img.height });
-        setIsLoadingDimensions(false);
-      };
-      img.onerror = () => {
-        setIsLoadingDimensions(false);
-        setHumanImageDimensions(null);
-      };
-      img.src = tryon.human_image_url;
-    } else {
-      setHumanImageDimensions(null);
+      try {
+        const humanDimensions = await getImageDimensions(tryon.human_image_url);
+        setHumanImageDimensions(humanDimensions);
+      } catch (error) {
+        console.error('Error loading human image dimensions:', error);
+      }
       setIsLoadingDimensions(false);
     }
-    
-    setOpen(true);
+  };
+
+  // Enhanced drag and drop handlers
+  const handleHumanDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setHumanDragActive(true);
+  };
+
+  const handleHumanDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setHumanDragActive(false);
+  };
+
+  const handleHumanDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setHumanDragActive(false);
+    const files = e.dataTransfer.files;
+    if (files && files[0] && files[0].type.startsWith('image/')) {
+      setHumanFile(files[0]);
+    }
+  };
+
+  const handleClothingDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setClothingDragActive(true);
+  };
+
+  const handleClothingDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setClothingDragActive(false);
+  };
+
+  const handleClothingDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setClothingDragActive(false);
+    const files = e.dataTransfer.files;
+    if (files && files[0] && files[0].type.startsWith('image/')) {
+      setClothingFile(files[0]);
+    }
+  };
+
+  const handleHumanFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setHumanFile(file);
+  };
+
+  const handleClothingFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setClothingFile(file);
+  };
+
+  // Enhanced ImageUploadArea component
+  const ImageUploadArea = ({ 
+    title, 
+    subtitle, 
+    icon: Icon, 
+    file, 
+    preview, 
+    dragActive, 
+    onDragOver, 
+    onDragLeave, 
+    onDrop, 
+    onClick, 
+    inputRef, 
+    onChange 
+  }: {
+    title: string;
+    subtitle: string;
+    icon: React.ElementType;
+    file: File | null;
+    preview: string | null;
+    dragActive: boolean;
+    onDragOver: (e: React.DragEvent) => void;
+    onDragLeave: (e: React.DragEvent) => void;
+    onDrop: (e: React.DragEvent) => void;
+    onClick: () => void;
+    inputRef: React.RefObject<HTMLInputElement>;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  }) => {
+         return (
+       <div className="space-y-3 w-80 mx-auto">
+         <div className="text-center">
+           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h3>
+           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 h-10 flex items-center justify-center">{subtitle}</p>
+         </div>
+         
+         <div
+           className={`
+             relative h-[400px] w-full rounded-xl border-2 border-dashed transition-all duration-200 cursor-pointer
+            ${dragActive 
+              ? 'border-black dark:border-white bg-gray-50 dark:bg-gray-800' 
+              : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
+            }
+            ${preview ? 'bg-gray-50 dark:bg-gray-800' : 'bg-gray-50/50 dark:bg-gray-800/50'}
+          `}
+          onDragOver={onDragOver}
+          onDragLeave={onDragLeave}
+          onDrop={onDrop}
+          onClick={onClick}
+        >
+                     {preview ? (
+             // Image preview state
+             <div className="relative w-full h-[400px] group">
+               <img
+                 src={preview}
+                 alt={`Preview of ${title.toLowerCase()}`}
+                 className="w-full h-full object-cover rounded-lg"
+                 onClick={(e) => {
+                   e.stopPropagation();
+                   openImageDialog(preview, undefined, title.includes('Person') ? 'human' : 'clothing');
+                 }}
+               />
+               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-200 rounded-lg flex items-center justify-center">
+                 <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                   <Button
+                     variant="secondary"
+                     size="sm"
+                     className="bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800"
+                     onClick={(e) => {
+                       e.stopPropagation();
+                       onClick();
+                     }}
+                   >
+                     <Camera className="w-4 h-4 mr-2" />
+                     Change
+                   </Button>
+                 </div>
+               </div>
+             </div>
+                     ) : (
+             // Empty state
+             <div className="flex flex-col items-center justify-center h-[400px] p-6">
+              <div className={`
+                w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-colors
+                ${dragActive 
+                  ? 'bg-black dark:bg-white text-white dark:text-black' 
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                }
+              `}>
+                <Icon className="w-8 h-8" />
+              </div>
+              
+                             <p className="text-base font-medium text-gray-900 dark:text-white mb-2">
+                 {dragActive ? 'Drop your file here' : 'Click or drag & drop your file'}
+               </p>
+               
+               <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
+                 Supported formats: JPG, PNG, WebP
+               </p>
+              
+              <div className="mt-4">
+                <Upload className={`w-5 h-5 mx-auto transition-colors ${
+                  dragActive ? 'text-black dark:text-white' : 'text-gray-400 dark:text-gray-500'
+                }`} />
+              </div>
+            </div>
+          )}
+          
+          <input
+            ref={inputRef}
+            type="file"
+            accept="image/*"
+            onChange={onChange}
+            className="sr-only"
+            required
+          />
+        </div>
+      </div>
+    );
   };
 
   const fetchTryons = useCallback(async (token: string) => {
@@ -179,50 +350,37 @@ export default function TryOnPage() {
       <h1 className="text-2xl md:text-3xl font-bold">Try-On: Clothing Fitting</h1>
       
       <Card className="p-4 md:p-6">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="human" className="text-base font-medium">Photo of person</Label>
-              {humanFilePreview && (
-                <div className="flex justify-center">
-                  <div 
-                    className="max-w-xs rounded-lg overflow-hidden border cursor-pointer bg-muted/10"
-                    onClick={() => openImageDialog(humanFilePreview)}
-                  >
-                    <img src={humanFilePreview} alt="Preview of person's photo" className="w-full h-auto object-contain transition hover:scale-105" />
-                  </div>
-                </div>
-              )}
-              <Input
-                id="human"
-                type="file"
-                accept="image/*"
-                onChange={e => setHumanFile(e.target.files?.[0] || null)}
-                required
-                className="file:text-primary file:font-semibold"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="clothing" className="text-base font-medium">Photo of clothing</Label>
-              {clothingFilePreview && (
-                <div className="flex justify-center">
-                  <div 
-                    className="max-w-xs rounded-lg overflow-hidden border cursor-pointer bg-muted/10"
-                    onClick={() => openImageDialog(clothingFilePreview)}
-                  >
-                    <img src={clothingFilePreview} alt="Preview of clothing photo" className="w-full h-auto object-contain transition hover:scale-105" />
-                  </div>
-                </div>
-              )}
-              <Input
-                id="clothing"
-                type="file"
-                accept="image/*"
-                onChange={e => setClothingFile(e.target.files?.[0] || null)}
-                required
-                className="file:text-primary file:font-semibold"
-              />
-            </div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 justify-items-center">
+            <ImageUploadArea
+              title="Person Photo"
+              subtitle="Upload a full-body photo of a person"
+              icon={User}
+              file={humanFile}
+              preview={humanFilePreview}
+              dragActive={humanDragActive}
+              onDragOver={handleHumanDragOver}
+              onDragLeave={handleHumanDragLeave}
+              onDrop={handleHumanDrop}
+              onClick={() => humanFileInputRef.current?.click()}
+              inputRef={humanFileInputRef}
+              onChange={handleHumanFileChange}
+            />
+            
+            <ImageUploadArea
+              title="Clothing Photo"
+              subtitle="Upload a photo of clothing on transparent background"
+              icon={Shirt}
+              file={clothingFile}
+              preview={clothingFilePreview}
+              dragActive={clothingDragActive}
+              onDragOver={handleClothingDragOver}
+              onDragLeave={handleClothingDragLeave}
+              onDrop={handleClothingDrop}
+              onClick={() => clothingFileInputRef.current?.click()}
+              inputRef={clothingFileInputRef}
+              onChange={handleClothingFileChange}
+            />
           </div>
           
           <Button 
@@ -269,13 +427,13 @@ export default function TryOnPage() {
                   src={tryon.human_image_url} 
                   alt="Person" 
                   className="w-20 h-20 md:w-24 md:h-24 object-cover rounded border cursor-pointer transition hover:scale-105"
-                  onClick={() => openImageDialog(tryon.human_image_url)}
+                  onClick={() => openImageDialog(tryon.human_image_url, tryon, 'human')}
                 />
                 <img 
                   src={tryon.clothing_image_url} 
                   alt="Clothing" 
                   className="w-20 h-20 md:w-24 md:h-24 object-cover rounded border cursor-pointer transition hover:scale-105"
-                  onClick={() => openImageDialog(tryon.clothing_image_url)}
+                  onClick={() => openImageDialog(tryon.clothing_image_url, tryon, 'clothing')}
                 />
               </div>
               
@@ -286,7 +444,7 @@ export default function TryOnPage() {
                       src={tryon.result_url}
                       alt="Result"
                       className="w-full h-auto object-contain rounded border cursor-pointer transition hover:scale-105"
-                      onClick={() => openImageDialog(tryon.result_url, tryon)}
+                      onClick={() => openImageDialog(tryon.result_url, tryon, 'result')}
                     />
                   ) : (
                     <div className="w-32 h-32 md:w-40 md:h-40 rounded border flex items-center justify-center bg-muted/20">
@@ -332,6 +490,9 @@ export default function TryOnPage() {
         }
       }}>
         <DialogContent className="max-w-[95vw] max-h-[95vh] w-auto h-auto flex flex-col items-center justify-center p-4 bg-background/95 backdrop-blur-sm">
+          <DialogTitle className="sr-only">
+            Image Viewer
+          </DialogTitle>
           {selectedImage && (
             <div className="relative flex items-center justify-center">
               {isLoadingDimensions ? (
