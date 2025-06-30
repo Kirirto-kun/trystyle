@@ -217,5 +217,99 @@
         "description": "Организуйте вашу одежду"
       }
     }
+  },
+  "catalog": {
+    "title": "Каталог",
+    "tabs": {
+      "products": "Товары",
+      "stores": "Магазины"
+    },
+    "search": {
+      "placeholder": "Поиск товаров и магазинов...",
+      "noResults": "Результаты не найдены",
+      "searching": "Поиск..."
+    },
+    "filters": {
+      "category": "Категория",
+      "city": "Город",
+      "priceRange": "Диапазон цен",
+      "minPrice": "Мин. цена",
+      "maxPrice": "Макс. цена",
+      "rating": "Минимальный рейтинг",
+      "inStockOnly": "Только в наличии",
+      "brand": "Бренд",
+      "sizes": "Размеры",
+      "colors": "Цвета",
+      "sortBy": "Сортировать по",
+      "sortByName": "Название",
+      "sortByPrice": "Цена",
+      "sortByRating": "Рейтинг",
+      "sortByDate": "Дата добавления",
+      "sortOrder": "Порядок",
+      "ascending": "По возрастанию",
+      "descending": "По убыванию",
+      "clearFilters": "Очистить фильтры",
+      "applyFilters": "Применить фильтры"
+    },
+    "products": {
+      "title": "Товары",
+      "price": "Цена",
+      "originalPrice": "Изначальная цена",
+      "discount": "Скидка {{percentage}}%",
+      "rating": "Рейтинг",
+      "reviews": "{{count}} отзывов",
+      "inStock": "В наличии",
+      "outOfStock": "Нет в наличии",
+      "viewDetails": "Подробнее",
+      "addToWishlist": "Добавить в желания",
+      "sizes": "Размеры",
+      "colors": "Цвета",
+      "store": "Магазин",
+      "brand": "Бренд",
+      "category": "Категория",
+      "description": "Описание",
+      "specifications": "Характеристики",
+      "loading": "Загрузка товаров...",
+      "empty": "Товары не найдены",
+      "loadMore": "Загрузить еще"
+    },
+    "stores": {
+      "title": "Магазины",
+      "rating": "Рейтинг",
+      "totalProducts": "{{count}} товаров",
+      "city": "Город",
+      "website": "Посетить сайт",
+      "viewStore": "Открыть магазин",
+      "description": "Описание",
+      "loading": "Загрузка магазинов...",
+      "empty": "Магазины не найдены",
+      "loadMore": "Загрузить еще"
+    },
+    "reviews": {
+      "title": "Отзывы",
+      "averageRating": "Средний рейтинг",
+      "totalReviews": "{{count}} отзывов",
+      "writeReview": "Написать отзыв",
+      "rating": "Рейтинг",
+      "comment": "Комментарий",
+      "verified": "Проверенная покупка",
+      "helpful": "Полезно",
+      "sortBy": "Сортировать по",
+      "newest": "Новые",
+      "oldest": "Старые",
+      "highestRated": "Высокий рейтинг",
+      "lowestRated": "Низкий рейтинг",
+      "loading": "Загрузка отзывов...",
+      "empty": "Отзывов пока нет",
+      "loadMore": "Загрузить еще отзывы"
+    },
+    "categories": {
+      "all": "Все категории",
+      "loading": "Загрузка категорий..."
+    },
+    "cities": {
+      "all": "Все города",
+      "loading": "Загрузка городов..."
+    }
   }
 } 

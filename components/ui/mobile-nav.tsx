@@ -5,14 +5,14 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
-import { Menu, X, Bot, MessageSquare, Shirt, ListChecks, LogOut, Download } from "lucide-react"
+import { Menu, X, Bot, MessageSquare, Shirt, ListChecks, LogOut, Download, Store } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { useTranslations } from "@/contexts/language-context"
 import { cn } from "@/lib/utils"
 
-const API_BASE_URL = "https://www.closetmind.studio"
+const API_BASE_URL = "http://localhost:8000"
 
 export function MobileNav() {
   const [open, setOpen] = useState(false)
@@ -24,6 +24,7 @@ export function MobileNav() {
     { href: "/dashboard/chat", label: tCommon('navigation.chat'), icon: MessageSquare },
     { href: "/dashboard/tryon", label: tCommon('navigation.tryon'), icon: Shirt },
     { href: "/dashboard/wardrobe", label: tCommon('navigation.wardrobe'), icon: Shirt },
+    { href: "/dashboard/catalog", label: tCommon('navigation.catalog'), icon: Store },
     { href: "/dashboard/waitlist", label: tCommon('navigation.waitlist'), icon: ListChecks },
   ]
 

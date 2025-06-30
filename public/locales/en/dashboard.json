@@ -217,5 +217,99 @@
         "description": "Organize your clothes"
       }
     }
+  },
+  "catalog": {
+    "title": "Catalog",
+    "tabs": {
+      "products": "Products",
+      "stores": "Stores"
+    },
+    "search": {
+      "placeholder": "Search products and stores...",
+      "noResults": "No results found",
+      "searching": "Searching..."
+    },
+    "filters": {
+      "category": "Category",
+      "city": "City",
+      "priceRange": "Price Range",
+      "minPrice": "Min Price",
+      "maxPrice": "Max Price",
+      "rating": "Minimum Rating",
+      "inStockOnly": "In Stock Only",
+      "brand": "Brand",
+      "sizes": "Sizes",
+      "colors": "Colors",
+      "sortBy": "Sort By",
+      "sortByName": "Name",
+      "sortByPrice": "Price",
+      "sortByRating": "Rating",
+      "sortByDate": "Date Added",
+      "sortOrder": "Order",
+      "ascending": "Low to High",
+      "descending": "High to Low",
+      "clearFilters": "Clear Filters",
+      "applyFilters": "Apply Filters"
+    },
+    "products": {
+      "title": "Products",
+      "price": "Price",
+      "originalPrice": "Original Price",
+      "discount": "{{percentage}}% off",
+      "rating": "Rating",
+      "reviews": "{{count}} reviews",
+      "inStock": "In Stock",
+      "outOfStock": "Out of Stock",
+      "viewDetails": "View Details",
+      "addToWishlist": "Add to Wishlist",
+      "sizes": "Sizes",
+      "colors": "Colors",
+      "store": "Store",
+      "brand": "Brand",
+      "category": "Category",
+      "description": "Description",
+      "specifications": "Specifications",
+      "loading": "Loading products...",
+      "empty": "No products found",
+      "loadMore": "Load More"
+    },
+    "stores": {
+      "title": "Stores",
+      "rating": "Rating",
+      "totalProducts": "{{count}} products",
+      "city": "City",
+      "website": "Visit Website",
+      "viewStore": "View Store",
+      "description": "Description",
+      "loading": "Loading stores...",
+      "empty": "No stores found",
+      "loadMore": "Load More"
+    },
+    "reviews": {
+      "title": "Reviews",
+      "averageRating": "Average Rating",
+      "totalReviews": "{{count}} reviews",
+      "writeReview": "Write a Review",
+      "rating": "Rating",
+      "comment": "Comment",
+      "verified": "Verified Purchase",
+      "helpful": "Helpful",
+      "sortBy": "Sort by",
+      "newest": "Newest",
+      "oldest": "Oldest",
+      "highestRated": "Highest Rated",
+      "lowestRated": "Lowest Rated",
+      "loading": "Loading reviews...",
+      "empty": "No reviews yet",
+      "loadMore": "Load More Reviews"
+    },
+    "categories": {
+      "all": "All Categories",
+      "loading": "Loading categories..."
+    },
+    "cities": {
+      "all": "All Cities",
+      "loading": "Loading cities..."
+    }
   }
 } 
