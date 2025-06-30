@@ -297,32 +297,32 @@ GET /api/v1/products/?category=Одежда&sizes=M,L&in_stock_only=true
 
 ### 1. Получить все магазины в Москве
 ```bash
-curl -X GET "http://localhost:8000/api/v1/stores/?city=Москва"
+curl -X GET "https://www.closetmind.studio/api/v1/stores/?city=Москва"
 ```
 
 ### 2. Найти товары H&M до 2000 рублей
 ```bash
-curl -X GET "http://localhost:8000/api/v1/products/?brand=H%26M&max_price=2000"
+curl -X GET "https://www.closetmind.studio/api/v1/products/?brand=H%26M&max_price=2000"
 ```
 
 ### 3. Получить товары категории "Одежда" в наличии
 ```bash
-curl -X GET "http://localhost:8000/api/v1/products/?category=Одежда&in_stock_only=true"
+curl -X GET "https://www.closetmind.studio/api/v1/products/?category=Одежда&in_stock_only=true"
 ```
 
 ### 4. Поиск по тексту с сортировкой по цене
 ```bash
-curl -X GET "http://localhost:8000/api/v1/products/?query=футболка&sort_by=price&sort_order=asc"
+curl -X GET "https://www.closetmind.studio/api/v1/products/?query=футболка&sort_by=price&sort_order=asc"
 ```
 
 ### 5. Получить статистику по городам
 ```bash
-curl -X GET "http://localhost:8000/api/v1/stores/cities"
+curl -X GET "https://www.closetmind.studio/api/v1/stores/cities"
 ```
 
 ### 6. Получить категории товаров
 ```bash
-curl -X GET "http://localhost:8000/api/v1/products/categories"
+curl -X GET "https://www.closetmind.studio/api/v1/products/categories"
 ```
 
 ## 🔒 Авторизация
@@ -330,7 +330,7 @@ curl -X GET "http://localhost:8000/api/v1/products/categories"
 Для операций создания/обновления требуется JWT токен:
 
 ```bash
-curl -X POST "http://localhost:8000/api/v1/products/" \
+curl -X POST "https://www.closetmind.studio/api/v1/products/" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -389,5 +389,5 @@ python scripts/seed_catalog.py --clear
 ## 📄 Документация API
 
 Полная интерактивная документация доступна по адресу:
-- Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc` 
+- Swagger UI: `https://www.closetmind.studio/docs`
+- ReDoc: `https://www.closetmind.studio/redoc` 

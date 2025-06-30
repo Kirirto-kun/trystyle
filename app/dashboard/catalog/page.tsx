@@ -14,7 +14,7 @@ import StoreGrid from "@/components/dashboard/catalog/store-grid";
 
 import { useDebounce } from "@/hooks/use-debounce";
 
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = "https://www.closetmind.studio";
 
 interface Product {
   id: number;

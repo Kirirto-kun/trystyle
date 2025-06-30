@@ -1,7 +1,7 @@
 import Cookies from "js-cookie"
 import { toast } from "sonner"
 
-const API_BASE_URL = "http://localhost:8000"
+const API_BASE_URL = "https://www.closetmind.studio"
 
 interface ApiCallOptions extends RequestInit {
   isFormData?: boolean
