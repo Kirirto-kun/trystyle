@@ -2,6 +2,7 @@
 import ProductCard from "./product-card"
 import OutfitDisplay from "./outfit-display"
 import GeneralResponse from "./general-response"
+import SearchMetadata from "./search-metadata"
 import { Card, CardContent } from "@/components/ui/card"
 import { AlertTriangle } from "lucide-react"
 import { 
@@ -28,10 +29,20 @@ export default function AgentMessageRenderer({ content }: AgentMessageRendererPr
     // Search Agent - Products
     if (isSearchAgentResult(result)) {
       return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {result.products.map((product, index) => (
-            <ProductCard key={index} product={product} />
-          ))}
+        <div className="w-full">
+          {/* Show metadata if available */}
+          <SearchMetadata 
+            searchQuery={result.search_query}
+            totalFound={result.total_found}
+            processingTimeMs={result.processing_time_ms}
+          />
+          
+          {/* Product grid - Improved mobile layout */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+            {result.products.map((product, index) => (
+              <ProductCard key={product.id || index} product={product} />
+            ))}
+          </div>
         </div>
       )
     }
