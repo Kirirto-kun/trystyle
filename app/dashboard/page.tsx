@@ -13,7 +13,8 @@ import {
   Heart,
   Sparkles,
   ArrowRight,
-  Bot
+  Bot,
+  ShoppingBag
 } from "lucide-react"
 
 export default function DashboardPage() {
@@ -46,6 +47,14 @@ export default function DashboardPage() {
       bgColor: "bg-green-50 dark:bg-green-900/20"
     },
     {
+      href: "/dashboard/catalog",
+      icon: ShoppingBag,
+      title: t('navigation.catalog'),
+      description: "Browse products and stores to find your perfect style",
+      color: "from-indigo-500 to-blue-500",
+      bgColor: "bg-indigo-50 dark:bg-indigo-900/20"
+    },
+    {
       href: "/dashboard/waitlist",
       icon: ListChecks,
       title: t('navigation.waitlist'),
@@ -76,7 +85,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
         {features.map((feature) => (
           <Card key={feature.href} className="group relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
             <div className={`absolute inset-0 ${feature.bgColor}`} />
@@ -144,12 +153,18 @@ export default function DashboardPage() {
                 {tDashboard('overview.gettingStarted.tryClothes')}
               </Link>
             </Button>
+            <Button asChild size="sm" variant="outline">
+              <Link href="/dashboard/catalog">
+                <ShoppingBag className="h-4 w-4 mr-2" />
+                Browse Catalog
+              </Link>
+            </Button>
           </div>
         </div>
       </Card>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="p-4 text-center bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
           <MessageSquare className="h-8 w-8 text-blue-600 mx-auto mb-2" />
           <h4 className="font-semibold text-gray-900 dark:text-white">{tDashboard('overview.stats.aiChat.title')}</h4>
@@ -166,6 +181,12 @@ export default function DashboardPage() {
           <Shirt className="h-8 w-8 text-green-600 mx-auto mb-2" />
           <h4 className="font-semibold text-gray-900 dark:text-white">{tDashboard('overview.stats.smartWardrobe.title')}</h4>
           <p className="text-sm text-gray-600 dark:text-gray-300">{tDashboard('overview.stats.smartWardrobe.description')}</p>
+        </Card>
+
+        <Card className="p-4 text-center bg-indigo-50 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-800">
+          <ShoppingBag className="h-8 w-8 text-indigo-600 mx-auto mb-2" />
+          <h4 className="font-semibold text-gray-900 dark:text-white">Product Catalog</h4>
+          <p className="text-sm text-gray-600 dark:text-gray-300">Discover new styles</p>
         </Card>
       </div>
     </div>
