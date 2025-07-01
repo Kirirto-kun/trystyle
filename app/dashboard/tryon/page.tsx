@@ -109,11 +109,13 @@ export default function TryOnPage() {
 
   const handleHumanFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
+    console.log('Human file selected:', file?.name, file?.size);
     setHumanFile(file);
   };
 
   const handleClothingFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
+    console.log('Clothing file selected:', file?.name, file?.size);
     setClothingFile(file);
   };
 
@@ -238,7 +240,6 @@ export default function TryOnPage() {
             accept="image/*"
             onChange={onChange}
             className="sr-only"
-            required
           />
         </div>
       </div>
@@ -304,7 +305,32 @@ export default function TryOnPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!clothingFile || !humanFile || !token) return;
+    console.log('Submit attempt:', { 
+      clothingFile: clothingFile?.name, 
+      humanFile: humanFile?.name, 
+      token: !!token 
+    });
+    
+    if (!clothingFile || !humanFile || !token) {
+      console.log('Submit blocked:', { 
+        hasClothingFile: !!clothingFile, 
+        hasHumanFile: !!humanFile, 
+        hasToken: !!token 
+      });
+      
+      // Show specific error message
+      if (!humanFile && !clothingFile) {
+        setError("Please upload both a person photo and clothing photo");
+      } else if (!humanFile) {
+        setError("Please upload a person photo");
+      } else if (!clothingFile) {
+        setError("Please upload a clothing photo");
+      } else if (!token) {
+        setError("Authentication required. Please refresh the page and try again.");
+      }
+      return;
+    }
+    
     setLoading(true);
     setError(null);
 
