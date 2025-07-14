@@ -7,7 +7,7 @@ import Cookies from "js-cookie"
 import type { UserResponse, Token } from "@/lib/types" // We'll define these types later
 import { toast } from "sonner" // Using sonner for toasts
 
-const API_BASE_URL = "http://localhost:8000"
+const API_BASE_URL = "https://www.closetmind.studio"
 
 interface AuthContextType {
   user: UserResponse | null
