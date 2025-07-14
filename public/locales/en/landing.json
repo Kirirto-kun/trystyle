@@ -1,77 +1,99 @@
 {
   "brand": {
     "name": "TryStyle",
-    "tagline": "Your Personal AI Stylist"
+    "tagline": "Your Favorite Brands with AI Assistant"
   },
   "hero": {
-    "title": "Your Personal AI Stylist",
-    "subtitle": "Effortlessly manage your wardrobe, get personalized outfit advice, virtually try on clothes, and discover your next favorite piece.",
-    "cta": "Get Started For Free"
+    "title": "Your Favorite Brands Now with AI Assistant",
+    "subtitle": "Find perfect items in partner store catalogs. Smart search understands style, AI consultant helps you choose, virtual try-on shows the result.",
+    "cta": "Find Perfect Item",
+    "secondaryCta": "Connect Store"
   },
   "features": {
-    "title": "How It Works",
-    "subtitle": "All your fashion needs, one simple platform.",
-    "wardrobe": {
-      "title": "Your Digital Wardrobe",
-      "description": "Add your clothes and see your entire collection in one place."
+    "title": "Smart Shopping Experience",
+    "subtitle": "Everything you need to find and try the perfect style.",
+    "smartSearch": {
+      "title": "Smart Style Search",
+      "description": "Find items with queries like 'black knee-length dress' or 'casual work style'"
     },
-    "aiChat": {
-      "title": "AI Stylist Chat", 
-      "description": "Get outfit advice based on your own clothes."
+    "aiStylist": {
+      "title": "AI Stylist Helps You Choose", 
+      "description": "Personal consultant 24/7 helps you pick size, color and complete looks"
     },
-    "tryon": {
+    "outfitBuilder": {
+      "title": "Build Outfits from Different Stores",
+      "description": "Create stylish combinations by mixing items from different brands"
+    },
+    "virtualTryon": {
       "title": "Virtual Try-On",
-      "description": "See how new items look on you before you buy."
+      "description": "See how items look on you before ordering"
     },
-    "shopping": {
-      "title": "Shopping Assistant",
-      "description": "Ask your AI to find where to buy the clothes you want."
+    "brandCatalogs": {
+      "title": "Your Favorite Brand Catalogs",
+      "description": "All partner store products in one place with unified search"
     },
-    "waitlist": {
-      "title": "Curate a Waitlist",
-      "description": "Save items you love and plan your future purchases."
-    },
-    "askAnything": {
-      "title": "Ask Anything",
-      "description": "Your AI assistant can answer any fashion-related question."
+    "wishlist": {
+      "title": "Wishlist & Notifications",
+      "description": "Save items you love and get notified about discounts"
     }
   },
   "spotlight": {
-    "tryon": {
-      "title": "See It On Before You Buy",
-      "description": "No more guessing games. Upload your photo and a picture of any clothing item to see a realistic preview of how it will look on you. Make confident purchase decisions from the comfort of your home.",
-      "cta": "Try it now"
-    },
     "aiChat": {
-      "title": "Your 24/7 Fashion Expert",
-      "description": "\"What should I wear tonight?\" \"Does this match?\" \"Where can I find a red dress under $100?\" Get instant answers from your AI stylist that knows your wardrobe and your taste.",
-      "cta": "Start a conversation"
+      "title": "Your Personal Stylist Always Available",
+      "description": "Ask 'What to wear to the office party?' or 'Do you have these shoes in size 8?' - get instant answers with options from our partner catalogs.",
+      "cta": "Start conversation"
+    },
+    "tryon": {
+      "title": "Try Before You Buy",
+      "description": "Upload your photo and see how any item will look on you. No disappointments when your order arrives.",
+      "cta": "Try it now"
     }
   },
+  "forBusiness": {
+    "title": "Connect Your Store to TryStyle",
+    "subtitle": "Increase sales with smart technologies",
+    "catalogDigitization": {
+      "title": "Automatic Catalog Digitization",
+      "description": "All your products automatically appear on the platform"
+    },
+    "analyticsCustomers": {
+      "title": "Analytics & New Customers",
+      "description": "Track product interest and attract buyers through AI recommendations"
+    },
+    "aiConsultant": {
+      "title": "24/7 Working Consultant",
+      "description": "AI answers customer questions about your products around the clock"
+    },
+    "cta": "Become Partner"
+  },
   "testimonials": {
-    "title": "Loved by Fashion Forward People",
+    "title": "Loved by Shoppers and Store Owners",
     "reviews": [
       {
-        "name": "Jessica L.",
-        "title": "Fashion Enthusiast",
-        "quote": "TryStyle has completely changed how I get dressed in the morning. The virtual try-on is a game-changer! It's like having a personal stylist in my pocket."
+        "name": "Anna K.",
+        "title": "Fashion Lover",
+        "quote": "Found the perfect jacket in 10 minutes! The AI understood what I needed better than I did. Virtual try-on showed the size would fit perfectly."
       },
       {
         "name": "Michael R.",
-        "title": "Busy Professional", 
-        "quote": "I never knew what to wear. Now I just ask the AI stylist, and it creates amazing outfits from my own clothes. I save so much time and always look great."
+        "title": "Smart Shopper", 
+        "quote": "Now I only shop through TryStyle. I can compare prices across different stores and try everything on instantly. Saves time and money."
       },
       {
-        "name": "Samantha K.",
-        "title": "Savvy Shopper",
-        "quote": "The shopping assistant found me the perfect dress for a wedding and even discovered a discount code! I'm curating my dream wardrobe with the waitlist feature."
+        "name": "Elena S.",
+        "title": "Boutique Owner",
+        "quote": "Sales increased by 35% in a month. Customers find our items through smart search, and the AI consultant works while we sleep."
       }
     ]
   },
   "finalCta": {
-    "title": "Transform Your Style Today",
-    "subtitle": "Ready to take control of your closet and unlock your personal style? Get started with TryStyle for free.",
-    "cta": "Sign Up For Free"
+    "title": "Find Your Perfect Style Today",
+    "subtitle": "Ready to discover amazing fashion with AI assistance? Start your style journey now.",
+    "cta": "Start Shopping",
+    "businessCta": {
+      "title": "Store Owner? Connect Your Catalog for Free",
+      "cta": "Become Partner"
+    }
   },
   "footer": {
     "copyright": "All rights reserved."

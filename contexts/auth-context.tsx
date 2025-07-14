@@ -7,7 +7,7 @@ import Cookies from "js-cookie"
 import type { UserResponse, Token } from "@/lib/types" // We'll define these types later
 import { toast } from "sonner" // Using sonner for toasts
 
-const API_BASE_URL = "https://www.closetmind.studio"
+const API_BASE_URL = "http://localhost:8000"
 
 interface AuthContextType {
   user: UserResponse | null
@@ -31,17 +31,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Initialize only once on mount
   useEffect(() => {
-    const initAuth = () => {
+    const initAuth = async () => {
       const currentToken = Cookies.get("authToken")
       if (currentToken) {
         setToken(currentToken)
-        const storedUser = Cookies.get("authUser")
-        if (storedUser) {
-          try {
-            setUser(JSON.parse(storedUser))
-          } catch (error) {
-            console.error("Error parsing stored user:", error)
+        // Try to get fresh user data from API
+        try {
+          const response = await fetch(`${API_BASE_URL}/auth/me`, {
+            headers: {
+              "Authorization": `Bearer ${currentToken}`,
+              "Content-Type": "application/json",
+            },
+          })
+          
+          if (response.ok) {
+            const userData = await response.json()
+            setUser(userData)
+            Cookies.set("authUser", JSON.stringify(userData), { expires: 365 })
+          } else {
+            // Token is invalid, clear auth data
+            Cookies.remove("authToken")
             Cookies.remove("authUser")
+            setToken(null)
+            setUser(null)
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error)
+          // Fallback to stored user data
+          const storedUser = Cookies.get("authUser")
+          if (storedUser) {
+            try {
+              setUser(JSON.parse(storedUser))
+            } catch (error) {
+              console.error("Error parsing stored user:", error)
+              Cookies.remove("authUser")
+            }
           }
         }
       }
@@ -104,8 +128,40 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       Cookies.set("authToken", data.access_token, { expires: 365, secure: process.env.NODE_ENV === "production" })
       setToken(data.access_token)
 
-      toast.success("Login successful!")
-      router.push("/dashboard")
+      // Get user data to determine role and redirect accordingly
+      try {
+        const userResponse = await fetch(`${API_BASE_URL}/auth/me`, {
+          headers: {
+            "Authorization": `Bearer ${data.access_token}`,
+            "Content-Type": "application/json",
+          },
+        })
+
+        if (userResponse.ok) {
+          const userData = await userResponse.json()
+          setUser(userData)
+          Cookies.set("authUser", JSON.stringify(userData), { expires: 365 })
+
+          toast.success("Login successful!")
+          
+          // Route based on user role
+          if (userData.is_admin) {
+            router.push("/admin")
+          } else if (userData.is_store_admin) {
+            router.push("/store-admin")
+          } else {
+            router.push("/dashboard")
+          }
+        } else {
+          // Fallback to regular dashboard if we can't get user data
+          router.push("/dashboard")
+        }
+      } catch (userError) {
+        console.error("Error fetching user data after login:", userError)
+        // Fallback to regular dashboard
+        router.push("/dashboard")
+      }
+
       return true
     } catch (error) {
       console.error("Login error:", error)
@@ -166,8 +222,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const data: Token = await response.json()
       Cookies.set("authToken", data.access_token, { expires: 365, secure: process.env.NODE_ENV === "production" })
       setToken(data.access_token)
-      toast.success("Google login successful!")
-      router.push("/dashboard")
+
+      // Get user data to determine role and redirect accordingly
+      try {
+        const userResponse = await fetch(`${API_BASE_URL}/auth/me`, {
+          headers: {
+            "Authorization": `Bearer ${data.access_token}`,
+            "Content-Type": "application/json",
+          },
+        })
+
+        if (userResponse.ok) {
+          const userData = await userResponse.json()
+          setUser(userData)
+          Cookies.set("authUser", JSON.stringify(userData), { expires: 365 })
+
+          toast.success("Google login successful!")
+          
+          // Route based on user role
+          if (userData.is_admin) {
+            router.push("/admin")
+          } else if (userData.is_store_admin) {
+            router.push("/store-admin")
+          } else {
+            router.push("/dashboard")
+          }
+        } else {
+          // Fallback to regular dashboard if we can't get user data
+          router.push("/dashboard")
+        }
+      } catch (userError) {
+        console.error("Error fetching user data after Google login:", userError)
+        // Fallback to regular dashboard
+        router.push("/dashboard")
+      }
+
       return true
     } catch (error) {
       console.error("Google login error:", error)

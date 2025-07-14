@@ -5,6 +5,19 @@ export interface UserResponse {
   is_active: boolean
   created_at: string
   updated_at?: string | null
+  role?: string
+  store_id?: number | null
+  phone?: string | null
+  is_store_admin?: boolean
+  is_admin?: boolean
+  can_manage_stores?: boolean
+  managed_store?: {
+    id: number
+    name: string
+    city: string
+    logo_url: string
+    rating: number
+  } | null
 }
 
 export interface Token {

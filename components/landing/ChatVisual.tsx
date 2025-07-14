@@ -46,10 +46,10 @@ export const ChatVisual = () => {
       viewport={{ once: true, amount: 0.5 }}
     >
         <div className="space-y-4">
-            <ChatMessage from="user" text="What should I wear for a casual weekend?" delay={0.2} />
-            <ChatMessage from="bot" text="Based on your wardrobe, I'd suggest your blue denim jacket with the white graphic tee." delay={0.8} />
-            <ChatMessage from="user" text="Good idea! Can you find me some new white sneakers to go with that?" delay={1.4} />
-            <ChatMessage from="bot" text="Of course! Here are a few top-rated options I found online..." delay={2.0} isTyping/>
+            <ChatMessage from="user" text="Looking for a black dress for a date night under $150" delay={0.2} />
+            <ChatMessage from="bot" text="Found 12 options! Here's an elegant one from Zara for $120 and a stylish one from H&M for $85." delay={0.8} />
+            <ChatMessage from="user" text="Can I try them on virtually?" delay={1.4} />
+            <ChatMessage from="bot" text="Absolutely! Upload your photo and see both options on yourself..." delay={2.0} isTyping/>
         </div>
     </motion.div>
   );
