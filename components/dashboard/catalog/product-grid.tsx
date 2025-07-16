@@ -41,9 +41,10 @@ interface ProductGridProps {
   hasMore: boolean;
   onLoadMore: () => void;
   mobileColumns?: 1 | 2;
+  storeSlug?: string;
 }
 
-export default function ProductGrid({ products, loading, error, hasMore, onLoadMore, mobileColumns = 2 }: ProductGridProps) {
+export default function ProductGrid({ products, loading, error, hasMore, onLoadMore, mobileColumns = 2, storeSlug }: ProductGridProps) {
   const tDashboard = useTranslations('dashboard');
   const tCommon = useTranslations('common');
 
@@ -115,7 +116,7 @@ export default function ProductGrid({ products, loading, error, hasMore, onLoadM
           : 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
       }`}>
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard key={product.id} product={product} storeSlug={storeSlug} />
         ))}
       </div>
 

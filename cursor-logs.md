@@ -48,6 +48,72 @@
 - ✅ **Orders overview**: All store orders with filtering
 - ✅ **Status tracking**: Pending, processing, shipped, delivered, cancelled
 - ✅ **Status updates**: Direct order status management
+
+---
+
+## [2024] Store URLs Beautification - COMPLETED ✅
+
+### User Request:
+"вот смотри, есть же каталоги магазинов, я хочу их вынести вт так: trystyle.live/название магазина" (Store catalogs should be accessible as trystyle.live/store-name instead of current trystyle.live/dashboard/catalog/stores/67)
+
+### Current State:
+- Store URLs: `/dashboard/catalog/stores/67` (ID-based)
+- API: `/api/v1/stores/${storeId}`
+- Links in StoreCard and ProductDetailPage use store.id
+
+### Target State:
+- Store URLs: `/macho` (name/slug-based)
+- Example: `https://trystyle.live/macho` for "MACHO" store
+
+### Implementation Completed:
+
+**✅ Frontend Changes:**
+- ✅ **Store interface updated**: Added `slug` field to Store type in `lib/types.ts`
+- ✅ **Slug generation utility**: Added `generateSlug()` and `createUniqueSlug()` functions in `lib/utils.ts` with Cyrillic support
+- ✅ **New store page**: Created `app/[storeSlug]/page.tsx` for beautiful URLs
+- ✅ **Updated store links**: Modified `StoreCard` to use `/${store.slug}` instead of `/dashboard/catalog/stores/${store.id}`
+- ✅ **Updated product links**: Modified product detail page store links to use slug
+- ✅ **Redirect implementation**: Old store URLs now redirect to new beautiful URLs
+- ✅ **Middleware protection**: Added middleware to prevent slug conflicts with protected routes
+- ✅ **Type consistency**: Updated all Store interfaces across components
+
+**🔄 Backend Changes Needed:**
+- Add `slug` field to Store model
+- Create endpoint: `GET /api/v1/stores/by-slug/{slug}`
+- Auto-generate slugs from store names when creating stores
+- Update existing stores to have slugs
+
+**📋 Additional Tasks:**
+- Test with real store data
+- Update sitemap.xml when backend is ready
+- SEO optimization (meta tags, structured data)
+
+### URL Structure:
+```
+Before: https://trystyle.live/dashboard/catalog/stores/67
+After:  https://trystyle.live/macho
+```
+
+### Benefits Achieved:
+- ✅ SEO-friendly URLs ready for implementation
+- ✅ Better user experience with memorable URLs
+- ✅ Professional store branding capability
+- ✅ Automatic redirects from old URLs
+- ✅ Cyrillic text handling for Russian store names
+
+### Additional UI Improvements:
+- ✅ **Stock indicators removed**: Removed "В наличии/Нет в наличии" badges from all product displays
+- ✅ **Filter cleanup**: Removed "In Stock Only" filter option
+- ✅ **Button enablement**: Removed stock-based button disabling
+- ✅ **Clean product cards**: Focus on product info without availability distractions
+- ✅ **Consistent UX**: All products show equally regardless of stock status
+
+### Store Context Product URLs:
+- ✅ **New product pages**: Created `[storeSlug]/products/[id]/page.tsx` for store-context product views
+- ✅ **Updated product links**: ProductCard now links to `/${storeSlug}/products/${productId}` when in store context
+- ✅ **Conditional routing**: Products link to store context when storeSlug available, regular catalog otherwise
+- ✅ **Navigation consistency**: Store product pages have same navbar with TryStyle logo and language switcher
+- ✅ **Breadcrumb logic**: "Back to store" instead of "Back to catalog" in store context
 - ✅ **Customer information**: Name, email, order details
 - ✅ **Statistics**: Order counts by status
 

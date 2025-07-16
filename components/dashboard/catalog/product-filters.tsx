@@ -288,19 +288,7 @@ export default function ProductFilters({ filters, onFiltersChange, onClearFilter
       {activeTab === "products" && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           
-          {/* In Stock Only */}
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="in-stock"
-                checked={filters.in_stock_only}
-                onCheckedChange={(checked) => onFiltersChange({ in_stock_only: !!checked })}
-              />
-              <Label htmlFor="in-stock" className="text-sm font-medium">
-                {tDashboard('catalog.filters.inStockOnly')}
-              </Label>
-            </div>
-          </div>
+
 
           {/* Sizes */}
           <div className="space-y-2">

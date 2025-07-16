@@ -77,18 +77,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
           
           {/* Stock status badge */}
-          {product.in_stock !== undefined && (
-            <Badge 
-              variant={product.in_stock ? "default" : "secondary"} 
-              className={`absolute top-1.5 right-1.5 text-xs px-1.5 py-0.5 ${
-                product.in_stock 
-                  ? 'bg-green-600 text-white' 
-                  : 'bg-red-600 text-white'
-              }`}
-            >
-              {product.in_stock ? 'В наличии' : 'Нет'}
-            </Badge>
-          )}
+
         </div>
       )}
 

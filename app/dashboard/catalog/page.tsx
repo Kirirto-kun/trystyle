@@ -43,18 +43,7 @@ interface Product {
   created_at: string;
 }
 
-interface Store {
-  id: number;
-  name: string;
-  description: string;
-  city: string;
-  logo_url: string;
-  website_url: string;
-  rating: number;
-  total_products: number;
-  created_at: string;
-  updated_at: string;
-}
+import { Store } from "@/lib/types";
 
 interface Filters {
   query: string;

@@ -33,6 +33,21 @@ export interface AgentResponse {
   response: string
 }
 
+// Store Types
+export interface Store {
+  id: number
+  name: string
+  slug: string
+  description: string
+  city: string
+  logo_url: string
+  website_url: string
+  rating: number
+  total_products: number
+  created_at: string
+  updated_at: string
+}
+
 // New Chat System Types
 export interface Chat {
   id: number

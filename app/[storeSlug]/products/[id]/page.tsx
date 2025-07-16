@@ -12,17 +12,18 @@ import {
   Star, 
   MapPin, 
   Store as StoreIcon, 
-  ArrowLeft, 
   Loader2, 
   AlertTriangle,
   ExternalLink,
   Package,
   Heart,
-  Share2
+  Share2,
+  Bot
 } from "lucide-react";
-import { useTranslations } from "@/contexts/language-context";
 import Link from "next/link";
 import ReviewsSection from "@/components/dashboard/catalog/reviews-section";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 const API_BASE_URL = "https://www.closetmind.studio";
 
@@ -54,7 +55,7 @@ interface Product {
   created_at: string;
 }
 
-export default function ProductDetailPage() {
+export default function StoreProductDetailPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -65,10 +66,9 @@ export default function ProductDetailPage() {
   const router = useRouter();
   const params = useParams();
   const { isAuthenticated, isLoading } = useAuth();
-  const tDashboard = useTranslations('dashboard');
-  const tCommon = useTranslations('common');
 
   const productId = params.id as string;
+  const storeSlug = params.storeSlug as string;
 
   useEffect(() => {
     if (isLoading) return;
@@ -135,10 +135,31 @@ export default function ProductDetailPage() {
 
   if (isLoading || loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-white dark:bg-gray-900">
-        <div className="text-center">
-          <Loader2 className="h-10 w-10 animate-spin text-black dark:text-white mx-auto mb-3" />
-          <p className="text-base text-gray-600 dark:text-gray-300">{tCommon('buttons.loading')}</p>
+      <div className="min-h-screen bg-white dark:bg-gray-900">
+        {/* Navigation Header */}
+        <header className="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+          <div className="container flex h-16 items-center justify-between px-4 max-w-6xl mx-auto">
+            <div className="flex items-center space-x-2">
+              <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+                <Bot className="h-8 w-8 text-primary" />
+                <span className="text-2xl font-bold text-gray-900 dark:text-white">
+                  TryStyle
+                </span>
+              </Link>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <LanguageSwitcher variant="ghost" size="icon" showText={false} />
+              <ThemeToggle />
+            </div>
+          </div>
+        </header>
+
+        <div className="flex justify-center items-center min-h-[calc(100vh-64px)]">
+          <div className="text-center">
+            <Loader2 className="h-10 w-10 animate-spin text-black dark:text-white mx-auto mb-3" />
+            <p className="text-base text-gray-600 dark:text-gray-300">Загрузка...</p>
+          </div>
         </div>
       </div>
     );
@@ -146,27 +167,37 @@ export default function ProductDetailPage() {
 
   if (error || !product) {
     return (
-      <div className="min-h-screen bg-white dark:bg-gray-900 p-4 md:p-6">
-        <div className="max-w-4xl mx-auto">
-          <Button 
-            variant="ghost" 
-            onClick={() => router.back()}
-            className="mb-6 gap-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            {tCommon('buttons.back')}
-          </Button>
-          
+      <div className="min-h-screen bg-white dark:bg-gray-900">
+        {/* Navigation Header */}
+        <header className="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+          <div className="container flex h-16 items-center justify-between px-4 max-w-6xl mx-auto">
+            <div className="flex items-center space-x-2">
+              <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+                <Bot className="h-8 w-8 text-primary" />
+                <span className="text-2xl font-bold text-gray-900 dark:text-white">
+                  TryStyle
+                </span>
+              </Link>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <LanguageSwitcher variant="ghost" size="icon" showText={false} />
+              <ThemeToggle />
+            </div>
+          </div>
+        </header>
+
+        <div className="max-w-4xl mx-auto p-4 md:p-6">
           <Card className="p-8 text-center">
             <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-              {tCommon('common.error')}
+              Товар не найден
             </h3>
             <p className="text-gray-600 dark:text-gray-400 mb-4">
-              {error || "Product not found"}
+              {error || "Товар не найден"}
             </p>
-            <Button onClick={() => window.location.reload()} variant="outline">
-              {tCommon('buttons.tryAgain')}
+            <Button onClick={() => router.push(`/${storeSlug}`)} variant="outline">
+              Назад к магазину
             </Button>
           </Card>
         </div>
@@ -175,18 +206,27 @@ export default function ProductDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 p-4 md:p-6">
-      <div className="max-w-6xl mx-auto space-y-6">
-        
-        {/* Back Button */}
-        <Button 
-          variant="ghost" 
-          onClick={() => router.back()}
-          className="gap-2"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          {tCommon('buttons.back')}
-        </Button>
+    <div className="min-h-screen bg-white dark:bg-gray-900">
+      {/* Navigation Header */}
+      <header className="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+        <div className="container flex h-16 items-center justify-between px-4 max-w-6xl mx-auto">
+          <div className="flex items-center space-x-2">
+            <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+              <Bot className="h-8 w-8 text-primary" />
+              <span className="text-2xl font-bold text-gray-900 dark:text-white">
+                TryStyle
+              </span>
+            </Link>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <LanguageSwitcher variant="ghost" size="icon" showText={false} />
+            <ThemeToggle />
+          </div>
+        </div>
+      </header>
+
+             <div className="max-w-6xl mx-auto space-y-6 p-4 md:p-6">
 
         {/* Product Main Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -250,7 +290,6 @@ export default function ProductDetailPage() {
                     -{product.discount_percentage}%
                   </Badge>
                 )}
-
               </div>
               
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
@@ -269,7 +308,7 @@ export default function ProductDetailPage() {
                   {renderStars(product.rating)}
                 </div>
                 <span className="text-sm text-gray-600 dark:text-gray-400">
-                  {product.rating.toFixed(1)} ({product.reviews_count} {tDashboard('catalog.reviews.title').toLowerCase()})
+                  {product.rating.toFixed(1)} ({product.reviews_count} отзывов)
                 </span>
               </div>
             </div>
@@ -293,7 +332,7 @@ export default function ProductDetailPage() {
               {product.sizes && product.sizes.length > 0 && (
                 <div>
                   <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">
-                    {tDashboard('catalog.products.sizes')}
+                    Размеры
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {product.sizes.map((size) => (
@@ -308,7 +347,7 @@ export default function ProductDetailPage() {
               {product.colors && product.colors.length > 0 && (
                 <div>
                   <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">
-                    {tDashboard('catalog.products.colors')}
+                    Цвета
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {product.colors.map((color) => (
@@ -325,7 +364,7 @@ export default function ProductDetailPage() {
             <div className="flex gap-3">
               <Button className="flex-1">
                 <Heart className="h-4 w-4 mr-2" />
-                {tDashboard('catalog.products.addToWishlist')}
+                Добавить в избранное
               </Button>
               <Button variant="outline" size="icon">
                 <Share2 className="h-4 w-4" />
@@ -365,9 +404,9 @@ export default function ProductDetailPage() {
                   </div>
                 </div>
                 
-                <Link href={`/${product.store.slug}`}>
+                <Link href={`/${storeSlug}`}>
                   <Button variant="outline" size="sm">
-                    {tDashboard('catalog.stores.viewStore')}
+                    Смотреть магазин
                   </Button>
                 </Link>
               </div>
@@ -378,8 +417,8 @@ export default function ProductDetailPage() {
         {/* Product Details Tabs */}
         <Tabs defaultValue="description" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="description">{tDashboard('catalog.products.description')}</TabsTrigger>
-            <TabsTrigger value="reviews">{tDashboard('catalog.reviews.title')}</TabsTrigger>
+            <TabsTrigger value="description">Описание</TabsTrigger>
+            <TabsTrigger value="reviews">Отзывы</TabsTrigger>
           </TabsList>
           
           <TabsContent value="description" className="mt-6">

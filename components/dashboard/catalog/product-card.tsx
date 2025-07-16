@@ -37,9 +37,10 @@ interface Product {
 
 interface ProductCardProps {
   product: Product;
+  storeSlug?: string;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, storeSlug }: ProductCardProps) {
   const tDashboard = useTranslations('dashboard');
   const [imageError, setImageError] = useState(false);
 
@@ -100,17 +101,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           </Badge>
         )}
 
-        {/* Stock Status */}
-        <Badge 
-          variant={product.is_in_stock ? "default" : "secondary"}
-          className={`absolute top-2 right-2 ${
-            product.is_in_stock 
-              ? "bg-green-500 hover:bg-green-600 text-white" 
-              : "bg-gray-500 text-white"
-          }`}
-        >
-          {product.is_in_stock ? tDashboard('catalog.products.inStock') : tDashboard('catalog.products.outOfStock')}
-        </Badge>
+
       </div>
 
       <CardContent className="p-4 space-y-3">
@@ -174,7 +165,10 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
 
         {/* Action Button */}
-        <Link href={`/dashboard/catalog/products/${product.id}`} className="block w-full">
+        <Link 
+          href={storeSlug ? `/${storeSlug}/products/${product.id}` : `/dashboard/catalog/products/${product.id}`} 
+          className="block w-full"
+        >
           <Button className="w-full mt-3 group-hover:bg-gray-900 dark:group-hover:bg-white transition-colors">
             <Eye className="h-4 w-4 mr-2" />
             {tDashboard('catalog.products.viewDetails')}
