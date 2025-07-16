@@ -272,7 +272,7 @@ PUT /api/v1/store-admin/store-settings
 ### **1. Авторизация**
 ```bash
 # Получить токен
-curl -X POST http://localhost:8000/auth/token \
+curl -X POST https://www.closetmind.studio/auth/token \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "username=admin@hm.kz&password=admin123"
 
@@ -286,33 +286,33 @@ curl -X POST http://localhost:8000/auth/token \
 ### **2. Получить дашборд**
 ```bash
 curl -H "Authorization: Bearer YOUR_TOKEN" \
-  http://localhost:8000/api/v1/store-admin/dashboard
+  https://www.closetmind.studio/api/v1/store-admin/dashboard
 ```
 
 ### **3. Получить все товары**
 ```bash
 curl -H "Authorization: Bearer YOUR_TOKEN" \
-  http://localhost:8000/api/v1/store-admin/products
+  https://www.closetmind.studio/api/v1/store-admin/products
 ```
 
 ### **4. Фильтрация товаров**
 ```bash
 # Только товары в наличии, отсортированные по цене
 curl -H "Authorization: Bearer YOUR_TOKEN" \
-  "http://localhost:8000/api/v1/store-admin/products?in_stock_only=true&sort_by=price&sort_order=asc"
+  "https://www.closetmind.studio/api/v1/store-admin/products?in_stock_only=true&sort_by=price&sort_order=asc"
 
 # По категории "рубашки", вторая страница
 curl -H "Authorization: Bearer YOUR_TOKEN" \
-  "http://localhost:8000/api/v1/store-admin/products?category=рубашки&page=2&per_page=10"
+  "https://www.closetmind.studio/api/v1/store-admin/products?category=рубашки&page=2&per_page=10"
 
 # Товары с низким остатком
 curl -H "Authorization: Bearer YOUR_TOKEN" \
-  "http://localhost:8000/api/v1/store-admin/products?sort_by=stock_quantity&sort_order=asc&per_page=5"
+  "https://www.closetmind.studio/api/v1/store-admin/products?sort_by=stock_quantity&sort_order=asc&per_page=5"
 ```
 
 ### **5. Создать товар**
 ```bash
-curl -X POST http://localhost:8000/api/v1/store-admin/products \
+curl -X POST https://www.closetmind.studio/api/v1/store-admin/products \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -330,7 +330,7 @@ curl -X POST http://localhost:8000/api/v1/store-admin/products \
 
 ### **6. Обновить товар**
 ```bash
-curl -X PUT http://localhost:8000/api/v1/store-admin/products/123 \
+curl -X PUT https://www.closetmind.studio/api/v1/store-admin/products/123 \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -341,7 +341,7 @@ curl -X PUT http://localhost:8000/api/v1/store-admin/products/123 \
 
 ### **7. Создать товар через фото**
 ```bash
-curl -X POST http://localhost:8000/api/v1/store-admin/products/upload-photos \
+curl -X POST https://www.closetmind.studio/api/v1/store-admin/products/upload-photos \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -356,23 +356,23 @@ curl -X POST http://localhost:8000/api/v1/store-admin/products/upload-photos \
 ### **8. Получить уведомления о низком остатке**
 ```bash
 curl -H "Authorization: Bearer YOUR_TOKEN" \
-  "http://localhost:8000/api/v1/store-admin/low-stock-alerts?threshold=3"
+  "https://www.closetmind.studio/api/v1/store-admin/low-stock-alerts?threshold=3"
 ```
 
 ### **9. Получить аналитику**
 ```bash
 # За неделю
 curl -H "Authorization: Bearer YOUR_TOKEN" \
-  "http://localhost:8000/api/v1/store-admin/analytics?period=week"
+  "https://www.closetmind.studio/api/v1/store-admin/analytics?period=week"
 
 # За год
 curl -H "Authorization: Bearer YOUR_TOKEN" \
-  "http://localhost:8000/api/v1/store-admin/analytics?period=year"
+  "https://www.closetmind.studio/api/v1/store-admin/analytics?period=year"
 ```
 
 ### **10. Обновить настройки магазина**
 ```bash
-curl -X PUT http://localhost:8000/api/v1/store-admin/store-settings \
+curl -X PUT https://www.closetmind.studio/api/v1/store-admin/store-settings \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{

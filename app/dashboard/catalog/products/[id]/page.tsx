@@ -24,7 +24,7 @@ import { useTranslations } from "@/contexts/language-context";
 import Link from "next/link";
 import ReviewsSection from "@/components/dashboard/catalog/reviews-section";
 
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = "https://www.closetmind.studio";
 
 interface Product {
   id: number;
