@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter, useParams } from "next/navigation";
-import { useAuth } from "@/contexts/auth-context";
 import { 
   Star, 
   MapPin, 
@@ -111,17 +110,8 @@ export default function StoreSlugPage() {
 
   const router = useRouter();
   const params = useParams();
-  const { isAuthenticated, isLoading } = useAuth();
 
   const storeSlug = params.storeSlug as string;
-
-  useEffect(() => {
-    if (isLoading) return;
-    if (!isAuthenticated) {
-      router.push("/login");
-      return;
-    }
-  }, [isAuthenticated, isLoading, router]);
 
   useEffect(() => {
     const fetchStoreData = async () => {
@@ -299,7 +289,7 @@ export default function StoreSlugPage() {
     ));
   };
 
-  if (isLoading || loading) {
+  if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-white dark:bg-gray-900">
         <div className="text-center">

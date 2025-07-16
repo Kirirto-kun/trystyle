@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter, useParams } from "next/navigation";
-import { useAuth } from "@/contexts/auth-context";
 import { 
   Star, 
   MapPin, 
@@ -65,18 +64,9 @@ export default function StoreProductDetailPage() {
 
   const router = useRouter();
   const params = useParams();
-  const { isAuthenticated, isLoading } = useAuth();
 
   const productId = params.id as string;
   const storeSlug = params.storeSlug as string;
-
-  useEffect(() => {
-    if (isLoading) return;
-    if (!isAuthenticated) {
-      router.push("/login");
-      return;
-    }
-  }, [isAuthenticated, isLoading, router]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -133,7 +123,7 @@ export default function StoreProductDetailPage() {
     ));
   };
 
-  if (isLoading || loading) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-white dark:bg-gray-900">
         {/* Navigation Header */}
