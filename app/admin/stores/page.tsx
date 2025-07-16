@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { 
   Loader2, 
-  Store, 
+  Store as StoreIcon, 
   Plus,
   Search,
   Filter,
@@ -43,19 +43,7 @@ import {
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { Textarea } from "@/components/ui/textarea"
-
-interface Store {
-  id: number
-  name: string
-  description: string
-  city: string
-  logo_url: string
-  website_url: string
-  rating: number
-  total_products: number
-  created_at: string
-  updated_at: string
-}
+import { Store } from "@/lib/types"
 
 interface StoreAdmin {
   id: number
@@ -342,7 +330,7 @@ export default function StoresManagementPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Stores</CardTitle>
-            <Store className="h-4 w-4 text-muted-foreground" />
+                            <StoreIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stores.length}</div>

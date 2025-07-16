@@ -14,7 +14,7 @@ import {
   Plus,
   Search,
   Edit,
-  Store,
+  Store as StoreIcon,
   UserPlus,
   ArrowLeft,
   CheckCircle,
@@ -49,6 +49,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { toast } from "sonner"
+import { Store } from "@/lib/types"
 
 interface StoreAdmin {
   id: number
@@ -66,13 +67,6 @@ interface StoreAdmin {
     logo_url?: string
     rating: number
   }
-}
-
-interface Store {
-  id: number
-  name: string
-  city: string
-  rating: number
 }
 
 interface CreateAdminData {
@@ -397,7 +391,7 @@ export default function StoreAdminsPage() {
               {getSelectedStore() && (
                 <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                   <div className="flex items-center space-x-2">
-                    <Store className="h-4 w-4 text-blue-600" />
+                    <StoreIcon className="h-4 w-4 text-blue-600" />
                     <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
                       Selected Store: {getSelectedStore()?.name}
                     </span>
@@ -456,7 +450,7 @@ export default function StoreAdminsPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Unassigned Stores</CardTitle>
-            <Store className="h-4 w-4 text-muted-foreground" />
+                            <StoreIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{availableStores.length}</div>
@@ -515,7 +509,7 @@ export default function StoreAdminsPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-2">
-                        <Store className="h-4 w-4 text-gray-400" />
+                        <StoreIcon className="h-4 w-4 text-gray-400" />
                         <div>
                           <p className="font-medium text-gray-900 dark:text-white">{admin.managed_store.name}</p>
                           <p className="text-sm text-gray-600 dark:text-gray-400">{admin.managed_store.city}</p>

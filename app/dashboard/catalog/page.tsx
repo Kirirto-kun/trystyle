@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
-import { Loader2, Search, Filter, Store, Package, Grid, Grid3x3 } from "lucide-react";
+import { Loader2, Search, Filter, Store as StoreIcon, Package, Grid, Grid3x3 } from "lucide-react";
 import { useTranslations } from "@/contexts/language-context";
 import ProductGrid from "@/components/dashboard/catalog/product-grid";
 import StoreGrid from "@/components/dashboard/catalog/store-grid";
@@ -311,7 +311,7 @@ export default function CatalogPage() {
             {tDashboard('catalog.tabs.products')}
           </TabsTrigger>
           <TabsTrigger value="stores" className="gap-2">
-            <Store className="h-4 w-4" />
+            <StoreIcon className="h-4 w-4" />
             {tDashboard('catalog.tabs.stores')}
           </TabsTrigger>
         </TabsList>

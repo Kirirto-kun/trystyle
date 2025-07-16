@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { 
   Loader2, 
-  Store, 
+  Store as StoreIcon, 
   ArrowLeft,
   Save,
   MapPin,
@@ -30,19 +30,7 @@ import { apiCall } from "@/lib/api"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { Textarea } from "@/components/ui/textarea"
-
-interface Store {
-  id: number
-  name: string
-  description: string
-  city: string
-  logo_url: string
-  website_url: string
-  rating: number
-  total_products: number
-  created_at: string
-  updated_at: string
-}
+import { Store } from "@/lib/types"
 
 interface StoreAdmin {
   id: number

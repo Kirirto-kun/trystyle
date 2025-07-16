@@ -7,18 +7,7 @@ import { Loader2, AlertTriangle } from "lucide-react";
 import { useTranslations } from "@/contexts/language-context";
 import StoreCard from "./store-card";
 
-interface Store {
-  id: number;
-  name: string;
-  description: string;
-  city: string;
-  logo_url: string;
-  website_url: string;
-  rating: number;
-  total_products: number;
-  created_at: string;
-  updated_at: string;
-}
+import { Store } from "@/lib/types";
 
 interface StoreGridProps {
   stores: Store[];
