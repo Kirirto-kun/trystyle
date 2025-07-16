@@ -12,7 +12,7 @@ import { LanguageSwitcher } from "@/components/language-switcher"
 import { useTranslations } from "@/contexts/language-context"
 import { cn } from "@/lib/utils"
 
-const API_BASE_URL = "https://www.closetmind.studio"
+const API_BASE_URL = "http://localhost:8000"
 
 export function MobileNav() {
   const [open, setOpen] = useState(false)

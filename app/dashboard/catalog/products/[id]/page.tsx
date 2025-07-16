@@ -24,7 +24,7 @@ import { useTranslations } from "@/contexts/language-context";
 import Link from "next/link";
 import ReviewsSection from "@/components/dashboard/catalog/reviews-section";
 
-const API_BASE_URL = "https://www.closetmind.studio";
+const API_BASE_URL = "http://localhost:8000";
 
 interface Product {
   id: number;
@@ -58,6 +58,8 @@ export default function ProductDetailPage() {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [mainImageError, setMainImageError] = useState(false);
+  const [thumbnailErrors, setThumbnailErrors] = useState<{[key: number]: boolean}>({});
 
   const router = useRouter();
   const params = useParams();
@@ -81,6 +83,9 @@ export default function ProductDetailPage() {
       
       setLoading(true);
       setError(null);
+      // Reset image errors when fetching new product
+      setMainImageError(false);
+      setThumbnailErrors({});
       
       try {
         const res = await fetch(`${API_BASE_URL}/api/v1/products/${productId}`);
@@ -99,6 +104,11 @@ export default function ProductDetailPage() {
 
     fetchProduct();
   }, [productId]);
+
+  // Reset main image error when switching images
+  useEffect(() => {
+    setMainImageError(false);
+  }, [selectedImageIndex]);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('kk-KZ', {
@@ -184,11 +194,13 @@ export default function ProductDetailPage() {
           <div className="space-y-4">
             {/* Main Image */}
             <div className="aspect-square overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700">
-              {product.image_urls && product.image_urls.length > 0 ? (
+              {product.image_urls && product.image_urls.length > 0 && !mainImageError ? (
                 <img
                   src={product.image_urls[selectedImageIndex]}
                   alt={product.name}
                   className="w-full h-full object-cover"
+                  onError={() => setMainImageError(true)}
+                  referrerPolicy="no-referrer"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700">
@@ -201,21 +213,25 @@ export default function ProductDetailPage() {
             {product.image_urls && product.image_urls.length > 1 && (
               <div className="flex gap-2 overflow-x-auto">
                 {product.image_urls.map((image, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImageIndex(index)}
-                    className={`flex-shrink-0 w-20 h-20 overflow-hidden rounded-lg border-2 transition-colors ${
-                      selectedImageIndex === index
-                        ? 'border-black dark:border-white'
-                        : 'border-gray-200 dark:border-gray-700'
-                    }`}
-                  >
-                    <img
-                      src={image}
-                      alt={`${product.name} ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
+                  !thumbnailErrors[index] && (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedImageIndex(index)}
+                      className={`flex-shrink-0 w-20 h-20 overflow-hidden rounded-lg border-2 transition-colors ${
+                        selectedImageIndex === index
+                          ? 'border-black dark:border-white'
+                          : 'border-gray-200 dark:border-gray-700'
+                      }`}
+                    >
+                      <img
+                        src={image}
+                        alt={`${product.name} ${index + 1}`}
+                        className="w-full h-full object-cover"
+                        onError={() => setThumbnailErrors(prev => ({...prev, [index]: true}))}
+                        referrerPolicy="no-referrer"
+                      />
+                    </button>
+                  )
                 ))}
               </div>
             )}

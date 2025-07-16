@@ -25,7 +25,7 @@ import {
 import { useTranslations } from "@/contexts/language-context";
 import ProductGrid from "@/components/dashboard/catalog/product-grid";
 
-const API_BASE_URL = "https://www.closetmind.studio";
+const API_BASE_URL = "http://localhost:8000";
 
 interface Store {
   id: number;

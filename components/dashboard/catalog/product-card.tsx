@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -41,6 +41,12 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const tDashboard = useTranslations('dashboard');
+  const [imageError, setImageError] = useState(false);
+
+  // Reset image error when product changes
+  useEffect(() => {
+    setImageError(false);
+  }, [product.id]);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('kk-KZ', {
@@ -69,11 +75,13 @@ export default function ProductCard({ product }: ProductCardProps) {
       <div className="relative">
         {/* Product Image */}
         <div className="aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700">
-          {product.image_urls && product.image_urls.length > 0 ? (
+          {product.image_urls && product.image_urls.length > 0 && !imageError ? (
             <img
               src={product.image_urls[0]}
               alt={product.name}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              onError={() => setImageError(true)}
+              referrerPolicy="no-referrer"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500">
