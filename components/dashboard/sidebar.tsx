@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { MessageSquare, Shirt, ListChecks, LogOut, Download, Bot, Sparkles, Store } from "lucide-react"
+import { MessageSquare, Shirt, ListChecks, LogOut, Download, Sparkles, Store } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/contexts/auth-context"
 import { cn } from "@/lib/utils"
@@ -42,7 +42,7 @@ export default function Sidebar() {
       {/* Logo */}
       <Link href="/dashboard" className="relative p-6 pb-4 flex items-center space-x-3 hover:opacity-80 transition-all duration-300 group flex-shrink-0">
         <div className="relative">
-          <Bot className="h-12 w-12 text-primary group-hover:scale-110 transition-transform duration-300" />
+                      <img src="/logo.jpeg" alt="TryStyle Logo" className="h-12 w-12 rounded-lg object-cover group-hover:scale-110 transition-transform duration-300" />
           <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
           <Sparkles className="absolute -top-1 -right-1 h-5 w-5 text-primary/60 animate-bounce" />
         </div>

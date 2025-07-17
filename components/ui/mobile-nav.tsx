@@ -5,7 +5,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
-import { Menu, X, Bot, MessageSquare, Shirt, ListChecks, LogOut, Download, Store } from "lucide-react"
+import { Menu, X, MessageSquare, Shirt, ListChecks, LogOut, Download, Store } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageSwitcher } from "@/components/language-switcher"
@@ -54,7 +54,7 @@ export function MobileNav() {
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center space-x-2 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <Bot className="h-6 w-6 text-primary" />
+            <img src="/logo.jpeg" alt="TryStyle Logo" className="h-6 w-6 rounded object-cover" />
             <span className="text-lg font-semibold text-gray-900 dark:text-white">{tCommon('sidebar.title')}</span>
           </div>
 

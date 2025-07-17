@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Bot } from "lucide-react"
+
 import { MobileNav } from "./mobile-nav"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageSwitcher } from "@/components/language-switcher"
@@ -22,7 +22,7 @@ export function MobileHeader({ title, showNav = true }: MobileHeaderProps) {
         
         <div className="flex items-center space-x-2 flex-1">
           <Link href={isAuthenticated ? "/dashboard" : "/"} className="flex items-center space-x-2">
-            <Bot className="h-6 w-6 text-primary" />
+            <img src="/logo.jpeg" alt="TryStyle Logo" className="h-6 w-6 rounded object-cover" />
             <span className="text-lg font-semibold text-gray-900 dark:text-white">
               {title || "TryStyle"}
             </span>

@@ -50,40 +50,43 @@ export default function ProductGrid({ products, loading, error, hasMore, onLoadM
 
   if (error) {
     return (
-      <Card className="p-8 text-center bg-white dark:bg-gray-800">
-        <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-          {tCommon('common.error')}
-        </h3>
-        <p className="text-gray-600 dark:text-gray-400 mb-4">{error}</p>
-        <Button onClick={() => window.location.reload()} variant="outline">
-          {tCommon('buttons.tryAgain')}
-        </Button>
-      </Card>
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
+        <div className="p-16 text-center mx-auto max-w-lg">
+          <AlertTriangle className="h-12 w-12 text-gray-400 mx-auto mb-6" />
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-3">
+            {tCommon('common.error')}
+          </h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">{error}</p>
+          <Button onClick={() => window.location.reload()} variant="outline" className="bg-black text-white hover:bg-gray-800 border-black">
+            {tCommon('buttons.tryAgain')}
+          </Button>
+        </div>
+      </div>
     );
   }
 
   if (loading && products.length === 0) {
     return (
-      <div className="space-y-6">
+      <div className="w-full space-y-8">
         {/* Loading skeleton */}
-        <div className={`grid gap-6 ${
-          mobileColumns === 1 
-            ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' 
-            : 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
-        }`}>
-          {Array.from({ length: 8 }).map((_, index) => (
-            <Card key={index} className="p-4 bg-white dark:bg-gray-800">
-              <div className="animate-pulse">
-                <div className="bg-gray-200 dark:bg-gray-700 h-48 rounded-lg mb-4"></div>
-                <div className="space-y-2">
-                  <div className="bg-gray-200 dark:bg-gray-700 h-4 rounded w-3/4"></div>
-                  <div className="bg-gray-200 dark:bg-gray-700 h-4 rounded w-1/2"></div>
-                  <div className="bg-gray-200 dark:bg-gray-700 h-6 rounded w-1/4"></div>
+        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
+          <div className={`grid gap-x-3 gap-y-6 sm:gap-x-4 sm:gap-y-8 lg:gap-x-6 lg:gap-y-10 ${
+            mobileColumns === 1 
+              ? 'grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 3xl:grid-cols-7' 
+              : 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 3xl:grid-cols-7'
+          }`}>
+            {Array.from({ length: 14 }).map((_, index) => (
+              <div key={index} className="w-full">
+                <div className="animate-pulse">
+                  <div className="bg-gray-100 dark:bg-gray-800 aspect-[3/4] rounded-none mb-3"></div>
+                  <div className="space-y-2">
+                    <div className="bg-gray-100 dark:bg-gray-800 h-4 rounded w-4/5"></div>
+                    <div className="bg-gray-100 dark:bg-gray-800 h-4 rounded w-2/5"></div>
+                  </div>
                 </div>
               </div>
-            </Card>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -91,52 +94,56 @@ export default function ProductGrid({ products, loading, error, hasMore, onLoadM
 
   if (products.length === 0 && !loading) {
     return (
-      <Card className="p-8 text-center bg-white dark:bg-gray-800">
-        <div className="text-gray-400 dark:text-gray-500 mb-4">
-          <svg className="h-16 w-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M9 9l3-3 3 3" />
-          </svg>
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
+        <div className="p-16 text-center mx-auto max-w-lg">
+          <div className="text-gray-300 dark:text-gray-600 mb-8">
+            <div className="w-24 h-24 mx-auto border border-gray-200 dark:border-gray-700 rounded-full flex items-center justify-center">
+              <span className="text-sm font-medium">NO PRODUCTS</span>
+            </div>
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-3">
+            {tDashboard('catalog.products.empty')}
+          </h3>
+          <p className="text-gray-600 dark:text-gray-400">
+            {tDashboard('catalog.search.noResults')}
+          </p>
         </div>
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-          {tDashboard('catalog.products.empty')}
-        </h3>
-        <p className="text-gray-600 dark:text-gray-400">
-          {tDashboard('catalog.search.noResults')}
-        </p>
-      </Card>
+      </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="w-full space-y-12">
       {/* Products Grid */}
-      <div className={`grid gap-6 ${
-        mobileColumns === 1 
-          ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' 
-          : 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
-      }`}>
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} storeSlug={storeSlug} />
-        ))}
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
+        <div className={`grid gap-x-3 gap-y-6 sm:gap-x-4 sm:gap-y-8 lg:gap-x-6 lg:gap-y-10 ${
+          mobileColumns === 1 
+            ? 'grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 3xl:grid-cols-7' 
+            : 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 3xl:grid-cols-7'
+        }`}>
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} storeSlug={storeSlug} />
+          ))}
+        </div>
       </div>
 
       {/* Load More Button */}
       {hasMore && (
-        <div className="flex justify-center pt-6">
+        <div className="flex justify-center px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
           <Button
             onClick={onLoadMore}
             disabled={loading}
             variant="outline"
             size="lg"
-            className="w-full sm:w-auto"
+            className="min-w-48 bg-black text-white hover:bg-gray-800 border-black uppercase tracking-wide font-medium"
           >
             {loading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {tCommon('buttons.loading')}
+                LOADING...
               </>
             ) : (
-              tDashboard('catalog.products.loadMore')
+              'LOAD MORE'
             )}
           </Button>
         </div>

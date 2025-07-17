@@ -15,8 +15,7 @@ import {
   ExternalLink,
   Package,
   Grid,
-  Grid3x3,
-  Bot
+  Grid3x3
 } from "lucide-react";
 
 import ProductGrid from "@/components/dashboard/catalog/product-grid";
@@ -308,7 +307,7 @@ export default function StoreSlugPage() {
           <div className="container flex h-16 items-center justify-between px-4 max-w-6xl mx-auto">
             <div className="flex items-center space-x-2">
               <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-                <Bot className="h-8 w-8 text-primary" />
+                <img src="/logo.jpeg" alt="TryStyle Logo" className="h-8 w-8 rounded-md object-cover" />
                 <span className="text-2xl font-bold text-gray-900 dark:text-white">
                   TryStyle
                 </span>
@@ -343,11 +342,11 @@ export default function StoreSlugPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
       {/* Navigation Header */}
-      <header className="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-        <div className="container flex h-16 items-center justify-between px-4 max-w-6xl mx-auto">
+      <header className="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 backdrop-blur-sm bg-opacity-95 dark:bg-opacity-95">
+        <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
           <div className="flex items-center space-x-2">
             <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-              <Bot className="h-8 w-8 text-primary" />
+              <img src="/logo.jpeg" alt="TryStyle Logo" className="h-8 w-8 rounded-md object-cover" />
               <span className="text-2xl font-bold text-gray-900 dark:text-white">
                 TryStyle
               </span>
@@ -361,10 +360,10 @@ export default function StoreSlugPage() {
         </div>
       </header>
 
-      <div className="max-w-6xl mx-auto space-y-6 p-4 md:p-6">
+      <div className="space-y-6 px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 py-4 md:py-6">
 
         {/* Store Header */}
-        <Card className="p-6">
+        <Card className="p-6 mx-auto max-w-7xl">
           <div className="flex flex-col md:flex-row gap-6">
             
             {/* Store Logo */}
@@ -442,64 +441,73 @@ export default function StoreSlugPage() {
 
 
         {/* Products Section */}
-        <Tabs defaultValue="products" className="w-full">
-          <TabsList className="grid w-full grid-cols-1">
-            <TabsTrigger value="products" className="gap-2">
-              <Package className="h-4 w-4" />
-              Товары
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="products" className="mt-6 space-y-6">
-            
-            {/* Filters Toggle and Mobile View Switcher */}
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="outline"
-                  disabled
-                  className="gap-2 opacity-50 cursor-not-allowed"
-                >
+        <div className="w-full">
+          <Tabs defaultValue="products" className="w-full">
+            <div className="mx-auto max-w-7xl mb-6">
+              <TabsList className="grid w-full grid-cols-1">
+                <TabsTrigger value="products" className="gap-2">
                   <Package className="h-4 w-4" />
-                  Фильтры
-                </Button>
-                
-                {/* Mobile View Switcher */}
-                <div className="flex items-center gap-1 sm:hidden">
-                  <Button
-                    variant={mobileColumns === 1 ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setMobileColumns(1)}
-                    className="p-2"
-                  >
-                    <Grid className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant={mobileColumns === 2 ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setMobileColumns(2)}
-                    className="p-2"
-                  >
-                    <Grid3x3 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-              
-
+                  Товары
+                </TabsTrigger>
+              </TabsList>
             </div>
 
-            {/* Products Grid */}
-            <ProductGrid 
-              products={products}
-              loading={productsLoading}
-              error={null}
-              hasMore={hasMore}
-              onLoadMore={handleLoadMore}
-              mobileColumns={mobileColumns}
-              storeSlug={storeSlug}
-            />
-          </TabsContent>
-        </Tabs>
+            <TabsContent value="products" className="space-y-6">
+              
+              {/* Filters Toggle and Mobile View Switcher */}
+              <div className="flex justify-between items-center mx-auto max-w-7xl">
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="outline"
+                    disabled
+                    className="gap-2 opacity-50 cursor-not-allowed"
+                  >
+                    <Package className="h-4 w-4" />
+                    Фильтры
+                  </Button>
+                  
+                  {/* Mobile View Switcher */}
+                  <div className="flex items-center gap-1 sm:hidden">
+                    <Button
+                      variant={mobileColumns === 1 ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setMobileColumns(1)}
+                      className="p-2"
+                    >
+                      <Grid className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant={mobileColumns === 2 ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setMobileColumns(2)}
+                      className="p-2"
+                    >
+                      <Grid3x3 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+                
+                {/* Product Count */}
+                {total > 0 && (
+                  <span className="text-sm text-gray-600 dark:text-gray-300">
+                    {total} товаров
+                  </span>
+                )}
+              </div>
+
+              {/* Products Grid */}
+              <ProductGrid 
+                products={products}
+                loading={productsLoading}
+                error={null}
+                hasMore={hasMore}
+                onLoadMore={handleLoadMore}
+                mobileColumns={mobileColumns}
+                storeSlug={storeSlug}
+              />
+            </TabsContent>
+          </Tabs>
+        </div>
       </div>
     </div>
   );

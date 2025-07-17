@@ -5,7 +5,6 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import {
   ArrowRight,
-  Bot,
   Camera,
   Heart,
   MessageSquare,
@@ -72,7 +71,7 @@ export default function LandingPage() {
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2 group">
-            <Bot className="h-7 w-7 text-primary transition-transform group-hover:scale-110" />
+            <img src="/logo.jpeg" alt="TryStyle Logo" className="h-7 w-7 rounded-md object-cover transition-transform group-hover:scale-110" />
             <span className="text-xl font-semibold text-gray-900 dark:text-white">{tLanding('brand.name')}</span>
           </Link>
           <div className="flex items-center space-x-2">

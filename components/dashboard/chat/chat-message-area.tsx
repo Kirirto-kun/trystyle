@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Send, Loader2, User, Bot, Info, Sparkles, ArrowLeft } from "lucide-react"
+import { Send, Loader2, User, Info, Sparkles, ArrowLeft } from "lucide-react"
 import type { UIMessage, Chat } from "@/lib/types"
 import { useAuth } from "@/contexts/auth-context"
 import AgentMessageRenderer from "./agent-message-renderer"
@@ -145,7 +145,7 @@ export default function ChatMessageArea({
           <div className="text-center p-8 md:p-12">
             <div className="max-w-md mx-auto space-y-6">
               <div className="relative">
-                <Bot className="h-16 w-16 md:h-20 md:w-20 text-primary mx-auto" />
+                <img src="/logo.jpeg" alt="TryStyle Logo" className="h-16 w-16 md:h-20 md:w-20 rounded-xl object-cover mx-auto" />
                 <Sparkles className="absolute -top-2 -right-2 h-6 w-6 md:h-8 md:w-8 text-primary/60 animate-bounce" />
               </div>
               <div className="space-y-3">

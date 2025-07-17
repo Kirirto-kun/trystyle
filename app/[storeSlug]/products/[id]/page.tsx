@@ -16,8 +16,7 @@ import {
   ExternalLink,
   Package,
   Heart,
-  Share2,
-  Bot
+  Share2
 } from "lucide-react";
 import Link from "next/link";
 import ReviewsSection from "@/components/dashboard/catalog/reviews-section";
@@ -131,7 +130,7 @@ export default function StoreProductDetailPage() {
           <div className="container flex h-16 items-center justify-between px-4 max-w-6xl mx-auto">
             <div className="flex items-center space-x-2">
               <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-                <Bot className="h-8 w-8 text-primary" />
+                <img src="/logo.jpeg" alt="TryStyle Logo" className="h-8 w-8 rounded-md object-cover" />
                 <span className="text-2xl font-bold text-gray-900 dark:text-white">
                   TryStyle
                 </span>
@@ -163,7 +162,7 @@ export default function StoreProductDetailPage() {
           <div className="container flex h-16 items-center justify-between px-4 max-w-6xl mx-auto">
             <div className="flex items-center space-x-2">
               <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-                <Bot className="h-8 w-8 text-primary" />
+                <img src="/logo.jpeg" alt="TryStyle Logo" className="h-8 w-8 rounded-md object-cover" />
                 <span className="text-2xl font-bold text-gray-900 dark:text-white">
                   TryStyle
                 </span>
@@ -202,7 +201,7 @@ export default function StoreProductDetailPage() {
         <div className="container flex h-16 items-center justify-between px-4 max-w-6xl mx-auto">
           <div className="flex items-center space-x-2">
             <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-              <Bot className="h-8 w-8 text-primary" />
+              <img src="/logo.jpeg" alt="TryStyle Logo" className="h-8 w-8 rounded-md object-cover" />
               <span className="text-2xl font-bold text-gray-900 dark:text-white">
                 TryStyle
               </span>

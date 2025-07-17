@@ -13,7 +13,6 @@ import {
   Heart,
   Sparkles,
   ArrowRight,
-  Bot,
   ShoppingBag
 } from "lucide-react"
 
@@ -70,7 +69,7 @@ export default function DashboardPage() {
       <div className="space-y-4">
         <div className="flex items-center space-x-3">
           <div className="relative">
-            <Bot className="h-12 w-12 text-primary" />
+            <img src="/logo.jpeg" alt="TryStyle Logo" className="h-12 w-12 rounded-lg object-cover" />
             <Sparkles className="absolute -top-1 -right-1 h-5 w-5 text-primary/60 animate-bounce" />
           </div>
           <div>
