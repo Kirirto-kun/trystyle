@@ -1,8 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Star, Eye, MapPin, Store as StoreIcon } from "lucide-react";
 import { useTranslations } from "@/contexts/language-context";
 import Link from "next/link";
+import { generateSlug } from "@/lib/utils";
 
 interface Product {
   id: number;
@@ -37,8 +42,12 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, storeSlug }: ProductCardProps) {
+  const tDashboard = useTranslations('dashboard');
   const [imageError, setImageError] = useState(false);
   const [hoverImage, setHoverImage] = useState(false);
+
+  // Fallback: если storeSlug не передан или пустой, генерируем из product.store.name
+  const effectiveStoreSlug = (storeSlug && storeSlug.trim()) || generateSlug(product.store.name);
 
   // Reset image error when product changes
   useEffect(() => {
@@ -59,14 +68,11 @@ export default function ProductCard({ product, storeSlug }: ProductCardProps) {
   const currentImageUrl = hoverImage && hasSecondImage ? product.image_urls[1] : product.image_urls[0];
 
   return (
-    <Link 
-      href={storeSlug ? `/${storeSlug}/products/${product.id}` : `/dashboard/catalog/products/${product.id}`} 
-      className="group block w-full"
-    >
-      <div className="w-full">
+    <Card className="group hover:shadow-lg transition-all duration-300 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 overflow-hidden">
+      <Link href={`/${effectiveStoreSlug}/products/${product.id}`} className="block">
         {/* Product Image */}
         <div 
-          className="relative aspect-[3/4] overflow-hidden bg-gray-50 dark:bg-gray-900 mb-3"
+          className="relative aspect-[3/4] overflow-hidden bg-gray-50 dark:bg-gray-900"
           onMouseEnter={() => setHoverImage(true)}
           onMouseLeave={() => setHoverImage(false)}
         >
@@ -97,7 +103,9 @@ export default function ProductCard({ product, storeSlug }: ProductCardProps) {
             </div>
           )}
         </div>
+      </Link>
 
+      <CardContent className="p-4 space-y-3">
         {/* Product Info */}
         <div className="space-y-1">
           {/* Product Name */}
@@ -117,7 +125,43 @@ export default function ProductCard({ product, storeSlug }: ProductCardProps) {
             )}
           </div>
         </div>
-      </div>
-    </Link>
+
+        {/* Store Info */}
+        <div className="flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+          <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400">
+            <StoreIcon className="h-3 w-3" />
+            <span className="truncate">{product.store.name}</span>
+          </div>
+          <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400">
+            <MapPin className="h-3 w-3" />
+            <span>{product.store.city}</span>
+          </div>
+        </div>
+
+        {/* Category & Sizes */}
+        <div className="flex flex-wrap gap-1">
+          <Badge variant="outline" className="text-xs">
+            {product.category}
+          </Badge>
+          {product.sizes && product.sizes.length > 0 && (
+            <Badge variant="outline" className="text-xs">
+              {product.sizes.slice(0, 3).join(', ')}
+              {product.sizes.length > 3 && '...'}
+            </Badge>
+          )}
+        </div>
+
+        {/* Action Button */}
+        <Link 
+          href={`/${effectiveStoreSlug}/products/${product.id}`} 
+          className="block w-full"
+        >
+          <Button className="w-full mt-3 group-hover:bg-gray-900 dark:group-hover:bg-white transition-colors">
+            <Eye className="h-4 w-4 mr-2" />
+            {tDashboard('catalog.products.viewDetails')}
+          </Button>
+        </Link>
+      </CardContent>
+    </Card>
   );
 } 

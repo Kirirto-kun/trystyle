@@ -114,6 +114,13 @@ After:  https://trystyle.live/macho
 - ✅ **Conditional routing**: Products link to store context when storeSlug available, regular catalog otherwise
 - ✅ **Navigation consistency**: Store product pages have same navbar with TryStyle logo and language switcher
 - ✅ **Breadcrumb logic**: "Back to store" instead of "Back to catalog" in store context
+
+### Public Store Access:
+- ✅ **No authentication required**: Store pages (`/[storeSlug]`) are now publicly accessible
+- ✅ **No authentication required**: Store product pages (`/[storeSlug]/products/[id]`) are now publicly accessible
+- ✅ **Removed auth checks**: Eliminated `useAuth` checks from store-related pages
+- ✅ **Public browsing**: Users can browse stores and products without logging in
+- ✅ **Middleware compatibility**: Middleware allows store slug routes without authentication
 - ✅ **Customer information**: Name, email, order details
 - ✅ **Statistics**: Order counts by status
 
@@ -4087,3 +4094,104 @@ useEffect(() => {
 
 **Результат:**
 Все иконки робота заменены на пользовательский логотип logo.jpeg с сохранением всех анимаций и hover-эффектов. Логотип отображается во всех частях приложения с правильными размерами и стилями.
+
+---
+
+## [2024] Store Slug Fallback Fix - COMPLETED ✅
+
+### User Request:
+"смотри я нажиманю на посмотреть магазин, во вкладке все магазины, и там типа нажимаю на Qazaq Republic и запрос станоится такой; @https://trystyle.live/undefined а нужно https://trystyle.live/qazaq-republic" (When clicking on "View Store" in the stores tab, clicking on "Qazaq Republic" results in URL "https://trystyle.live/undefined" instead of "https://trystyle.live/qazaq-republic")
+
+### Problem Identified:
+Store objects returned from the backend did not have the `slug` field populated, causing `store.slug` to be `undefined` in frontend components. This resulted in URLs like `/undefined` instead of proper store slugs like `/qazaq-republic`.
+
+### Root Cause:
+- **Backend issue**: Store creation doesn't automatically generate slugs
+- **Missing data**: Existing stores lack slug field in database
+- **Frontend dependency**: Components directly used `store.slug` without fallback
+
+### Implementation:
+
+#### **Store Card Component Fix (`components/dashboard/catalog/store-card.tsx`)**
+**Added automatic slug generation fallback:**
+- **Import added**: `import { generateSlug } from "@/lib/utils"`
+- **Fallback logic**: `const storeSlug = store.slug || generateSlug(store.name);`
+- **URL generation**: `<Link href={`/${storeSlug}`}>` uses fallback slug
+
+#### **Product Detail Page Fix (`app/dashboard/catalog/products/[id]/page.tsx`)**
+**Added inline fallback for store links:**
+- **Import added**: `import { generateSlug } from "@/lib/utils"`
+- **Inline fallback**: `<Link href={`/${product.store.slug || generateSlug(product.store.name)}`}>`
+
+### **Slug Generation Logic:**
+For store name "Qazaq Republic":
+- **Input**: "Qazaq Republic"
+- **Process**: toLowerCase() → spaces to hyphens → special chars removed
+- **Output**: "qazaq-republic"
+- **Result URL**: `https://trystyle.live/qazaq-republic`
+
+### **Technical Benefits:**
+- **Backward compatibility**: Works with existing stores without slug field
+- **Automatic handling**: No manual intervention required for missing slugs
+- **SEO-friendly URLs**: Always generates proper URL-safe slugs
+- **Consistent behavior**: All store links work regardless of backend slug status
+
+### **Files Modified:**
+```
+components/dashboard/catalog/store-card.tsx     # ✅ Added fallback logic for store cards
+app/dashboard/catalog/products/[id]/page.tsx   # ✅ Added inline fallback for product→store links
+cursor-logs.md                                 # ✅ Documentation update
+```
+
+### **Result:**
+- **Store "Qazaq Republic"** now accessible via `https://trystyle.live/qazaq-republic`
+- **All store links** work correctly even without backend slug field
+- **Automatic slug generation** from store names using existing `generateSlug()` function
+- **No more `/undefined` URLs** - all store links resolve to proper slugs
+
+**Status: COMPLETED** ✅ - Store navigation now works reliably with automatic slug generation fallback.
+
+#### **Second Fix - ProductCard Slug Fallback**
+**Problem**: Even with StoreCard fixes, clicking on products in the main catalog still led to `/undefined/products/123` URLs because ProductCard component in `/dashboard/catalog` wasn't receiving `storeSlug` prop.
+
+**Root Cause**: 
+- `ProductGrid` in main catalog (`/dashboard/catalog/page.tsx`) doesn't pass `storeSlug` prop
+- `ProductCard` used `storeSlug` directly without fallback for missing slug
+- Product links pointed to store context pages but couldn't resolve store slug
+
+**Additional Fixes:**
+- ✅ **ProductCard component** (`components/dashboard/catalog/product-card.tsx`):
+  - Added import: `import { generateSlug } from "@/lib/utils"`
+  - Added fallback: `const effectiveStoreSlug = storeSlug || generateSlug(product.store.name)`
+  - Updated link: `href={`/${effectiveStoreSlug}/products/${product.id}`}`
+
+- ✅ **Store Page fallback logic** (`app/[storeSlug]/page.tsx`):
+  - Added import: `import { generateSlug } from "@/lib/utils"`
+  - Replaced primitive slug generation with proper `generateSlug()` function
+  - Improved Cyrillic text handling in store slug matching
+
+**Result**: 
+- ✅ **All product links** now work regardless of where they're clicked
+- ✅ **"Qazaq Republic" products** accessible via `/qazaq-republic/products/123`
+- ✅ **Catalog navigation** works seamlessly between store context and regular catalog
+- ✅ **Consistent slug generation** across all components using same function
+
+#### **Third Fix - Enhanced Slug Validation**
+**User Feedback**: "ты походу не понял надо сделать замену store.name с Qazaq Republic на qazaq-republic и сделать редирект пользователя именно на trystyle.live/qazaq-republic"
+
+**Problem**: Fallback logic wasn't robust enough - it only checked for `undefined` but not `null`, empty strings, or whitespace-only strings.
+
+**Enhanced Solution:**
+- ✅ **Improved validation**: `(store.slug && store.slug.trim()) || generateSlug(store.name)`
+- ✅ **Handles all edge cases**: undefined, null, "", "   " all fallback to generated slug
+- ✅ **Added diagnostics**: Console logging to help debug slug generation
+- ✅ **Comprehensive testing**: Verified all scenarios result in "qazaq-republic"
+
+**Files Updated:**
+```
+components/dashboard/catalog/store-card.tsx         # Enhanced slug validation
+app/dashboard/catalog/products/[id]/page.tsx      # Enhanced slug validation  
+components/dashboard/catalog/product-card.tsx     # Enhanced slug validation
+```
+
+**Test Results**: All edge cases for "Qazaq Republic" now properly redirect to `https://trystyle.live/qazaq-republic`

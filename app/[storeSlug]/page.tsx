@@ -23,6 +23,7 @@ import { Store } from "@/lib/types";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import Link from "next/link";
+import { generateSlug } from "@/lib/utils";
 
 const API_BASE_URL = "https://www.closetmind.studio";
 
@@ -150,14 +151,8 @@ export default function StoreSlugPage() {
                  return true;
                }
                
-               // Try generated slug match
-               const generatedSlug = store.name
-                 ? store.name.toLowerCase()
-                   .replace(/[^a-z0-9\s-]/g, '')
-                   .replace(/\s+/g, '-')
-                   .replace(/-+/g, '-')
-                   .replace(/^-|-$/g, '')
-                 : '';
+               // Try generated slug match using proper generateSlug function
+               const generatedSlug = store.name ? generateSlug(store.name) : '';
                return generatedSlug === storeSlug;
              });
              

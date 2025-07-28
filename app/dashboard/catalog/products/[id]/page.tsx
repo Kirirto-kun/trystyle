@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { useTranslations } from "@/contexts/language-context";
 import Link from "next/link";
+import { generateSlug } from "@/lib/utils";
 import ReviewsSection from "@/components/dashboard/catalog/reviews-section";
 
 const API_BASE_URL = "https://www.closetmind.studio";
@@ -365,7 +366,7 @@ export default function ProductDetailPage() {
                   </div>
                 </div>
                 
-                <Link href={`/${product.store.slug}`}>
+                <Link href={`/${(product.store.slug && product.store.slug.trim()) || generateSlug(product.store.name)}`}>
                   <Button variant="outline" size="sm">
                     {tDashboard('catalog.stores.viewStore')}
                   </Button>

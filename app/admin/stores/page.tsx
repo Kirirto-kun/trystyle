@@ -435,7 +435,7 @@ export default function StoresManagementPage() {
                       {store.logo_url ? (
                         <img src={store.logo_url} alt={store.name} className="w-8 h-8 object-contain" />
                       ) : (
-                        <Store className="h-6 w-6 text-primary" />
+                        <StoreIcon className="h-6 w-6 text-primary" />
                       )}
                     </div>
                     <div>
@@ -524,9 +524,9 @@ export default function StoresManagementPage() {
       {filteredStores.length === 0 && (
         <Card>
           <CardContent className="py-12">
-            <div className="text-center">
-              <Store className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                      <div className="text-center">
+            <StoreIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
                 {searchTerm || selectedCity !== "all" || adminFilter !== "all" 
                   ? "No stores match your filters" 
                   : "No stores found"

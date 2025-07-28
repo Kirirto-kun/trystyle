@@ -8,6 +8,7 @@ import { Star, MapPin, Package, ExternalLink, Store as StoreIcon } from "lucide-
 import { useTranslations } from "@/contexts/language-context";
 import Link from "next/link";
 import { Store } from "@/lib/types";
+import { generateSlug } from "@/lib/utils";
 
 interface StoreCardProps {
   store: Store;
@@ -15,6 +16,9 @@ interface StoreCardProps {
 
 export default function StoreCard({ store }: StoreCardProps) {
   const tDashboard = useTranslations('dashboard');
+
+  // Fallback: если slug undefined, null или пустая строка, генерируем из названия
+  const storeSlug = (store.slug && store.slug.trim()) || generateSlug(store.name);
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, index) => (
@@ -98,7 +102,7 @@ export default function StoreCard({ store }: StoreCardProps) {
 
         {/* Actions */}
         <div className="grid grid-cols-1 gap-2 pt-2">
-          <Link href={`/${store.slug}`} className="block">
+          <Link href={`/${storeSlug}`} className="block">
             <Button className="w-full group-hover:bg-gray-900 dark:group-hover:bg-white transition-colors">
               <StoreIcon className="h-4 w-4 mr-2" />
               {tDashboard('catalog.stores.viewStore')}
