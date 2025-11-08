@@ -2,15 +2,13 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { MessageSquare, Shirt, ListChecks, LogOut, Download, Sparkles, Store } from "lucide-react"
+import { MessageSquare, LogOut, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/contexts/auth-context"
 import { cn } from "@/lib/utils"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { useTranslations } from "@/contexts/language-context"
-
-const API_BASE_URL = "https://www.closetmind.studio"
 
 export default function Sidebar() {
   const pathname = usePathname()
@@ -20,18 +18,10 @@ export default function Sidebar() {
   
   const navItems = [
     { href: "/dashboard/chat", label: tCommon('navigation.chat'), icon: MessageSquare },
-    { href: "/dashboard/tryon", label: tCommon('navigation.tryon'), icon: Shirt },
-    { href: "/dashboard/wardrobe", label: tCommon('navigation.wardrobe'), icon: Shirt },
-    { href: "/dashboard/catalog", label: tCommon('navigation.catalog'), icon: Store },
-    { href: "/dashboard/waitlist", label: tCommon('navigation.waitlist'), icon: ListChecks },
   ]
 
   const handleLogout = () => {
     logout()
-  }
-
-  const handleDownloadExtension = () => {
-    window.location.href = `${API_BASE_URL}/waitlist/download-extension`
   }
 
   return (

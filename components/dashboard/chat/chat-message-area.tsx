@@ -1,20 +1,21 @@
 "use client"
 import type React from "react"
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useCallback, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Send, Loader2, User, Info, Sparkles, ArrowLeft } from "lucide-react"
+import { Send, Loader2, User, Info, Sparkles, ArrowLeft, Image as ImageIcon, X } from "lucide-react"
 import type { UIMessage, Chat } from "@/lib/types"
 import { useAuth } from "@/contexts/auth-context"
 import AgentMessageRenderer from "./agent-message-renderer"
+import UserMessageContent from "./user-message-content"
 import { useTranslations } from "@/contexts/language-context"
 
 interface ChatMessageAreaProps {
   selectedChat: Chat | null
   messages: UIMessage[]
-  onSendMessage: (chatId: number, messageContent: string) => Promise<void>
+  onSendMessage: (chatId: number, messageContent: string, imageFile?: File) => Promise<void>
   isLoadingMessages: boolean
   isSendingMessage: boolean
   showTitle?: boolean
@@ -33,31 +34,85 @@ export default function ChatMessageArea({
   showBackButton = false,
 }: ChatMessageAreaProps) {
   const [input, setInput] = useState("")
+  const [selectedImage, setSelectedImage] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const { user } = useAuth()
   const t = useTranslations('dashboard')
 
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     if (scrollAreaRef.current) {
       const scrollViewport = scrollAreaRef.current.querySelector("div[data-radix-scroll-area-viewport]")
       if (scrollViewport) {
         scrollViewport.scrollTop = scrollViewport.scrollHeight
       }
     }
-  }
+  }, [])
 
   useEffect(() => {
     scrollToBottom()
-  }, [messages, isLoadingMessages])
+  }, [messages, isLoadingMessages, scrollToBottom])
 
-  const handleSubmit = async (e?: React.FormEvent<HTMLFormElement>) => {
+  const handleImageSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setSelectedImage(file)
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }, [])
+
+  const removeImage = useCallback(() => {
+    setSelectedImage(null)
+    setImagePreview(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }, [])
+
+  const handleSubmit = useCallback(async (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault()
     if (!input.trim() || !selectedChat) return
 
     const messageContent = input
     setInput("")
-    await onSendMessage(selectedChat.id, messageContent)
-  }
+    
+    console.log('ChatMessageArea - Sending message with image:', {
+      message: messageContent,
+      hasImage: !!selectedImage,
+      imageFile: selectedImage ? {
+        name: selectedImage.name,
+        size: selectedImage.size,
+        type: selectedImage.type
+      } : null
+    })
+    
+    await onSendMessage(selectedChat.id, messageContent, selectedImage || undefined)
+    removeImage() // Clear image after sending
+  }, [input, selectedChat, selectedImage, onSendMessage, removeImage])
+
+  // Мемоизируем кнопки предложений
+  const suggestionButtons = useMemo(() => [
+    "Найди мне черную футболку",
+    "Что надеть на свидание?",
+    "Собери наряд для работы",
+    "Покажи зимние куртки"
+  ].map((suggestion) => (
+    <Button
+      key={suggestion}
+      variant="outline"
+      size="sm"
+      className="text-xs h-6 md:h-7 rounded-full px-2 md:px-3 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+      onClick={() => setInput(suggestion)}
+      disabled={isSendingMessage || isLoadingMessages}
+    >
+      {suggestion}
+    </Button>
+  )), [isSendingMessage, isLoadingMessages])
 
   if (!selectedChat) {
     return (
@@ -175,7 +230,7 @@ export default function ChatMessageArea({
                 <div className={`flex-1 max-w-full ${msg.role === "user" ? "flex justify-end" : ""}`}>
                   {msg.role === "user" ? (
                     <div className="bg-black dark:bg-white text-white dark:text-black p-2.5 md:p-4 rounded-2xl rounded-tr-md max-w-[90%] md:max-w-lg shadow-sm">
-                      <p className="text-sm md:text-base leading-relaxed">{msg.content}</p>
+                      <UserMessageContent content={msg.content} />
                     </div>
                   ) : (
                     <div className="w-full max-w-[98%] md:max-w-full">
@@ -214,6 +269,29 @@ export default function ChatMessageArea({
       </ScrollArea>
 
       <footer className="flex-shrink-0 p-2 md:p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 backdrop-blur sticky bottom-0 z-10">
+        {/* Image Preview */}
+        {imagePreview && (
+          <div className="mb-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm text-gray-600 dark:text-gray-300">Загруженное изображение:</span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={removeImage}
+                className="h-6 w-6 p-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            <img
+              src={imagePreview}
+              alt="Preview"
+              className="max-w-32 max-h-32 object-cover rounded-lg"
+            />
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="flex items-end space-x-2 md:space-x-3">
           <div className="flex-1 relative">
             <Input
@@ -234,6 +312,26 @@ export default function ChatMessageArea({
               {input.length}/500
             </div>
           </div>
+          {/* Image Upload Button */}
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => fileInputRef.current?.click()}
+            className="h-10 w-10 rounded-full p-0 border-2 border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
+          >
+            <ImageIcon className="h-4 w-4" />
+            <span className="sr-only">Upload Image</span>
+          </Button>
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleImageSelect}
+            className="hidden"
+          />
+
           <Button 
             type="submit" 
             disabled={isSendingMessage || isLoadingMessages || !input.trim()}
@@ -253,23 +351,7 @@ export default function ChatMessageArea({
           <div className="mt-2 md:mt-4 space-y-2">
             <p className="text-xs text-gray-600 dark:text-gray-300">Попробуйте спросить:</p>
             <div className="flex flex-wrap gap-1 md:gap-2">
-              {[
-                "Найди мне черную футболку",
-                "Что надеть на свидание?",
-                "Собери наряд для работы",
-                "Покажи зимние куртки"
-              ].map((suggestion) => (
-                <Button
-                  key={suggestion}
-                  variant="outline"
-                  size="sm"
-                  className="text-xs h-6 md:h-7 rounded-full px-2 md:px-3 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
-                  onClick={() => setInput(suggestion)}
-                  disabled={isSendingMessage || isLoadingMessages}
-                >
-                  {suggestion}
-                </Button>
-              ))}
+              {suggestionButtons}
             </div>
           </div>
         )}

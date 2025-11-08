@@ -11,7 +11,7 @@ import { Card } from "@/components/ui/card";
 import { Loader2, X } from "lucide-react";
 import { useTranslations } from "@/contexts/language-context";
 
-const API_BASE_URL = "https://www.closetmind.studio";
+const API_BASE_URL = "http://localhost:8000";
 
 interface Filters {
   query: string;
@@ -205,8 +205,8 @@ export default function ProductFilters({ filters, onFiltersChange, onClearFilter
                 className="w-full"
               />
               <div className="flex justify-between text-xs text-gray-500 mt-1">
-                <span>{priceRange[0]} ₸</span>
-                <span>{priceRange[1]} ₸</span>
+                <span>{priceRange[0]} ₽</span>
+                <span>{priceRange[1]} ₽</span>
               </div>
             </div>
           </div>

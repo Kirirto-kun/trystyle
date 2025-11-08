@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useCallback, useMemo } from "react"
 import ChatList from "@/components/dashboard/chat/chat-list"
 import ChatMessageArea from "@/components/dashboard/chat/chat-message-area"
 import { apiCall } from "@/lib/api"
@@ -23,7 +23,7 @@ export default function ChatPage() {
   const [showChatList, setShowChatList] = useState(true)
 
   // Загрузка списка чатов
-  const fetchChats = async () => {
+  const fetchChats = useCallback(async () => {
     setIsLoadingChats(true)
     try {
       const data = await apiCall<Chat[]>('/api/v1/chats/')
@@ -34,10 +34,10 @@ export default function ChatPage() {
     } finally {
       setIsLoadingChats(false)
     }
-  }
+  }, [])
 
   // Загрузка сообщений для выбранного чата
-  const fetchMessages = async (chatId: number) => {
+  const fetchMessages = useCallback(async (chatId: number) => {
     setIsLoadingMessages(true)
     try {
       const data = await apiCall<ChatMessageResponse[]>(`/api/v1/chats/${chatId}/messages`)
@@ -54,20 +54,31 @@ export default function ChatPage() {
     } finally {
       setIsLoadingMessages(false)
     }
-  }
+  }, [])
 
   // Переключение в режим нового чата
-  const handleCreateChat = async (title: string): Promise<Chat | null> => {
+  const handleCreateChat = useCallback(async (title: string): Promise<Chat | null> => {
     setSelectedChatId(null)
     setMessages([])
     setIsNewChatMode(true)
     setShowChatList(false) // Переключаемся на область сообщений на мобильных
     return null // Чат создается только при отправке первого сообщения
-  }
+  }, [])
 
   // Отправка сообщения
-  const handleSendMessage = async (chatId: number | null, messageContent: string) => {
+  const handleSendMessage = useCallback(async (chatId: number | null, messageContent: string, imageFile?: File) => {
     if (!messageContent.trim()) return
+    
+    console.log('handleSendMessage received:', {
+      chatId,
+      message: messageContent,
+      hasImage: !!imageFile,
+      imageFile: imageFile ? {
+        name: imageFile.name,
+        size: imageFile.size,
+        type: imageFile.type
+      } : null
+    })
     
     // Оптимистичное обновление UI
     const optimisticMessage: UIMessage = {
@@ -84,10 +95,23 @@ export default function ChatPage() {
       
       // Если это новый чат, создаем его с первым сообщением
       if (isNewChatMode || !chatId) {
-        const payload = { message: messageContent }
+        const formData = new FormData()
+        formData.append('message', messageContent)
+        if (imageFile) {
+          formData.append('image', imageFile)
+        }
+        
+        console.log('Creating new chat with FormData:')
+        console.log('Message:', messageContent)
+        console.log('Has image:', !!imageFile)
+        if (imageFile) {
+          console.log('Image file:', imageFile.name, imageFile.size, imageFile.type)
+        }
+        
         const response = await apiCall<any>('/api/v1/chats/init', {
           method: 'POST',
-          body: JSON.stringify(payload)
+          body: formData,
+          isFormData: true
         })
         
         // Создаем новый чат в списке
@@ -104,19 +128,50 @@ export default function ChatPage() {
         setIsNewChatMode(false)
         actualChatId = newChat.id
         
-        // Загружаем сообщения из ответа API
-        await fetchMessages(newChat.id)
+        // Добавляем сообщения из ответа API напрямую
+        if (response.messages && Array.isArray(response.messages)) {
+          const uiMessages: UIMessage[] = response.messages.map((msg: any) => ({
+            id: msg.id,
+            role: msg.role,
+            content: msg.content,
+            createdAt: msg.created_at
+          }))
+          setMessages(uiMessages)
+        } else {
+          // Fallback: загружаем сообщения если их нет в ответе
+          await fetchMessages(newChat.id)
+        }
         toast.success('New chat created')
       } else {
         // Обычная отправка сообщения в существующий чат
-        const payload = { message: messageContent }
+        const formData = new FormData()
+        formData.append('message', messageContent)
+        if (imageFile) {
+          formData.append('image', imageFile)
+        }
+        
+        console.log('Sending message to existing chat with FormData:')
+        console.log('Chat ID:', actualChatId)
+        console.log('Message:', messageContent)
+        console.log('Has image:', !!imageFile)
+        if (imageFile) {
+          console.log('Image file:', imageFile.name, imageFile.size, imageFile.type)
+        }
+        
         const response = await apiCall<ChatMessageResponse>(`/api/v1/chats/${actualChatId}/messages`, {
           method: 'POST',
-          body: JSON.stringify(payload)
+          body: formData,
+          isFormData: true
         })
         
-        // Перезагружаем сообщения для получения ответа
-        await fetchMessages(actualChatId!)
+        // Добавляем ответ агента напрямую в состояние
+        const agentMessage: UIMessage = {
+          id: response.id,
+          role: 'assistant',
+          content: response.content,
+          createdAt: response.created_at
+        }
+        setMessages(prev => [...prev, agentMessage])
       }
     } catch (error) {
       console.error('Error sending message:', error)
@@ -126,10 +181,10 @@ export default function ChatPage() {
     } finally {
       setIsSendingMessage(false)
     }
-  }
+  }, [isNewChatMode])
 
   // Удаление чата
-  const handleDeleteChat = async (chatId: number): Promise<boolean> => {
+  const handleDeleteChat = useCallback(async (chatId: number): Promise<boolean> => {
     setIsDeletingChat(prev => new Set(prev.add(chatId)))
     try {
       await apiCall(`/api/v1/chats/${chatId}`, {
@@ -153,42 +208,58 @@ export default function ChatPage() {
         return newSet
       })
     }
-  }
+  }, [selectedChatId])
 
   // Выбор чата
-  const handleSelectChat = (chatId: number) => {
+  const handleSelectChat = useCallback((chatId: number) => {
     setSelectedChatId(chatId)
     setIsNewChatMode(false)
     setShowChatList(false) // Переключаемся на область сообщений на мобильных
     fetchMessages(chatId)
-  }
+  }, [fetchMessages])
 
   // Возврат к списку чатов (для мобильных)
-  const handleBackToChatList = () => {
+  const handleBackToChatList = useCallback(() => {
     setShowChatList(true)
-  }
+  }, [])
 
   // Загрузка чатов при монтировании
   useEffect(() => {
     fetchChats()
-  }, [])
+  }, [fetchChats])
 
-  const selectedChat = chats.find(chat => chat.id === selectedChatId) || null
+  const selectedChat = useMemo(() => 
+    chats.find(chat => chat.id === selectedChatId) || null, 
+    [chats, selectedChatId]
+  )
   
   // Создаем псевдо-чат для режима нового чата
-  const displayChat = isNewChatMode ? {
+  const displayChat = useMemo(() => isNewChatMode ? {
     id: 0,
     title: "New Chat",
     user_id: 0,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
-  } : selectedChat
+  } : selectedChat, [isNewChatMode, selectedChat])
 
   // Обертка для handleSendMessage, передающая правильный chatId
-  const wrappedHandleSendMessage = async (chatId: number, messageContent: string) => {
+  const wrappedHandleSendMessage = useCallback(async (chatId: number, messageContent: string, imageFile?: File) => {
     const actualChatId = isNewChatMode ? null : chatId
-    await handleSendMessage(actualChatId, messageContent)
-  }
+    
+    console.log('wrappedHandleSendMessage received:', {
+      chatId,
+      actualChatId,
+      message: messageContent,
+      hasImage: !!imageFile,
+      imageFile: imageFile ? {
+        name: imageFile.name,
+        size: imageFile.size,
+        type: imageFile.type
+      } : null
+    })
+    
+    await handleSendMessage(actualChatId, messageContent, imageFile)
+  }, [isNewChatMode, handleSendMessage])
 
   return (
     <div className="flex h-[calc(100vh-4rem)] bg-white dark:bg-gray-900">

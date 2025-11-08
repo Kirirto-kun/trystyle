@@ -1,7 +1,7 @@
 import Cookies from "js-cookie"
 import { toast } from "sonner"
 
-const API_BASE_URL = "https://www.closetmind.studio"
+const API_BASE_URL = "http://localhost:8000"
 
 interface ApiCallOptions extends RequestInit {
   isFormData?: boolean
@@ -9,8 +9,12 @@ interface ApiCallOptions extends RequestInit {
 
 export async function apiCall<T>(endpoint: string, options: ApiCallOptions = {}): Promise<T> {
   const token = Cookies.get("authToken")
-  const headers: { [key: string]: string } = options.isFormData
-    ? {}
+  
+  // Check if body is FormData
+  const isFormData = options.body instanceof FormData || options.isFormData
+  
+  const headers: { [key: string]: string } = isFormData
+    ? {} // Don't set Content-Type for FormData - browser will set it with boundary
     : {
         "Content-Type": "application/json",
         ...(options.headers as { [key: string]: string }),
@@ -21,7 +25,22 @@ export async function apiCall<T>(endpoint: string, options: ApiCallOptions = {})
   }
 
   const fullUrl = `${API_BASE_URL}${endpoint}`
-  console.log(`API Call: ${options.method || "GET"} ${fullUrl}`, { headers: options.headers, body: options.body })
+  
+  // Detailed logging for FormData
+  if (isFormData && options.body instanceof FormData) {
+    console.log(`API Call (FormData): ${options.method || "GET"} ${fullUrl}`)
+    console.log('FormData contents:')
+    for (const [key, value] of (options.body as FormData).entries()) {
+      if (value instanceof File) {
+        console.log(`  ${key}: File(${value.name}, ${value.size} bytes, ${value.type})`)
+      } else {
+        console.log(`  ${key}: ${value}`)
+      }
+    }
+    console.log('Headers:', headers)
+  } else {
+    console.log(`API Call: ${options.method || "GET"} ${fullUrl}`, { headers, body: options.body })
+  }
 
   try {
     const response = await fetch(fullUrl, {

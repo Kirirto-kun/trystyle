@@ -7,7 +7,7 @@ import Cookies from "js-cookie"
 import type { UserResponse, Token } from "@/lib/types" // We'll define these types later
 import { toast } from "sonner" // Using sonner for toasts
 
-const API_BASE_URL = "https://www.closetmind.studio"
+const API_BASE_URL = "http://localhost:8000"
 
 interface AuthContextType {
   user: UserResponse | null
@@ -37,6 +37,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setToken(currentToken)
         // Try to get fresh user data from API
         try {
+          if (!API_BASE_URL) {
+            throw new Error("API_BASE_URL is not defined")
+          }
+          
           const response = await fetch(`${API_BASE_URL}/auth/me`, {
             headers: {
               "Authorization": `Bearer ${currentToken}`,
@@ -57,6 +61,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           }
         } catch (error) {
           console.error("Error fetching user data:", error)
+          // Don't clear auth data on network errors or API_BASE_URL issues
+          if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+            console.warn("Network error, using stored user data")
+          } else if (error instanceof Error && error.message.includes('API_BASE_URL')) {
+            console.warn("API_BASE_URL not configured, using stored user data")
+          }
           // Fallback to stored user data
           const storedUser = Cookies.get("authUser")
           if (storedUser) {

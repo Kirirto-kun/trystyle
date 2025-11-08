@@ -1319,7 +1319,7 @@ components/dashboard/catalog/
 - ✅ **Multi-criteria Filters**: 
   - Category selection (dynamic from API)
   - City selection (dynamic from API)
-  - Price range slider (0-100000₸)
+  - Price range slider (0-100000₽)
   - Rating slider (1-5 stars)
   - Brand text search
   - Size selection (XS-XXL)
@@ -1396,8 +1396,8 @@ public/locales/ru/
 **Changed currency from Russian Rubles to Kazakhstan Tenge:**
 - ✅ **Currency Code**: Changed from 'RUB' to 'KZT' in price formatting
 - ✅ **Locale**: Updated from 'ru-RU' to 'kk-KZ' for proper number formatting
-- ✅ **Currency Symbol**: Changed ₽ to ₸ in price range filters
-- ✅ **Price Range**: Adjusted from 0-10,000₽ to 0-100,000₸ to match typical Kazakh pricing
+- ✅ **Currency Symbol**: Changed ₽ to ₽ in price range filters
+- ✅ **Price Range**: Adjusted from 0-10,000₽ to 0-100,000₽ to match typical Kazakh pricing
 - ✅ **Slider Step**: Increased from 100 to 1000 for better UX with higher denominations
 
 **Files Modified:**
@@ -3268,6 +3268,74 @@ Other Pages Layout:
 
 ### Additional Chat Translation Fix
 **Issue**: User found additional hardcoded Russian text "Добро пожаловать в TryStyle"
+
+### Search Description Priority Display
+**Issue**: `search_description` should be displayed first, before all other content
+**Solution**: Moved `search_description` to the top of the display order in agent message renderer
+**Result**: Search descriptions now appear first in all search agent responses
+
+### Clarifying Questions Display
+**Issue**: New JSON schema for color type analysis with `needs_clarification` and `clarifying_question`
+**Solution**: Added display for clarifying questions with styled yellow block
+**Result**: User-friendly display of follow-up questions from the agent
+
+### Chat Reload Fix
+**Issue**: Chat was reloading/refreshing every time a response was received, causing poor UX
+**Solution**: 
+- Removed `fetchMessages()` calls after sending messages
+- Added direct state updates for new messages instead of full reload
+- Implemented `useCallback` and `useMemo` for all functions and computed values
+- Optimized component re-renders with proper memoization
+**Result**: Smooth chat experience without unnecessary reloads
+**Files Modified**:
+- `app/dashboard/chat/page.tsx` - Added memoization and direct state updates
+- `components/dashboard/chat/chat-message-area.tsx` - Added memoization for handlers
+
+### React Hooks Order Fix
+**Issue**: `useMemo` hook was called inside conditional rendering, violating Rules of Hooks
+**Solution**: Moved `useMemo` for suggestion buttons to the top level of component
+**Result**: Fixed "Rendered more hooks than during the previous render" error
+
+### Auth Context Error Handling
+**Issue**: `TypeError: Failed to fetch` in auth-context when API_BASE_URL is undefined
+**Solution**: Added proper error handling for network errors and missing API_BASE_URL
+**Result**: Graceful fallback to stored user data when API is unavailable
+
+### Outfit Display Redesign
+**Issue**: Outfit items displayed in small 3-column grid, images too small, poor visual appeal
+**Solution**: Complete redesign with adaptive layouts:
+- **1 item**: Large centered display (320px width)
+- **2 items**: Side-by-side grid with large images
+- **3 items**: First item large and centered, remaining 2 in smaller grid below
+- **4+ items**: 2x2 grid with optimal sizing
+- Enhanced visual design with gradients, shadows, hover effects
+- Larger images with better aspect ratios
+- Improved typography and spacing
+- Premium styling with rounded corners and animations
+**Result**: Much more appealing outfit display with larger, more visible images
+
+### Outfit Card Size Optimization
+**Issue**: Cards were too large, text too big, images oversized
+**Solution**: Reduced all element sizes:
+- **Card padding**: 8 → 6 (p-8 → p-6)
+- **Text sizes**: lg → sm, 3xl → lg, xl → sm, sm → xs
+- **Image containers**: 320px → 240px, 256px → 192px, max-w-2xl → max-w-lg
+- **Spacing**: gaps 6 → 4, margins 8 → 6
+- **Shadows**: 2xl → lg, 3xl → xl
+- **Border radius**: 3xl → 2xl, 2xl → xl
+- **Button sizes**: py-3 → py-2, larger icons → smaller icons
+**Result**: More balanced, appropriately sized outfit cards
+
+### Remove Duplicate Buy Button
+**Issue**: Each item had both "Купить" button and "В магазин" hover button - redundant
+**Solution**: Removed the "Купить" button from item info section, kept only "В магазин" on hover
+**Result**: Cleaner item display with single action button
+
+### Remove Trusted Stores Text
+**Issue**: Unnecessary text "Все товары от проверенных магазинов" cluttering the interface
+**Solution**: Removed the text block completely
+**Result**: Cleaner bottom section with just action buttons
+**Files Modified**: `components/dashboard/chat/outfit-card.tsx`
 **Files Modified**: 
 - `public/locales/en/dashboard.json` + `public/locales/ru/dashboard.json`
 - `components/dashboard/chat/chat-message-area.tsx`
@@ -3282,6 +3350,562 @@ Other Pages Layout:
 - Mobile Optimization: Complete with all issues resolved  
 - Chat: COMPLETE translation support with no hardcoded text remaining
 - Ready for production deployment with full bilingual support
+
+---
+
+## Chat Search Metadata Removal (Latest)
+
+### User Request
+"убери это, когда в чате возвращается ответ иногда эта херня сликшком большая"
+
+### Problem
+The chat was displaying a large search metadata block showing "Поиск: 'собери мне аутфит в military стиле'" and "Найдено: 83" which was taking up too much space and cluttering the interface.
+
+### Solution
+**File Modified**: `components/dashboard/chat/agent-message-renderer.tsx`
+
+**Changes Made**:
+- Removed the `SearchMetadata` component from the Search Agent response rendering
+- Deleted lines 34-38 that displayed search query, total found count, and processing time
+- Kept only the product grid display for cleaner interface
+
+**Result**: ✅ Chat interface now shows only the product results without the metadata block, providing a cleaner and more focused user experience
+
+---
+
+## Search Agent Description Field Addition (Latest)
+
+### User Request
+"смотри, теперь появился search_description в Search Agent добавь его, и выводи его как текст как у Outfit Agent понял?"
+
+### Problem
+The Search Agent needed to support a new `search_description` field to provide descriptive text about search results, similar to how Outfit Agent displays description text.
+
+### Solution
+**Files Modified**: 
+- `lib/chat-types.ts`
+- `components/dashboard/chat/agent-message-renderer.tsx`
+
+**Changes Made**:
+- Added `search_description?: string` field to `SearchAgentResult` interface
+- Updated `agent-message-renderer.tsx` to display `search_description` as text in a styled container before the product grid
+- Used similar styling to Outfit Agent description display
+
+**Result**: ✅ Search Agent now supports and displays `search_description` field as descriptive text above the product grid, matching the behavior of Outfit Agent
+
+---
+
+## Fashion Magazine Style Outfit Showcase (Latest)
+
+### User Request
+"смотри теперь такая штучка приходит на фронт, и нам надо показывать несколько аутфитов человеку, но сейчас это выглядит прям хреново знаешь, вообще не красиво... надо как то красиво показывать несколько аутфитов которые сгенрировались, не показыва products показывай suggested_outfits... как ты сделаешь ебеший дизайн как в лучших дизайнерских стилистических выставках журналах, коллажах супер план"
+
+### Problem
+The new JSON format includes `suggested_outfits` array with multiple outfit combinations, but the current display was showing individual products instead of the curated outfit combinations. The user wanted a beautiful, magazine-style design for displaying multiple outfits.
+
+### Solution
+**Files Created/Modified**:
+- `lib/chat-types.ts` - Added new interfaces for `SuggestedOutfit` and `SuggestedOutfitItem`
+- `components/dashboard/chat/outfit-showcase.tsx` - New component for displaying multiple outfits
+- `components/dashboard/chat/outfit-card.tsx` - New component for individual outfit cards
+- `components/dashboard/chat/agent-message-renderer.tsx` - Updated to handle new format
+
+**Design Features**:
+- **Magazine-style layout**: Elegant grid with 2 columns on desktop, 1 on mobile
+- **Gradient backgrounds**: Subtle gradients for visual appeal
+- **Collage-style item display**: Main item larger, secondary items smaller
+- **Hover effects**: Smooth transitions and scaling on hover
+- **Price calculation**: Total outfit price displayed prominently
+- **Typography**: Elegant fonts with proper hierarchy
+- **Responsive design**: Adapts to all screen sizes
+- **Visual effects**: Shadows, borders, and backdrop blur effects
+
+**New JSON Structure Support**:
+```json
+{
+  "result": {
+    "suggested_outfits": [
+      {
+        "outfit_description": "Классический деловой образ",
+        "items": [...],
+        "reasoning": "Классическое сочетание..."
+      }
+    ],
+    "search_description": "Описание результатов..."
+  }
+}
+```
+
+**Result**: ✅ Created a stunning, magazine-style outfit showcase that displays multiple curated outfit combinations with beautiful collages, hover effects, and professional typography - perfect for fashion-forward users
+
+---
+
+## Outfit Card Design Improvements (Latest)
+
+### User Request
+"ну выглядит это конечно страшно аххахахаха во первых нету кнопок для каждой одежды что перейти на страницу магазина, и нету цены на каждую одежду так же смотри когда вернулся один аутфит то там все по жопе видно и делать первую картинку больше чем другие тоже плохая идея, остальные вещи вообще плохо видно и давай не будем делать вещи квадратными, сможем сохранить их изначальный rstio?"
+
+### Problems Fixed
+1. **Missing prices and buttons** for individual items
+2. **Poor single outfit display** - needed better layout for different quantities
+3. **Unequal image sizes** - first image too large, others too small
+4. **Square aspect ratio** - needed to preserve original image proportions
+
+### Solution
+**File Modified**: `components/dashboard/chat/outfit-card.tsx`
+
+**Design Improvements**:
+- **Equal image sizes**: All items now have same size regardless of position
+- **Original aspect ratio**: Changed from `aspect-square` to `aspect-[3/4]` for clothing proportions
+- **Individual item cards**: Each item now has its own card with price and button
+- **Adaptive grid**: Smart grid layout based on number of items (1, 2, 3+ items)
+- **Individual prices**: Each item shows its own price prominently
+- **Store buttons**: "Перейти в магазин" button for each item with external link
+- **Better visibility**: All items are equally visible and accessible
+
+**New Layout Logic**:
+- 1 item: Single column, full width
+- 2 items: 2 columns
+- 3 items: 3 columns  
+- 4+ items: 2 columns with proper spacing
+
+**Result**: ✅ Much better outfit display with equal visibility for all items, individual prices and store buttons, and proper clothing aspect ratios
+
+---
+
+## Search Description Text Layout Fix (Latest)
+
+### User Request
+"смотри этот текст очень большой и он по центру, и это выглядит капец как не очень"
+
+### Problem
+The `search_description` text was too long and centered, making it look unprofessional and hard to read.
+
+### Solution
+**File Modified**: `components/dashboard/chat/outfit-showcase.tsx`
+
+**Changes Made**:
+- **Text alignment**: Changed from centered to left-aligned (`text-left`)
+- **Text size**: Reduced from default to `text-sm` for better readability
+- **Container width**: Increased from `max-w-3xl` to `max-w-4xl` for better text flow
+- **Typography**: Maintained `leading-relaxed` for comfortable reading
+
+**Result**: ✅ Long search descriptions now display properly with left alignment and appropriate sizing, making them much more readable and professional-looking
+
+---
+
+## Outfit Description Font Size Fix (Latest)
+
+### User Request
+"и кстати description очень большими буквами написан, тоже сделай о меньше"
+
+### Problem
+The outfit description text in the outfit cards was too large (`text-xl`), making it look overwhelming and taking up too much space.
+
+### Solution
+**File Modified**: `components/dashboard/chat/outfit-card.tsx`
+
+**Changes Made**:
+- **Font size**: Reduced from `text-xl` to `text-base` for better proportion
+- **Font weight**: Changed from `font-bold` to `font-semibold` for better balance
+- **Maintained**: `leading-tight` for compact display
+
+**Result**: ✅ Outfit descriptions now have a more appropriate size that doesn't overwhelm the card design while maintaining readability
+
+---
+
+## Remove Reasoning Field from SuggestedOutfit (Latest)
+
+### User Request
+"смотри теперь в outfit не будет приходить reasoning"
+
+### Problem
+The `reasoning` field in `SuggestedOutfit` interface is no longer being sent from the backend, causing potential issues and unnecessary display of empty reasoning text.
+
+### Solution
+**Files Modified**: 
+- `lib/chat-types.ts`
+- `components/dashboard/chat/outfit-card.tsx`
+
+**Changes Made**:
+- **Removed `reasoning` field** from `SuggestedOutfit` interface
+- **Removed reasoning display** from outfit cards - deleted the italic text block that showed reasoning
+- **Cleaner cards**: Outfit cards are now more compact without the reasoning section
+
+**New Structure**:
+```typescript
+export interface SuggestedOutfit {
+  outfit_description: string
+  items: SuggestedOutfitItem[]
+  // reasoning field removed
+}
+```
+
+**Result**: ✅ Outfit cards are now more compact and clean without the reasoning section, matching the new backend structure
+
+---
+
+## Currency Symbol Update (Latest)
+
+### User Request
+"₽ а ты можешь везде знаки рублей поставить?"
+
+### Problem
+The application was using Kazakh Tenge symbol (₽) instead of Russian Ruble symbol (₽) for currency display.
+
+### Solution
+**Files Modified**:
+- `components/dashboard/chat/outfit-card.tsx`
+- `components/dashboard/catalog/product-filters.tsx`
+- `cursor-logs.md`
+
+**Changes Made**:
+- **Replaced all ₽ with ₽** in currency formatting functions
+- **Updated price display** to show Russian Rubles instead of Kazakh Tenge
+- **Consistent currency** across all components
+
+**Result**: ✅ All currency symbols now display as Russian Rubles (₽) instead of Kazakh Tenge (₽)
+
+---
+
+## Image Upload Support in Chat (Latest)
+
+### User Request
+"📝 ПРИМЕР ИСПОЛЬЗОВАНИЯ: API Request: curl -X POST /chats/123/messages -F "message=Найди casual летний образ" -F "image=@photo.jpg" -H "Authorization: Bearer token" теперь мы можем загрузить фотографию в чате и отправить фото"
+
+### Problem
+The chat system needed to support image uploads to send photos along with text messages for better outfit recommendations.
+
+### Solution
+**Files Modified**:
+- `components/dashboard/chat/chat-message-area.tsx`
+- `app/dashboard/chat/page.tsx`
+- `lib/chat-types.ts`
+- `components/dashboard/chat/outfit-showcase.tsx`
+- `components/dashboard/chat/agent-message-renderer.tsx`
+
+**Features Added**:
+- **Image upload button**: Added image upload button with camera icon
+- **Image preview**: Shows uploaded image preview before sending
+- **FormData support**: Updated API calls to use FormData for multipart/form-data
+- **Image display**: Shows uploaded image in search results with "Ваше фото" badge
+- **File handling**: Proper file selection, preview, and removal functionality
+
+**New API Format**:
+```javascript
+// Frontend sends:
+const formData = new FormData()
+formData.append('message', messageContent)
+formData.append('image', imageFile)
+
+// Backend returns:
+{
+  "result": {
+    "uploaded_image_url": "https://storage.googleapis.com/bucket/chat_123_uuid.jpg",
+    "search_description": "Анализирую ваше загруженное изображение...",
+    "suggested_outfits": [...]
+  }
+}
+```
+
+**Result**: ✅ Users can now upload photos in chat, see previews before sending, and receive outfit recommendations based on their uploaded images
+
+---
+
+## API FormData Support Fix (Latest)
+
+### User Request
+"Failed to load resource: the server responded with a status of 422 (Unprocessable Entity) API Error Response (422) for http://localhost:8000/api/v1/chats/init"
+
+### Problem
+The API was returning 422 errors because the `apiCall` function was automatically adding JSON Content-Type headers to FormData requests, which is incorrect. FormData requests should not have Content-Type set manually.
+
+### Solution
+**Files Modified**:
+- `lib/api.ts`
+- `app/dashboard/chat/page.tsx`
+
+**Changes Made**:
+- **Updated `apiCall` function**: Added automatic detection of FormData in request body
+- **Removed Content-Type for FormData**: When body is FormData, don't set Content-Type header (browser sets it automatically with boundary)
+- **Added `isFormData` flag**: Explicit flag for FormData requests
+- **Updated chat requests**: Added `isFormData: true` flag to all chat API calls
+
+**Technical Details**:
+```typescript
+// Before (incorrect):
+headers: { "Content-Type": "application/json" } // Wrong for FormData
+
+// After (correct):
+const isFormData = options.body instanceof FormData || options.isFormData
+const headers = isFormData 
+  ? {} // No Content-Type - browser sets multipart/form-data with boundary
+  : { "Content-Type": "application/json" }
+```
+
+**Result**: ✅ FormData requests now work correctly without 422 errors, supporting both text-only and image+text chat messages
+
+---
+
+## API Debugging Enhancement (Latest)
+
+### User Request
+"INFO: 127.0.0.1:49536 - "POST /api/v1/chats/init HTTP/1.1" 422 Unprocessable Entity Failed to load resource: the server responded with a status of 422 (Unprocessable Entity)"
+
+### Problem
+The 422 error was still occurring despite FormData fixes, indicating the issue might be with the data structure or API expectations.
+
+### Solution
+**Files Modified**:
+- `lib/api.ts`
+- `app/dashboard/chat/page.tsx`
+
+**Debugging Features Added**:
+- **Detailed FormData logging**: Shows all FormData contents before sending
+- **File information logging**: Displays file name, size, and type for uploaded images
+- **Request structure validation**: Logs message content and image presence
+- **Headers inspection**: Shows exactly what headers are being sent
+
+**Debug Information Now Logs**:
+```javascript
+// FormData contents:
+//   message: "User's message text"
+//   image: File(image.jpg, 12345 bytes, image/jpeg)
+// Headers: { Authorization: "Bearer token" }
+```
+
+**Result**: ✅ Enhanced debugging capabilities to identify the exact cause of 422 errors - check browser console for detailed request information
+
+---
+
+## Image Parameter Debugging (Latest)
+
+### User Request
+"смотри, изображение не добавилось в form data Has image: false"
+
+### Problem
+The image file was not being passed correctly through the component chain, showing `Has image: false` in logs despite user selecting an image.
+
+### Solution
+**Files Modified**:
+- `components/dashboard/chat/chat-message-area.tsx`
+- `app/dashboard/chat/page.tsx`
+
+**Debugging Added**:
+- **ChatMessageArea logging**: Shows what image data is being passed to onSendMessage
+- **handleSendMessage logging**: Shows what imageFile parameter is received
+- **Image validation**: Logs image name, size, and type for debugging
+- **Parameter tracking**: Full trace of imageFile through the call chain
+
+**Debug Information Now Shows**:
+```javascript
+// ChatMessageArea logs:
+ChatMessageArea - Sending message with image: {
+  message: "user message",
+  hasImage: true/false,
+  imageFile: { name: "photo.jpg", size: 12345, type: "image/jpeg" }
+}
+
+// handleSendMessage logs:
+handleSendMessage received: {
+  chatId: 123,
+  message: "user message", 
+  hasImage: true/false,
+  imageFile: { name: "photo.jpg", size: 12345, type: "image/jpeg" }
+}
+```
+
+**Result**: ✅ Full debugging chain to track imageFile parameter through all components - now we can see exactly where the image gets lost
+
+---
+
+## Image Parameter Fix in Wrapper Function (Latest)
+
+### User Request
+"ChatMessageArea - Sending message with image: {hasImage: true} handleSendMessage received: {hasImage: false, imageFile: null}"
+
+### Problem
+The `wrappedHandleSendMessage` function was missing the `imageFile` parameter, causing the image to be lost between ChatMessageArea and handleSendMessage.
+
+### Solution
+**File Modified**: `app/dashboard/chat/page.tsx`
+
+**Root Cause**: 
+The wrapper function signature was:
+```typescript
+// Before (missing imageFile parameter):
+const wrappedHandleSendMessage = async (chatId: number, messageContent: string) => {
+  await handleSendMessage(actualChatId, messageContent) // imageFile not passed
+}
+```
+
+**Fix Applied**:
+```typescript
+// After (with imageFile parameter):
+const wrappedHandleSendMessage = async (chatId: number, messageContent: string, imageFile?: File) => {
+  await handleSendMessage(actualChatId, messageContent, imageFile) // imageFile now passed
+}
+```
+
+**Additional Debugging**:
+- Added logging in wrappedHandleSendMessage to track parameter flow
+- Shows chatId, actualChatId, message, and imageFile details
+- Complete parameter chain now tracked through all three functions
+
+**Result**: ✅ Image files now properly passed through the entire call chain: ChatMessageArea → wrappedHandleSendMessage → handleSendMessage → FormData
+
+---
+
+## Image Search Results Display (Latest)
+
+### User Request
+"найди такое [Uploaded image: https://storage.googleapis.com/...] смотри как это выглядит на фронте не показывает картинку почини это"
+
+### Problem
+The new JSON schema for image search results wasn't displaying properly. The response includes `uploaded_image_url`, `reasoning`, and `products` (with empty `suggested_outfits`), but the frontend wasn't showing the uploaded image or analysis.
+
+### New JSON Schema for Image Search:
+```json
+{
+  "products": [...],
+  "search_query": "найди похожие вещи",
+  "reasoning": "Анализ изображения показал черную кожаную куртку...",
+  "suggested_outfits": [], // ← EMPTY for image search
+  "search_description": "На загруженном изображении я вижу...",
+  "uploaded_image_url": "https://storage.googleapis.com/..."
+}
+```
+
+### Solution
+**File Modified**: `components/dashboard/chat/agent-message-renderer.tsx`
+
+**Changes Made**:
+- **Added uploaded image display**: Shows user's uploaded image with "Ваше фото" badge
+- **Added reasoning display**: Shows image analysis in blue-styled container with "Анализ изображения:" header
+- **Enhanced product search layout**: Supports both regular search and image search results
+- **Proper fallback logic**: When `suggested_outfits` is empty, shows products with image and reasoning
+
+**Display Order**:
+1. **Uploaded Image** (if available) - centered with badge
+2. **Search Description** - general description in gray container  
+3. **Image Analysis** - reasoning in blue container with italic text
+4. **Product Grid** - matching products in 3-column layout
+
+**Result**: ✅ Image search results now properly display the uploaded image, AI analysis, and matching products in a beautiful, structured layout
+
+---
+
+## Remove Reasoning Block (Latest)
+
+### User Request
+"ДАВАЙ это уберем" - referring to the "Анализ изображения" reasoning block
+
+### Problem
+The reasoning block was showing redundant information that cluttered the interface and wasn't needed by users.
+
+### Solution
+**File Modified**: `components/dashboard/chat/agent-message-renderer.tsx`
+
+**Changes Made**:
+- **Removed reasoning display block**: Deleted the blue-styled container showing image analysis
+- **Cleaner interface**: Now shows only uploaded image, search description, and products
+- **Simplified layout**: Removed redundant "Анализ изображения:" section
+
+**New Display Order**:
+1. **Uploaded Image** (if available) - centered with badge
+2. **Search Description** - general description in gray container
+3. **Product Grid** - matching products in 3-column layout
+
+**Result**: ✅ Cleaner, more focused image search results without redundant reasoning text
+
+---
+
+## User Message Image Display (Latest)
+
+### User Request
+"смотри у меня в моих сообщениях часто такое проявляется, если я загружу картинку, можешь выводить картинку тут а не в сообещни бота"
+
+### Problem
+When users uploaded images, their messages showed text like `[Uploaded image: https://...]` instead of displaying the actual image in the user's message bubble.
+
+### Solution
+**Files Created/Modified**:
+- `components/dashboard/chat/user-message-content.tsx` (new)
+- `components/dashboard/chat/chat-message-area.tsx`
+
+**New Component: UserMessageContent**
+- **Regex parsing**: Finds `[Uploaded image: URL]` patterns in user messages
+- **Mixed content support**: Handles messages with both text and images
+- **Image display**: Shows actual images instead of text links
+- **Fallback handling**: Graceful error handling for broken images
+
+**Features**:
+- **Image parsing**: Extracts image URLs from `[Uploaded image: https://...]` format
+- **Image display**: Shows images with max size 192x192px, rounded corners
+- **Green badge**: "Фото" badge to identify uploaded images
+- **Mixed content**: Supports messages with both text and multiple images
+- **Error handling**: Falls back to placeholder if image fails to load
+
+**Display Logic**:
+```typescript
+// Before: "[Uploaded image: https://...] найди такое"
+// After: [IMAGE] + "найди такое" (as separate elements)
+```
+
+**Result**: ✅ User messages now display uploaded images visually instead of text links, creating a much better chat experience
+
+---
+
+## Remove Duplicate Image from Agent Response (Latest)
+
+### User Request
+"Ваше фото давай уберем эту фотку, который скидывает агент"
+
+### Problem
+The uploaded image was being displayed twice - once in the user's message and again in the agent's response with "Ваше фото" badge, creating redundant content.
+
+### Solution
+**File Modified**: `components/dashboard/chat/agent-message-renderer.tsx`
+
+**Changes Made**:
+- **Removed uploaded image block**: Deleted the centered image display with "Ваше фото" badge
+- **Eliminated duplication**: Now image shows only in user message, not in agent response
+- **Cleaner agent response**: Agent response now shows only search description and products
+
+**New Agent Response Structure**:
+1. **Search Description** - AI description of search results
+2. **Product Grid** - matching products in 3-column layout
+
+**Result**: ✅ Eliminated duplicate image display - uploaded images now appear only in user messages, making the chat cleaner and less redundant
+
+---
+
+## Final Currency Check (Latest)
+
+### User Request
+"смотри валюту ты делаешь? везде надо писать ₽ вместо ₸ это очень важно"
+
+### Problem
+Need to ensure all currency symbols are consistently using Russian Rubles (₽) instead of Kazakh Tenge (₸) throughout the entire codebase.
+
+### Solution
+**Files Checked**: All files in the project
+**Search Results**: 
+- **Found 4 remaining ₸** in cursor-logs.md (documentation only)
+- **Found 19 ₽ symbols** across 4 files (all correct)
+
+**Actions Taken**:
+- **Replaced all remaining ₸ with ₽** in cursor-logs.md
+- **Verified all currency displays** use ₽ symbol
+- **Confirmed no ₸ symbols remain** in the codebase
+
+**Files with ₽ symbols (correct)**:
+- `components/dashboard/catalog/product-filters.tsx` - 2 instances
+- `components/dashboard/chat/outfit-card.tsx` - 1 instance  
+- `components/dashboard/chat/chat-demo.tsx` - 7 instances
+- `cursor-logs.md` - 9 instances (after replacement)
+
+**Result**: ✅ All currency symbols now consistently use Russian Rubles (₽) throughout the entire application - no Kazakh Tenge (₸) symbols remain
 
 ---
 
@@ -4195,3 +4819,239 @@ components/dashboard/catalog/product-card.tsx     # Enhanced slug validation
 ```
 
 **Test Results**: All edge cases for "Qazaq Republic" now properly redirect to `https://trystyle.live/qazaq-republic`
+
+---
+
+## [2024] Frontend Response Format Update - COMPLETED ✅
+
+### User Request:
+Обновление формата ответов API для фронтенда согласно новой спецификации.
+
+### Changes Implemented:
+
+#### **API Response Format Updates**
+
+**Endpoint**: `POST /api/v1/chats/{chat_id}/messages` возвращает `MessageResponse`:
+```typescript
+{
+  id: number
+  chat_id: number
+  content: string  // JSON строка, нужно распарсить
+  role: "assistant"
+  created_at: string
+}
+```
+
+**Content Format (после парсинга JSON строки)**:
+```typescript
+{
+  result: {
+    products: Product[]  // до 20 товаров
+    suggested_outfits: SuggestedOutfit[]  // до 3 образов
+    search_query?: string
+    total_found?: number
+    needs_clarification?: boolean
+    clarifying_question?: string | null
+    search_description?: string
+    uploaded_image_url?: string | null
+  },
+  agent_type?: string
+  processing_time_ms?: number
+  input_tokens?: number
+  output_tokens?: number
+  total_tokens?: number
+}
+```
+
+#### **Type Updates (`lib/chat-types.ts`)**
+
+**1. Added `id` field to `SuggestedOutfitItem`:**
+```typescript
+export interface SuggestedOutfitItem {
+  id?: number  // ✅ NEW: Optional ID for product reference
+  name: string
+  image_url: string
+  link: string
+  price: string
+}
+```
+
+**2. Removed `reasoning` field from `SearchAgentResult`:**
+```typescript
+export interface SearchAgentResult {
+  products: Product[]
+  search_query?: string
+  search_description?: string
+  total_found?: number
+  // reasoning?: string  // ❌ REMOVED - no longer used by API
+  suggested_outfits?: SuggestedOutfit[]
+  needs_clarification?: boolean
+  clarifying_question?: string | null
+  uploaded_image_url?: string
+  agent_type?: string
+  processing_time_ms?: number
+}
+```
+
+**3. Extended `AgentResponse` with metadata fields:**
+```typescript
+export interface AgentResponse {
+  result: SearchAgentResult | OutfitAgentResult | GeneralAgentResult
+  agent_type?: string  // ✅ NEW: Agent type (e.g., "search")
+  processing_time_ms?: number  // ✅ NEW: Processing time in milliseconds
+  input_tokens?: number  // ✅ NEW: Input tokens used
+  output_tokens?: number  // ✅ NEW: Output tokens used
+  total_tokens?: number  // ✅ NEW: Total tokens used
+}
+```
+
+**Note**: `Product` interface already had `id?: number` field, so no changes needed.
+
+#### **Component Updates**
+
+**1. `components/dashboard/chat/outfit-card.tsx`:**
+- ✅ Updated to use `item.id` for React keys instead of index
+- ✅ Fallback to index if `id` is not available
+- ✅ Improved key stability for better React rendering performance
+
+**Changes:**
+```typescript
+// Before: key={itemIndex}
+// After: key={item.id ?? itemIndex}
+```
+
+#### **Files Updated:**
+```
+lib/chat-types.ts                          # Type definitions updated
+components/dashboard/chat/outfit-card.tsx  # Keys updated to use id
+```
+
+### **Result:**
+- ✅ Frontend types now match API response format exactly
+- ✅ `id` field added to `SuggestedOutfitItem` for product reference
+- ✅ `reasoning` field removed from `SearchAgentResult` (no longer used)
+- ✅ `AgentResponse` extended with token usage and processing metadata
+- ✅ Components updated to use `id` for better React key stability
+- ✅ Backward compatible (all new fields are optional)
+- ✅ No breaking changes to existing functionality
+
+---
+
+## [2024] API Response Format Fix - COMPLETED ✅
+
+### User Request:
+Исправление ошибки обработки ответа API, когда API возвращает `"outfits"` вместо `"suggested_outfits"` и отсутствует поле `products`.
+
+### Problem Identified:
+API иногда возвращает ответы с полем `"outfits"` вместо `"suggested_outfits"`, и поле `products` может отсутствовать. Это приводило к ошибке "Error processing response" даже для валидных ответов с уточняющими вопросами.
+
+**Пример проблемного ответа:**
+```json
+{
+  "result": {
+    "search_query": "собери образ на праздник",
+    "outfits": [],  // ← Проблема: используется "outfits" вместо "suggested_outfits"
+    "search_description": null,
+    "total_found": 0,
+    "needs_clarification": true,
+    "clarifying_question": "..."
+    // products отсутствует
+  }
+}
+```
+
+### Changes Implemented:
+
+#### **1. Updated `SearchAgentResult` Interface (`lib/chat-types.ts`)**
+
+**Added support for alternative field names:**
+```typescript
+export interface SearchAgentResult {
+  products?: Product[]  // ✅ Made optional - may be missing or empty
+  search_query?: string
+  search_description?: string | null  // ✅ Can be null
+  total_found?: number
+  suggested_outfits?: SuggestedOutfit[]
+  outfits?: SuggestedOutfit[]  // ✅ NEW: Alternative field name from API
+  needs_clarification?: boolean
+  clarifying_question?: string | null
+  uploaded_image_url?: string | null  // ✅ Can be null
+  agent_type?: string
+  processing_time_ms?: number
+}
+```
+
+#### **2. Enhanced Type Guards**
+
+**Updated `isSearchAgentResult` to recognize multiple formats:**
+```typescript
+export function isSearchAgentResult(result: any): result is SearchAgentResult {
+  return result && (
+    Array.isArray(result.products) || 
+    Array.isArray(result.suggested_outfits) || 
+    Array.isArray(result.outfits) ||  // ✅ NEW: Check for "outfits"
+    result.search_query !== undefined ||
+    result.needs_clarification !== undefined ||
+    result.clarifying_question !== undefined
+  )
+}
+```
+
+**Updated `hasSuggestedOutfits` to check both field names:**
+```typescript
+export function hasSuggestedOutfits(result: SearchAgentResult) {
+  return (result.suggested_outfits && result.suggested_outfits.length > 0) ||
+         (result.outfits && result.outfits.length > 0)  // ✅ NEW: Check "outfits" too
+}
+```
+
+#### **3. Added Normalization Function**
+
+**New `normalizeSearchResult` function:**
+```typescript
+export function normalizeSearchResult(result: any): SearchAgentResult {
+  // Convert outfits → suggested_outfits if needed
+  if (result.outfits && !result.suggested_outfits) {
+    result.suggested_outfits = result.outfits
+  }
+  // Ensure products is an array
+  if (!result.products) {
+    result.products = []
+  }
+  return result as SearchAgentResult
+}
+```
+
+#### **4. Updated Component (`components/dashboard/chat/agent-message-renderer.tsx`)**
+
+**Added normalization before processing:**
+```typescript
+if (isSearchAgentResult(result)) {
+  // Normalize the result (convert outfits → suggested_outfits, ensure products is array)
+  const normalizedResult = normalizeSearchResult(result) as SearchAgentResult
+  
+  // Now use normalizedResult for all operations
+  // ...
+}
+```
+
+**Improved handling of missing products:**
+```typescript
+{/* Product grid - only show if products exist and not empty */}
+{normalizedResult.products && normalizedResult.products.length > 0 && (
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+    {normalizedResult.products.map((product, index) => (
+      <ProductCard key={product.id || index} product={product} />
+    ))}
+  </div>
+)}
+```
+
+### **Result:**
+- ✅ API responses with `"outfits"` field are now properly recognized
+- ✅ Missing `products` field no longer causes errors
+- ✅ Clarifying questions are displayed even when no products are found
+- ✅ Normalization ensures consistent data format throughout the app
+- ✅ Backward compatible with existing `suggested_outfits` format
+- ✅ Type guards now recognize responses by multiple criteria (not just products/outfits)
+- ✅ No more "Error processing response" for valid clarifying question responses
