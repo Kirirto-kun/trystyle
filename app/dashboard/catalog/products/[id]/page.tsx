@@ -25,7 +25,7 @@ import Link from "next/link";
 import { generateSlug } from "@/lib/utils";
 import ReviewsSection from "@/components/dashboard/catalog/reviews-section";
 
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = "https://closetmind.studio";
 
 interface Product {
   id: number;

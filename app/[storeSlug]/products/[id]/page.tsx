@@ -23,7 +23,7 @@ import ReviewsSection from "@/components/dashboard/catalog/reviews-section";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageSwitcher } from "@/components/language-switcher";
 
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = "https://closetmind.studio";
 
 interface Product {
   id: number;

@@ -11,7 +11,7 @@ import { Card } from "@/components/ui/card";
 import { Loader2, X } from "lucide-react";
 import { useTranslations } from "@/contexts/language-context";
 
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = "https://closetmind.studio";
 
 interface Filters {
   query: string;

@@ -9,7 +9,7 @@ import { Loader2, AlertTriangle, Trash, User, Shirt, Upload, Camera } from "luci
 import { getImageDimensions, type ImageDimensions } from "@/lib/image-utils";
 import { useTranslations } from "@/contexts/language-context";
 
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = "https://closetmind.studio";
 
 interface TryOn {
   id: number;

@@ -1,6 +1,7 @@
 "use client"
 
-import React from "react"
+import React, { useEffect } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -17,8 +18,14 @@ import {
 } from "lucide-react"
 
 export default function DashboardPage() {
+  const router = useRouter()
   const t = useTranslations('common')
   const tDashboard = useTranslations('dashboard')
+
+  // Redirect to chat immediately
+  useEffect(() => {
+    router.push("/dashboard/chat")
+  }, [router])
 
   const features = [
     {

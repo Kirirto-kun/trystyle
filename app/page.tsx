@@ -43,7 +43,7 @@ export default function LandingPage() {
       } else if (user.is_store_admin) {
         router.push("/store-admin")
       } else {
-        router.push("/dashboard")
+        router.push("/dashboard/chat")
       }
     }
   }, [isLoading, isAuthenticated, user, router])

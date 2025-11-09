@@ -7,7 +7,7 @@ import Cookies from "js-cookie"
 import type { UserResponse, Token } from "@/lib/types" // We'll define these types later
 import { toast } from "sonner" // Using sonner for toasts
 
-const API_BASE_URL = "http://localhost:8000"
+const API_BASE_URL = "https://closetmind.studio"
 
 interface AuthContextType {
   user: UserResponse | null
@@ -160,16 +160,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           } else if (userData.is_store_admin) {
             router.push("/store-admin")
           } else {
-            router.push("/dashboard")
+            router.push("/dashboard/chat")
           }
         } else {
-          // Fallback to regular dashboard if we can't get user data
-          router.push("/dashboard")
+          // Fallback to chat if we can't get user data
+          router.push("/dashboard/chat")
         }
       } catch (userError) {
         console.error("Error fetching user data after login:", userError)
-        // Fallback to regular dashboard
-        router.push("/dashboard")
+        // Fallback to chat
+        router.push("/dashboard/chat")
       }
 
       return true
@@ -255,16 +255,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           } else if (userData.is_store_admin) {
             router.push("/store-admin")
           } else {
-            router.push("/dashboard")
+            router.push("/dashboard/chat")
           }
         } else {
-          // Fallback to regular dashboard if we can't get user data
-          router.push("/dashboard")
+          // Fallback to chat if we can't get user data
+          router.push("/dashboard/chat")
         }
       } catch (userError) {
         console.error("Error fetching user data after Google login:", userError)
-        // Fallback to regular dashboard
-        router.push("/dashboard")
+        // Fallback to chat
+        router.push("/dashboard/chat")
       }
 
       return true

@@ -1,10 +1,12 @@
 "use client"
+import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ShoppingBag, ExternalLink, Star } from "lucide-react"
+import { ShoppingBag, ExternalLink, Star, Mail } from "lucide-react"
 import { SuggestedOutfit } from "@/lib/chat-types"
 import Image from "next/image"
+import EmailOutfitDialog from "./email-outfit-dialog"
 
 interface OutfitCardProps {
   outfit: SuggestedOutfit
@@ -12,6 +14,7 @@ interface OutfitCardProps {
 }
 
 export default function OutfitCard({ outfit, index }: OutfitCardProps) {
+  const [isEmailDialogOpen, setIsEmailDialogOpen] = useState(false)
   // Ensure outfit and items exist
   if (!outfit || !outfit.items || outfit.items.length === 0) {
     return null
@@ -172,6 +175,14 @@ export default function OutfitCard({ outfit, index }: OutfitCardProps) {
               Купить весь образ
             </Button>
             <Button 
+              onClick={() => setIsEmailDialogOpen(true)}
+              variant="outline"
+              className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-300"
+              title="Отправить на почту"
+            >
+              <Mail className="w-4 h-4" />
+            </Button>
+            <Button 
               variant="outline"
               className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-pink-300 dark:hover:border-pink-600 hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-all duration-300"
             >
@@ -181,6 +192,13 @@ export default function OutfitCard({ outfit, index }: OutfitCardProps) {
           
         </div>
       </CardContent>
+
+      {/* Email Dialog */}
+      <EmailOutfitDialog
+        open={isEmailDialogOpen}
+        onOpenChange={setIsEmailDialogOpen}
+        outfit={outfit}
+      />
     </Card>
   )
 }

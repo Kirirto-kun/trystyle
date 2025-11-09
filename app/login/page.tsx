@@ -27,7 +27,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      router.push("/dashboard")
+      router.push("/dashboard/chat")
     }
   }, [isLoading, isAuthenticated, router])
 
