@@ -217,7 +217,12 @@ export default function ChatMessageArea({
 
         {!isLoadingMessages && messages.length > 0 && (
           <div className="space-y-3 md:space-y-6">
-            {messages.map((msg) => (
+            {messages.map((msg, index) => {
+              // Find the index of the first assistant message
+              const firstAssistantIndex = messages.findIndex(m => m.role === "assistant")
+              const isFirstAssistantMessage = msg.role === "assistant" && index === firstAssistantIndex
+              
+              return (
               <div key={msg.id} className={`flex items-start space-x-2 md:space-x-3 ${msg.role === "user" ? "justify-end" : ""}`}>
                 {msg.role === "assistant" && (
                   <Avatar className="h-7 w-7 md:h-9 md:w-9 border-2 border-primary/20 flex-shrink-0">
@@ -234,7 +239,11 @@ export default function ChatMessageArea({
                     </div>
                   ) : (
                     <div className="w-full max-w-[98%] md:max-w-full">
-                      <AgentMessageRenderer content={msg.content} />
+                      <AgentMessageRenderer 
+                        content={msg.content} 
+                        onSetInput={setInput}
+                        isFirstAssistantMessage={isFirstAssistantMessage}
+                      />
                     </div>
                   )}
                 </div>
@@ -247,7 +256,8 @@ export default function ChatMessageArea({
                   </Avatar>
                 )}
               </div>
-            ))}
+            )
+            })}
             
             {isSendingMessage && messages[messages.length - 1]?.role === "user" && (
               <div className="flex items-start space-x-2 md:space-x-3">

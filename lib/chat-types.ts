@@ -21,6 +21,7 @@ export interface SuggestedOutfitItem {
   image_url: string
   link: string
   price: string
+  brand?: string // Brand name
 }
 
 export interface SuggestedOutfit {
@@ -29,13 +30,14 @@ export interface SuggestedOutfit {
 }
 
 export interface SearchAgentResult {
-  products?: Product[] // Optional - may be missing or empty
   search_query?: string // What user searched for
   search_description?: string | null // Description of search results
   total_found?: number // Total results found
   // reasoning field removed - no longer used by API
   suggested_outfits?: SuggestedOutfit[] // Suggested outfit combinations
   outfits?: SuggestedOutfit[] // Alternative field name from API (normalized to suggested_outfits)
+  next_steps?: string[] // Next steps as CTA buttons
+  general_answer?: string | null // General answer text (displayed before clarifying question)
   needs_clarification?: boolean // Whether clarification is needed
   clarifying_question?: string | null // Clarifying question if needed
   uploaded_image_url?: string | null // URL of uploaded image
@@ -71,7 +73,6 @@ export interface AgentResponse {
 // Type guards for agent responses
 export function isSearchAgentResult(result: any): result is SearchAgentResult {
   return result && (
-    Array.isArray(result.products) || 
     Array.isArray(result.suggested_outfits) || 
     Array.isArray(result.outfits) ||
     result.search_query !== undefined ||
@@ -81,8 +82,8 @@ export function isSearchAgentResult(result: any): result is SearchAgentResult {
 }
 
 export function hasSuggestedOutfits(result: SearchAgentResult): result is SearchAgentResult & { suggested_outfits: SuggestedOutfit[] } {
-  return (result.suggested_outfits && result.suggested_outfits.length > 0) ||
-         (result.outfits && result.outfits.length > 0)
+  return (Array.isArray(result.suggested_outfits) && result.suggested_outfits.length > 0) ||
+         (Array.isArray(result.outfits) && result.outfits.length > 0)
 }
 
 // Normalize API response to standard format
@@ -93,10 +94,6 @@ export function normalizeSearchResult(result: any): SearchAgentResult {
   // Convert outfits → suggested_outfits if needed
   if (normalized.outfits && !normalized.suggested_outfits) {
     normalized.suggested_outfits = normalized.outfits
-  }
-  // Ensure products is an array
-  if (!normalized.products) {
-    normalized.products = []
   }
   return normalized as SearchAgentResult
 }

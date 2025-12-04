@@ -1,7 +1,8 @@
 "use client"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Sparkles, ShoppingBag, Heart } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Sparkles, ShoppingBag, Heart, ArrowRight } from "lucide-react"
 import { SuggestedOutfit } from "@/lib/chat-types"
 import OutfitCard from "./outfit-card"
 
@@ -9,9 +10,11 @@ interface OutfitShowcaseProps {
   outfits: SuggestedOutfit[]
   searchDescription?: string
   uploadedImageUrl?: string
+  nextSteps?: string[]
+  onSetInput?: (text: string) => void
 }
 
-export default function OutfitShowcase({ outfits, searchDescription, uploadedImageUrl }: OutfitShowcaseProps) {
+export default function OutfitShowcase({ outfits, searchDescription, uploadedImageUrl, nextSteps, onSetInput }: OutfitShowcaseProps) {
   // Ensure outfits exist and is not empty
   if (!outfits || outfits.length === 0) {
     return (
@@ -70,10 +73,35 @@ export default function OutfitShowcase({ outfits, searchDescription, uploadedIma
 
       {/* Footer */}
       <div className="mt-8 text-center">
-        <div className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+        <div className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-4">
           <Heart className="w-4 h-4" />
           <span>Найдено {outfits.length} образов для вас</span>
         </div>
+
+        {/* Next Steps CTA Buttons */}
+        {nextSteps && nextSteps.length > 0 && (
+          <div className="mt-6">
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              {nextSteps.map((step, index) => (
+                <Button
+                  key={index}
+                  variant="outline"
+                  className="border-2 border-primary/30 hover:border-primary hover:bg-primary/10 transition-all duration-200 text-sm font-medium px-4 py-2"
+                  onClick={() => {
+                    if (onSetInput) {
+                      onSetInput(step)
+                    } else {
+                      console.log("Next step clicked:", step)
+                    }
+                  }}
+                >
+                  {step}
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

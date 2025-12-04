@@ -7,7 +7,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { ArrowLeft, Loader2, AlertTriangle } from "lucide-react";
 
-const API_BASE_URL = "https://closetmind.studio";
+const API_BASE_URL = "http://localhost:8000";
 
 export default function StoreDetailPage() {
   const [loading, setLoading] = useState(true);

@@ -60,6 +60,11 @@ export default function OutfitCard({ outfit, index }: OutfitCardProps) {
         
         {/* Item Info - Always visible */}
         <div className="p-3 bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700">
+          {item.brand && (
+            <div className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-medium">
+              {item.brand}
+            </div>
+          )}
           <div className="text-xs font-medium text-gray-900 dark:text-gray-100 mb-2 overflow-hidden text-ellipsis" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
             {item.name}
           </div>

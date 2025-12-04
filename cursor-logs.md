@@ -1,3 +1,25 @@
+## [2025-11-11] Chat Schema Cleanup - Removed `products` from chat JSON handling ✅
+
+### User Request
+Полностью удалили `products` из чата JSON схемы ответа. Удалить его с чата.
+
+### Changes Made
+- Updated `lib/chat-types.ts`:
+  - Removed `products` from `SearchAgentResult`.
+  - Updated `isSearchAgentResult` to stop checking `products`.
+  - Updated `normalizeSearchResult` to no longer ensure/initialize `products`.
+- Updated `components/dashboard/chat/agent-message-renderer.tsx`:
+  - Removed products rendering path and related imports.
+  - Kept only outfits and general responses; throws on unsupported search format without outfits.
+- Updated `components/dashboard/chat/chat-demo.tsx`:
+  - Replaced products-based search demo with `suggested_outfits` sample and `search_description`.
+
+### Notes
+- Product type remains in codebase for non-chat pages/usages.
+- Chat now expects only outfits/general responses; legacy `outfits` alias still normalized to `suggested_outfits`.
+
+### Result
+UI and types no longer reference or render `products` in chat responses. Demo aligns with the new schema.
 # TryStyle Development Log
 
 ## Project Overview
@@ -3615,7 +3637,7 @@ formData.append('image', imageFile)
 ## API FormData Support Fix (Latest)
 
 ### User Request
-"Failed to load resource: the server responded with a status of 422 (Unprocessable Entity) API Error Response (422) for https://closetmind.studio/api/v1/chats/init"
+"Failed to load resource: the server responded with a status of 422 (Unprocessable Entity) API Error Response (422) for http://localhost:8000/api/v1/chats/init"
 
 ### Problem
 The API was returning 422 errors because the `apiCall` function was automatically adding JSON Content-Type headers to FormData requests, which is incorrect. FormData requests should not have Content-Type set manually.

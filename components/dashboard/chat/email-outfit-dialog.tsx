@@ -75,7 +75,7 @@ export default function EmailOutfitDialog({ open, onOpenChange, outfit }: EmailO
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ error: "Unknown error" }))
-        const errorMessage = errorData.error || errorData.detail || `Request failed with status ${response.status}`
+        const errorMessage = errorData.error || errorData.detail || `Ошибка запроса (статус ${response.status})`
         console.error("PDF generation error response:", errorData)
         throw new Error(errorMessage)
       }
@@ -96,12 +96,16 @@ export default function EmailOutfitDialog({ open, onOpenChange, outfit }: EmailO
           errorMessage = "Ошибка на сервере генерации PDF. Пожалуйста, попробуйте позже или обратитесь в поддержку."
         } else if (error.message.includes("Ошибка генерации PDF")) {
           errorMessage = "Ошибка генерации PDF на сервере. Пожалуйста, попробуйте позже."
+        } else if (error.message.includes("недоступен") || error.message.includes("ECONNREFUSED") || error.message.includes("fetch failed")) {
+          errorMessage = "Сервис генерации PDF недоступен. Убедитесь, что сервис запущен."
+        } else if (error.message.includes("не отвечает") || error.message.includes("timeout")) {
+          errorMessage = "Сервис генерации PDF не отвечает. Пожалуйста, попробуйте позже."
         } else {
           errorMessage = error.message
         }
       }
       
-      toast.error(`Ошибка отправки: ${errorMessage}`)
+      toast.error(errorMessage)
     } finally {
       setIsLoading(false)
     }
