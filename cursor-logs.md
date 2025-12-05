@@ -3739,7 +3739,7 @@ formData.append('image', imageFile)
 ## API FormData Support Fix (Latest)
 
 ### User Request
-"Failed to load resource: the server responded with a status of 422 (Unprocessable Entity) API Error Response (422) for http://localhost:8000/api/v1/chats/init"
+"Failed to load resource: the server responded with a status of 422 (Unprocessable Entity) API Error Response (422) for https://closetmind.studio/api/v1/chats/init"
 
 ### Problem
 The API was returning 422 errors because the `apiCall` function was automatically adding JSON Content-Type headers to FormData requests, which is incorrect. FormData requests should not have Content-Type set manually.
