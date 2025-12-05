@@ -6,6 +6,7 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/contexts/auth-context"
 import { LanguageProvider } from "@/contexts/language-context"
+import { SelectedItemsProvider } from "@/contexts/selected-items-context"
 import { Toaster } from "sonner"
 import { Analytics } from "@vercel/analytics/next"
 
@@ -51,10 +52,12 @@ export default function RootLayout({
             storageKey="closetmind-theme"
           >
             <AuthProvider>
-              <div className="min-h-screen">
-                {children}
-              </div>
-              <Toaster />
+              <SelectedItemsProvider>
+                <div className="min-h-screen">
+                  {children}
+                </div>
+                <Toaster />
+              </SelectedItemsProvider>
             </AuthProvider>
           </ThemeProvider>
         </LanguageProvider>

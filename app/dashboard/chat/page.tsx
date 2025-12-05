@@ -66,8 +66,8 @@ export default function ChatPage() {
   }, [])
 
   // Отправка сообщения
-  const handleSendMessage = useCallback(async (chatId: number | null, messageContent: string, imageFile?: File) => {
-    if (!messageContent.trim()) return
+  const handleSendMessage = useCallback(async (chatId: number | null, messageContent: string, imageFile?: File, selectedItemIds?: number[]) => {
+    if (!messageContent.trim() && !imageFile) return
     
     console.log('handleSendMessage received:', {
       chatId,
@@ -100,10 +100,17 @@ export default function ChatPage() {
         if (imageFile) {
           formData.append('image', imageFile)
         }
+        // Добавляем выбранные ID товаров
+        if (selectedItemIds && selectedItemIds.length > 0) {
+          selectedItemIds.forEach(id => {
+            formData.append('selected_item_ids', id.toString())
+          })
+        }
         
         console.log('Creating new chat with FormData:')
         console.log('Message:', messageContent)
         console.log('Has image:', !!imageFile)
+        console.log('Selected item IDs:', selectedItemIds)
         if (imageFile) {
           console.log('Image file:', imageFile.name, imageFile.size, imageFile.type)
         }
@@ -149,11 +156,18 @@ export default function ChatPage() {
         if (imageFile) {
           formData.append('image', imageFile)
         }
+        // Добавляем выбранные ID товаров
+        if (selectedItemIds && selectedItemIds.length > 0) {
+          selectedItemIds.forEach(id => {
+            formData.append('selected_item_ids', id.toString())
+          })
+        }
         
         console.log('Sending message to existing chat with FormData:')
         console.log('Chat ID:', actualChatId)
         console.log('Message:', messageContent)
         console.log('Has image:', !!imageFile)
+        console.log('Selected item IDs:', selectedItemIds)
         if (imageFile) {
           console.log('Image file:', imageFile.name, imageFile.size, imageFile.type)
         }

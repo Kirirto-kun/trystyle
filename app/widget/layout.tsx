@@ -5,6 +5,8 @@ import { useEffect } from "react"
 import { AuthProvider } from "@/contexts/auth-context"
 import { LanguageProvider } from "@/contexts/language-context"
 import { ThemeProvider } from "@/components/theme-provider"
+import { WidgetProvider } from "@/contexts/widget-context"
+import { SelectedItemsProvider } from "@/contexts/selected-items-context"
 import { Toaster } from "sonner"
 
 export default function WidgetLayout({
@@ -56,12 +58,16 @@ export default function WidgetLayout({
         disableTransitionOnChange
         storageKey="widget-theme"
       >
-        <AuthProvider>
-          <div className="w-full h-full min-h-screen bg-white">
-            {children}
-          </div>
-          <Toaster />
-        </AuthProvider>
+        <WidgetProvider isWidget={true}>
+          <AuthProvider>
+            <SelectedItemsProvider>
+              <div className="w-full h-full min-h-screen bg-white">
+                {children}
+              </div>
+              <Toaster />
+            </SelectedItemsProvider>
+          </AuthProvider>
+        </WidgetProvider>
       </ThemeProvider>
     </LanguageProvider>
   )

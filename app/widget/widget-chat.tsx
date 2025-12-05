@@ -90,8 +90,8 @@ export default function WidgetChat() {
   }, [])
 
   // Отправка сообщения
-  const handleSendMessage = useCallback(async (chatId: number, messageContent: string, imageFile?: File) => {
-    if (!messageContent.trim()) return
+  const handleSendMessage = useCallback(async (chatId: number, messageContent: string, imageFile?: File, selectedItemIds?: number[]) => {
+    if (!messageContent.trim() && !imageFile) return
     
     // Оптимистичное обновление UI
     const optimisticMessage: UIMessage = {
@@ -112,6 +112,12 @@ export default function WidgetChat() {
         formData.append('message', messageContent)
         if (imageFile) {
           formData.append('image', imageFile)
+        }
+        // Добавляем выбранные ID товаров
+        if (selectedItemIds && selectedItemIds.length > 0) {
+          selectedItemIds.forEach(id => {
+            formData.append('selected_item_ids', id.toString())
+          })
         }
         
         const response = await apiCall<any>('/api/v1/chats/init', {
@@ -153,6 +159,12 @@ export default function WidgetChat() {
         if (imageFile) {
           formData.append('image', imageFile)
         }
+        // Добавляем выбранные ID товаров
+        if (selectedItemIds && selectedItemIds.length > 0) {
+          selectedItemIds.forEach(id => {
+            formData.append('selected_item_ids', id.toString())
+          })
+        }
         
         const response = await apiCall<ChatMessageResponse>(`/api/v1/chats/${actualChatId}/messages`, {
           method: 'POST',
@@ -180,9 +192,9 @@ export default function WidgetChat() {
   }, [isNewChatMode, loadMessages])
 
   // Обертка для handleSendMessage
-  const wrappedHandleSendMessage = useCallback(async (chatId: number, messageContent: string, imageFile?: File) => {
+  const wrappedHandleSendMessage = useCallback(async (chatId: number, messageContent: string, imageFile?: File, selectedItemIds?: number[]) => {
     const actualChatId = isNewChatMode ? 0 : chatId
-    await handleSendMessage(actualChatId, messageContent, imageFile)
+    await handleSendMessage(actualChatId, messageContent, imageFile, selectedItemIds)
   }, [isNewChatMode, handleSendMessage])
 
   // Инициализация при монтировании

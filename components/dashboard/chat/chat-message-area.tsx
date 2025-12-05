@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Send, Loader2, User, Info, Sparkles, ArrowLeft, Image as ImageIcon, X, PlusCircle } from "lucide-react"
 import type { UIMessage, Chat } from "@/lib/types"
 import { useAuth } from "@/contexts/auth-context"
+import { useSelectedItems } from "@/contexts/selected-items-context"
 import AgentMessageRenderer from "./agent-message-renderer"
 import UserMessageContent from "./user-message-content"
 import { useTranslations } from "@/contexts/language-context"
@@ -15,7 +16,7 @@ import { useTranslations } from "@/contexts/language-context"
 interface ChatMessageAreaProps {
   selectedChat: Chat | null
   messages: UIMessage[]
-  onSendMessage: (chatId: number, messageContent: string, imageFile?: File) => Promise<void>
+  onSendMessage: (chatId: number, messageContent: string, imageFile?: File, selectedItemIds?: number[]) => Promise<void>
   isLoadingMessages: boolean
   isSendingMessage: boolean
   showTitle?: boolean
@@ -43,6 +44,7 @@ export default function ChatMessageArea({
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const { selectedItemIds, clearSelection } = useSelectedItems()
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const { user } = useAuth()
   const t = useTranslations('dashboard')
@@ -87,9 +89,13 @@ export default function ChatMessageArea({
     const messageContent = input
     setInput("")
     
+    // Get selected item IDs and convert to array
+    const selectedIds = Array.from(selectedItemIds)
+    
     console.log('ChatMessageArea - Sending message with image:', {
       message: messageContent,
       hasImage: !!selectedImage,
+      selectedItemIds: selectedIds,
       imageFile: selectedImage ? {
         name: selectedImage.name,
         size: selectedImage.size,
@@ -97,9 +103,12 @@ export default function ChatMessageArea({
       } : null
     })
     
-    await onSendMessage(selectedChat.id, messageContent, selectedImage || undefined)
+    await onSendMessage(selectedChat.id, messageContent, selectedImage || undefined, selectedIds.length > 0 ? selectedIds : undefined)
+    
+    // Clear selection after sending
+    clearSelection()
     removeImage() // Clear image after sending
-  }, [input, selectedChat, selectedImage, onSendMessage, removeImage])
+  }, [input, selectedChat, selectedImage, onSendMessage, removeImage, selectedItemIds, clearSelection])
 
   // Мемоизируем кнопки предложений
   const suggestionButtons = useMemo(() => [
@@ -192,7 +201,7 @@ export default function ChatMessageArea({
         </header>
       )}
 
-      <ScrollArea className="flex-1 p-2 md:p-4 overflow-y-auto" ref={scrollAreaRef}>
+      <ScrollArea className="flex-1 p-2 md:p-4 overflow-y-auto overflow-x-hidden" ref={scrollAreaRef}>
         {isLoadingMessages && (
           <div className="flex justify-center items-center py-12 h-full">
             <div className="text-center">
@@ -244,7 +253,7 @@ export default function ChatMessageArea({
                       <UserMessageContent content={msg.content} />
                     </div>
                   ) : (
-                    <div className="w-full max-w-[98%] md:max-w-full">
+                    <div className="w-full max-w-[98%] md:max-w-full overflow-hidden">
                       <AgentMessageRenderer 
                         content={msg.content} 
                         onSetInput={setInput}

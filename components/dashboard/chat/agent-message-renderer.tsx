@@ -44,13 +44,15 @@ export default function AgentMessageRenderer({ content, onSetInput, isFirstAssis
       // Check if we have suggested outfits (new format)
       if (hasSuggestedOutfits(normalizedResult)) {
         return (
-          <OutfitShowcase 
-            outfits={normalizedResult.suggested_outfits || normalizedResult.outfits || []}
-            searchDescription={normalizedResult.search_description || undefined}
-            uploadedImageUrl={normalizedResult.uploaded_image_url || undefined}
-            nextSteps={normalizedResult.next_steps || undefined}
-            onSetInput={onSetInput}
-          />
+          <div className="w-full max-w-full overflow-hidden">
+            <OutfitShowcase 
+              outfits={normalizedResult.suggested_outfits || normalizedResult.outfits || []}
+              searchDescription={normalizedResult.search_description || undefined}
+              uploadedImageUrl={normalizedResult.uploaded_image_url || undefined}
+              nextSteps={normalizedResult.next_steps || undefined}
+              onSetInput={onSetInput}
+            />
+          </div>
         )
       }
       
