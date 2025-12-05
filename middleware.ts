@@ -8,6 +8,7 @@ const PROTECTED_ROUTES = [
   'store-admin',
   'login',
   'register',
+  'widget',
   'api',
   '_next',
   'static',
@@ -24,6 +25,15 @@ function isProtectedRoute(path: string): boolean {
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
+  
+  // Add iframe headers for widget route
+  if (pathname.startsWith('/widget')) {
+    const response = NextResponse.next()
+    // Allow embedding in iframes
+    response.headers.set('X-Frame-Options', 'ALLOWALL')
+    response.headers.set('Content-Security-Policy', "frame-ancestors *")
+    return response
+  }
   
   // Skip middleware for protected routes, API routes, and static files
   if (isProtectedRoute(pathname) || pathname.startsWith('/_next') || pathname.includes('.')) {

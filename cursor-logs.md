@@ -1,3 +1,105 @@
+## [2025-01-XX] Chat Widget Implementation - Embeddable Chat Widget via iframe ✅
+
+### User Request:
+"смотри сейчас мы чат будем превращать в такое: на другом сайте через iframe мы будем рендерить нашу страницу с сайтом. это будет виджет чат бот на другом сайте. то есть сначала делаем так: человеку грузится виджет, он регается, и потом сразу попадает в чат, больше никакие функции ему не доступны. надо добавить кнопку добавления чата поидеи, что бы можно было начать новый чат просматривать историю пока не будем."
+
+### Implementation Overview:
+**Complete chat widget implementation for embedding on external websites via iframe. Widget includes full registration with Google OAuth and simplified chat interface.**
+
+#### **Core Features Implemented:**
+
+**1. Widget Route Structure**
+- ✅ **New route**: `/widget` - Main widget page
+- ✅ **Layout**: `app/widget/layout.tsx` - Simplified layout without sidebar
+- ✅ **Main page**: `app/widget/page.tsx` - Handles registration/chat switching
+- ✅ **Registration component**: `app/widget/widget-register.tsx` - Full registration form with Google OAuth
+- ✅ **Chat component**: `app/widget/widget-chat.tsx` - Simplified chat with "New Chat" button
+
+**2. Registration Flow**
+- ✅ **Full registration form**: Email, username, password, verification code
+- ✅ **Google OAuth**: Integrated Google login support
+- ✅ **Auto-redirect**: After registration, automatically redirects to chat
+- ✅ **Widget-optimized**: Compact design for iframe embedding
+
+**3. Chat Interface**
+- ✅ **Simplified chat**: Only message area, no chat list sidebar
+- ✅ **New Chat button**: Button in header to create new chat
+- ✅ **Auto-initialization**: Automatically loads or creates chat on mount
+- ✅ **Single active chat**: User sees only one active chat at a time
+- ✅ **No history display**: Chat history list is hidden (as requested)
+
+**4. Iframe Support**
+- ✅ **Middleware configuration**: Added `/widget` to protected routes
+- ✅ **Iframe headers**: X-Frame-Options and CSP headers for iframe embedding
+- ✅ **Content-Security-Policy**: Configured to allow embedding
+
+**5. Embedding Script**
+- ✅ **Widget script**: `public/widget.js` - Easy embedding script
+- ✅ **Configuration options**: Customizable size, URL, styling
+- ✅ **API methods**: Programmatic control (reload, setSize, etc.)
+
+**6. Testing**
+- ✅ **Test page**: `public/widget-test.html` - Test page for widget embedding
+- ✅ **Multiple sizes**: Test page includes size controls
+- ✅ **Reload functionality**: Test page includes reload button
+
+### Technical Details:
+
+#### **File Structure:**
+```
+app/
+  widget/
+    layout.tsx              # Simplified layout for widget
+    page.tsx                # Main widget page (registration or chat)
+    widget-register.tsx     # Registration component
+    widget-chat.tsx         # Chat component with "New Chat" button
+public/
+  widget.js                 # Embedding script
+  widget-test.html          # Test page
+middleware.ts               # Updated with widget route and iframe headers
+```
+
+#### **Key Components:**
+- **WidgetRegister**: Full registration form with Google OAuth, optimized for widget size
+- **WidgetChat**: Simplified chat interface with:
+  - Header with "New Chat" button
+  - ChatMessageArea component (reused from dashboard)
+  - Auto-initialization of chat
+  - Single active chat management
+
+#### **Iframe Configuration:**
+- Middleware adds `X-Frame-Options: ALLOWALL` for `/widget` route
+- Content-Security-Policy set to allow frame ancestors
+- Widget route added to protected routes list
+
+#### **Embedding Usage:**
+```html
+<!-- Simple embedding -->
+<div id="trystyle-widget"></div>
+<script src="https://your-domain.com/widget.js"></script>
+
+<!-- With custom options -->
+<script>
+  window.TryStyleWidget = {
+    containerId: 'trystyle-widget',
+    width: '500px',
+    height: '700px',
+    url: 'https://your-domain.com/widget'
+  };
+</script>
+<script src="https://your-domain.com/widget.js"></script>
+```
+
+### Result:
+✅ Complete widget implementation ready for embedding on external websites
+✅ Full registration flow with Google OAuth support
+✅ Simplified chat interface with "New Chat" button
+✅ No chat history display (as requested)
+✅ Iframe-friendly configuration
+✅ Easy embedding script and test page
+
+---
+
 ## [2025-11-11] Chat Schema Cleanup - Removed `products` from chat JSON handling ✅
 
 ### User Request

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Send, Loader2, User, Info, Sparkles, ArrowLeft, Image as ImageIcon, X } from "lucide-react"
+import { Send, Loader2, User, Info, Sparkles, ArrowLeft, Image as ImageIcon, X, PlusCircle } from "lucide-react"
 import type { UIMessage, Chat } from "@/lib/types"
 import { useAuth } from "@/contexts/auth-context"
 import AgentMessageRenderer from "./agent-message-renderer"
@@ -21,6 +21,9 @@ interface ChatMessageAreaProps {
   showTitle?: boolean
   onBackToList?: () => void
   showBackButton?: boolean
+  showSuggestions?: boolean
+  onCreateNewChat?: () => void
+  isCreatingNewChat?: boolean
 }
 
 export default function ChatMessageArea({
@@ -32,6 +35,9 @@ export default function ChatMessageArea({
   showTitle = true,
   onBackToList,
   showBackButton = false,
+  showSuggestions = true,
+  onCreateNewChat,
+  isCreatingNewChat = false,
 }: ChatMessageAreaProps) {
   const [input, setInput] = useState("")
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
@@ -156,7 +162,7 @@ export default function ChatMessageArea({
   return (
     <div className="relative flex flex-col h-full overflow-hidden">
       {showTitle && (
-        <header className="flex-shrink-0 p-2 md:p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 backdrop-blur sticky top-0 lg:top-0 z-10">
+        <header className="flex-shrink-0 p-2 md:p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 sticky top-0 lg:top-0 z-10">
           <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-1 md:space-x-3 min-w-0">
               {showBackButton && onBackToList && (
@@ -278,7 +284,7 @@ export default function ChatMessageArea({
         )}
       </ScrollArea>
 
-      <footer className="flex-shrink-0 p-2 md:p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 backdrop-blur sticky bottom-0 z-10">
+      <footer className="flex-shrink-0 p-2 md:p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 sticky bottom-0 z-10">
         {/* Image Preview */}
         {imagePreview && (
           <div className="mb-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
@@ -303,6 +309,26 @@ export default function ChatMessageArea({
         )}
 
         <form onSubmit={handleSubmit} className="flex items-end space-x-2 md:space-x-3">
+          {/* New Chat Button (only in widget mode) */}
+          {onCreateNewChat && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={onCreateNewChat}
+              disabled={isCreatingNewChat}
+              className="h-10 w-10 rounded-full p-0 flex-shrink-0"
+              title="New Chat"
+            >
+              {isCreatingNewChat ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <PlusCircle className="h-4 w-4" />
+              )}
+              <span className="sr-only">New Chat</span>
+            </Button>
+          )}
+          
           <div className="flex-1 relative">
             <Input
               type="text"
@@ -357,7 +383,7 @@ export default function ChatMessageArea({
           </Button>
         </form>
         
-        {messages.length === 0 && !isLoadingMessages && (
+        {messages.length === 0 && !isLoadingMessages && showSuggestions && (
           <div className="mt-2 md:mt-4 space-y-2">
             <p className="text-xs text-gray-600 dark:text-gray-300">Попробуйте спросить:</p>
             <div className="flex flex-wrap gap-1 md:gap-2">
