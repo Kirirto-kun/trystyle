@@ -1,6 +1,7 @@
 "use client"
 
 import type React from "react"
+import { useEffect } from "react"
 import { AuthProvider } from "@/contexts/auth-context"
 import { LanguageProvider } from "@/contexts/language-context"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -11,6 +12,14 @@ export default function WidgetLayout({
 }: {
   children: React.ReactNode
 }) {
+  // Принудительно убираем класс dark из html элемента
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      document.documentElement.classList.remove("dark")
+      document.documentElement.classList.add("light")
+    }
+  }, [])
+
   return (
     <LanguageProvider>
       <ThemeProvider
@@ -19,7 +28,7 @@ export default function WidgetLayout({
         forcedTheme="light"
         enableSystem={false}
         disableTransitionOnChange
-        storageKey="closetmind-theme"
+        storageKey="widget-theme"
       >
         <AuthProvider>
           <div className="w-full h-full min-h-screen bg-white">
