@@ -135,7 +135,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       const data: Token = await response.json()
-      Cookies.set("authToken", data.access_token, { expires: 365, secure: process.env.NODE_ENV === "production" })
+      Cookies.set("authToken", data.access_token, { 
+        expires: 365, 
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "none" // Для работы в iframe
+      })
       setToken(data.access_token)
 
       // Get user data to determine role and redirect accordingly
@@ -230,7 +234,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       const data: Token = await response.json()
-      Cookies.set("authToken", data.access_token, { expires: 365, secure: process.env.NODE_ENV === "production" })
+      Cookies.set("authToken", data.access_token, { 
+        expires: 365, 
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "none" // Для работы в iframe
+      })
       setToken(data.access_token)
 
       // Get user data to determine role and redirect accordingly
@@ -249,13 +257,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
           toast.success("Google login successful!")
           
-          // Route based on user role
-          if (userData.is_admin) {
-            router.push("/admin")
-          } else if (userData.is_store_admin) {
-            router.push("/store-admin")
-          } else {
-            router.push("/dashboard/chat")
+          // Only redirect if not in widget (widget handles its own navigation)
+          if (typeof window !== "undefined" && !window.location.pathname.includes("/widget")) {
+            // Route based on user role
+            if (userData.is_admin) {
+              router.push("/admin")
+            } else if (userData.is_store_admin) {
+              router.push("/store-admin")
+            } else {
+              router.push("/dashboard/chat")
+            }
           }
         } else {
           // Fallback to chat if we can't get user data

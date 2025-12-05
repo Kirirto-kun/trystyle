@@ -71,8 +71,12 @@ export default function WidgetRegister({ onRegisterSuccess }: WidgetRegisterProp
   const handleGoogleSuccess = async (credentialResponse: any) => {
     if (credentialResponse.credential) {
       try {
-        await googleLogin(credentialResponse.credential)
-        onRegisterSuccess()
+        const success = await googleLogin(credentialResponse.credential)
+        if (success) {
+          // Небольшая задержка, чтобы токен успел сохраниться в cookies
+          await new Promise(resolve => setTimeout(resolve, 100))
+          onRegisterSuccess()
+        }
       } catch (error) {
         toast.error(tAuth('errors.networkError'))
       }

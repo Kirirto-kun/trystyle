@@ -187,7 +187,12 @@ export default function WidgetChat() {
 
   // Инициализация при монтировании
   useEffect(() => {
-    initializeChat()
+    // Небольшая задержка, чтобы убедиться, что токен сохранен после логина
+    const timer = setTimeout(() => {
+      initializeChat()
+    }, 200)
+    
+    return () => clearTimeout(timer)
   }, [initializeChat])
 
   if (isLoadingChat) {
