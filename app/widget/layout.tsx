@@ -15,13 +15,14 @@ export default function WidgetLayout({
     <LanguageProvider>
       <ThemeProvider
         attribute="class"
-        defaultTheme="system"
-        enableSystem={true}
+        defaultTheme="light"
+        forcedTheme="light"
+        enableSystem={false}
         disableTransitionOnChange
         storageKey="closetmind-theme"
       >
         <AuthProvider>
-          <div className="w-full h-full min-h-screen bg-white dark:bg-gray-900">
+          <div className="w-full h-full min-h-screen bg-white">
             {children}
           </div>
           <Toaster />
