@@ -197,21 +197,21 @@ export default function WidgetChat() {
 
   if (isLoadingChat) {
     return (
-      <div className="flex h-screen items-center justify-center bg-white">
+      <div className="flex h-screen items-center justify-center bg-white dark:bg-gray-900">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
       </div>
     )
   }
 
   return (
-    <div className="relative flex flex-col h-screen bg-white">
+    <div className="relative flex flex-col h-screen bg-white dark:bg-gray-900">
       {/* Кнопка нового чата - абсолютное позиционирование */}
       <Button
         variant="ghost"
         size="sm"
         onClick={handleCreateNewChat}
         disabled={isCreatingNewChat}
-        className="absolute top-2 right-2 z-20 h-8 px-3 text-xs bg-white hover:bg-gray-100 !backdrop-blur-none"
+        className="absolute top-2 right-2 z-20 h-8 px-3 text-xs bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 !backdrop-blur-none"
       >
         {isCreatingNewChat ? (
           <>

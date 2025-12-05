@@ -88,13 +88,13 @@ export default function WidgetRegister({ onRegisterSuccess }: WidgetRegisterProp
   }
 
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-white p-4 overflow-auto">
+    <div className="w-full h-screen flex items-center justify-center bg-white dark:bg-gray-900 p-4 overflow-auto">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
             {tAuth('register.title')}
           </h1>
-          <p className="text-gray-600 text-sm">
+          <p className="text-gray-600 dark:text-gray-300 text-sm">
             {tAuth('register.subtitle')}
           </p>
         </div>
@@ -111,7 +111,7 @@ export default function WidgetRegister({ onRegisterSuccess }: WidgetRegisterProp
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={isSubmitting || isSendingCode || emailVerified}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent bg-white text-gray-900 placeholder-gray-500"
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
             />
             {emailVerified && (
               <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
@@ -127,7 +127,7 @@ export default function WidgetRegister({ onRegisterSuccess }: WidgetRegisterProp
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 disabled={isSubmitting || isSendingCode}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent bg-white text-gray-900 placeholder-gray-500"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
             </div>
           )}
@@ -148,9 +148,9 @@ export default function WidgetRegister({ onRegisterSuccess }: WidgetRegisterProp
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? (
-                  <EyeOff className="h-5 w-5 text-gray-400" />
+                  <EyeOff className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                 ) : (
-                  <Eye className="h-5 w-5 text-gray-400" />
+                  <Eye className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                 )}
               </button>
             </div>
@@ -163,9 +163,9 @@ export default function WidgetRegister({ onRegisterSuccess }: WidgetRegisterProp
                 value={verificationCode}
                 onChange={(e) => setVerificationCode(e.target.value)}
                 disabled={isSubmitting}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent bg-white text-gray-900 placeholder-gray-500"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
-              <p className="mt-2 text-sm text-gray-600 flex items-center">
+              <p className="mt-2 text-sm text-gray-600 dark:text-gray-400 flex items-center">
                 <Mail className="h-4 w-4 mr-2" />
                 {tAuth('register.verification.subtitle')} {email}
               </p>
@@ -175,7 +175,7 @@ export default function WidgetRegister({ onRegisterSuccess }: WidgetRegisterProp
           <Button
             type="submit"
             disabled={isSubmitting || isSendingCode || !email}
-            className="w-full bg-black hover:bg-gray-800 text-white py-3 rounded-lg font-medium transition-colors duration-200"
+            className="w-full bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-black py-3 rounded-lg font-medium transition-colors duration-200"
           >
             {isSubmitting ? (
               <>
@@ -201,10 +201,10 @@ export default function WidgetRegister({ onRegisterSuccess }: WidgetRegisterProp
           <>
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
+                <div className="w-full border-t border-gray-300 dark:border-gray-600" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-gray-500">
+                <span className="px-4 bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400">
                   {tAuth('register.social.title')}
                 </span>
               </div>

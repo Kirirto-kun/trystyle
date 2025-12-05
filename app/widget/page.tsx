@@ -20,7 +20,7 @@ export default function WidgetPage() {
 
   if (isLoading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-white">
+      <div className="flex h-screen items-center justify-center bg-white dark:bg-gray-900">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
       </div>
     )

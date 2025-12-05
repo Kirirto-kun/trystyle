@@ -12,11 +12,37 @@ export default function WidgetLayout({
 }: {
   children: React.ReactNode
 }) {
-  // Принудительно убираем класс dark из html элемента
+  // Принудительно убираем класс dark из html элемента и следим за его отсутствием
   useEffect(() => {
     if (typeof document !== "undefined") {
-      document.documentElement.classList.remove("dark")
-      document.documentElement.classList.add("light")
+      const removeDark = () => {
+        document.documentElement.classList.remove("dark")
+        // Убеждаемся, что класс light установлен
+        if (!document.documentElement.classList.contains("light")) {
+          document.documentElement.classList.add("light")
+        }
+      }
+      
+      // Удаляем сразу
+      removeDark()
+      
+      // Следим за изменениями и удаляем dark если он появится
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+            if (document.documentElement.classList.contains("dark")) {
+              removeDark()
+            }
+          }
+        })
+      })
+      
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class']
+      })
+      
+      return () => observer.disconnect()
     }
   }, [])
 
