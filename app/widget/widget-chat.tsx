@@ -6,17 +6,26 @@ import { apiCall } from "@/lib/api"
 import type { Chat, UIMessage, ChatMessageResponse } from "@/lib/types"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
-import { PlusCircle, Loader2, Sparkles } from "lucide-react"
+import { PlusCircle, Loader2, X } from "lucide-react"
 import { useTranslations } from "@/contexts/language-context"
+import { useIsWidget } from "@/contexts/widget-context"
 
 export default function WidgetChat() {
   const t = useTranslations('dashboard')
+  const isWidget = useIsWidget()
   const [currentChat, setCurrentChat] = useState<Chat | null>(null)
   const [messages, setMessages] = useState<UIMessage[]>([])
   const [isLoadingChat, setIsLoadingChat] = useState(true)
   const [isSendingMessage, setIsSendingMessage] = useState(false)
   const [isCreatingNewChat, setIsCreatingNewChat] = useState(false)
   const [isNewChatMode, setIsNewChatMode] = useState(false)
+
+  // Handle close widget
+  const handleCloseWidget = useCallback(() => {
+    if (typeof window !== 'undefined' && window.parent && window.parent !== window) {
+      window.parent.postMessage({ type: 'close-widget' }, '*')
+    }
+  }, [])
 
   // Загрузка или создание чата при монтировании
   const initializeChat = useCallback(async () => {
@@ -217,13 +226,26 @@ export default function WidgetChat() {
 
   return (
     <div className="relative flex flex-col h-screen bg-white dark:bg-gray-900">
+      {/* Кнопка закрытия виджета - только в виджете */}
+      {isWidget && (
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleCloseWidget}
+          className="absolute top-2 right-2 z-30 h-8 w-8 rounded-full bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-700 !backdrop-blur-none"
+          aria-label="Close widget"
+        >
+          <X className="h-4 w-4 text-gray-700 dark:text-gray-300" />
+        </Button>
+      )}
+
       {/* Кнопка нового чата - абсолютное позиционирование */}
       <Button
         variant="ghost"
         size="sm"
         onClick={handleCreateNewChat}
         disabled={isCreatingNewChat}
-        className="absolute top-2 right-2 z-20 h-8 px-3 text-xs bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 !backdrop-blur-none"
+        className={`absolute ${isWidget ? 'top-2 right-12' : 'top-2 right-2'} z-20 h-8 px-3 text-xs bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 !backdrop-blur-none`}
       >
         {isCreatingNewChat ? (
           <>

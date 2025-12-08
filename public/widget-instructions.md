@@ -5,14 +5,19 @@
 Просто скопируйте и вставьте этот код на вашу страницу:
 
 ```html
-<!-- Контейнер для виджета чата -->
-<div id="trystyle-widget"></div>
-
 <!-- Скрипт виджета -->
 <script src="https://trystyle.live/widget.js"></script>
 ```
 
-Виджет автоматически появится на странице с размером 400×600px.
+Виджет автоматически появится в левом нижнем углу экрана как плавающая кнопка. При клике на кнопку откроется чат.
+
+**Важно:** Виджет больше не требует контейнера `<div id="trystyle-widget"></div>`. Он создается автоматически.
+
+## Как это работает
+
+1. **Закрытое состояние**: По умолчанию виджет отображается как круглая кнопка с иконкой чата в левом нижнем углу экрана
+2. **Открытие**: При клике на кнопку открывается полноценный чат в виде плавающего окна
+3. **Закрытие**: Нажмите на крестик в правом верхнем углу чата, чтобы закрыть виджет и вернуться к кнопке
 
 ## Настройка размера
 
@@ -21,45 +26,24 @@
 ```html
 <script>
   window.TryStyleWidget = {
-    width: '500px',   // Ширина виджета
-    height: '700px'   // Высота виджета
+    width: '500px',   // Ширина виджета (по умолчанию: 400px)
+    height: '700px'   // Высота виджета (по умолчанию: 600px)
   };
 </script>
 <script src="https://trystyle.live/widget.js"></script>
-<div id="trystyle-widget"></div>
 ```
 
-## Адаптивный размер
-
-Для адаптивного размера (100% ширины контейнера):
-
-```html
-<div id="trystyle-widget" class="responsive"></div>
-<script src="https://trystyle.live/widget.js"></script>
-```
-
-Или через конфигурацию:
+## Настройка позиции и внешнего вида
 
 ```html
 <script>
   window.TryStyleWidget = {
-    responsive: true,
-    height: '600px'  // Минимальная высота
-  };
-</script>
-<script src="https://trystyle.live/widget.js"></script>
-<div id="trystyle-widget"></div>
-```
-
-## Кастомный ID контейнера
-
-Если нужно использовать другой ID для контейнера:
-
-```html
-<div id="my-custom-widget"></div>
-<script>
-  window.TryStyleWidget = {
-    containerId: 'my-custom-widget'
+    width: '400px',
+    height: '600px',
+    buttonSize: '60px',        // Размер кнопки открытия (по умолчанию: 60px)
+    buttonOffset: '20px',      // Отступ от краев экрана (по умолчанию: 20px)
+    borderRadius: '12px',     // Скругление углов виджета (по умолчанию: 12px)
+    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)'  // Тень виджета
   };
 </script>
 <script src="https://trystyle.live/widget.js"></script>
@@ -77,9 +61,9 @@
 </head>
 <body>
     <h1>Добро пожаловать на мой сайт</h1>
+    <p>Контент вашего сайта...</p>
     
-    <!-- Виджет чата TryStyle -->
-    <div id="trystyle-widget"></div>
+    <!-- Виджет чата TryStyle - просто добавьте скрипт -->
     <script src="https://trystyle.live/widget.js"></script>
 </body>
 </html>
@@ -90,15 +74,43 @@
 После загрузки виджета доступен объект `TryStyleWidgetAPI`:
 
 ```javascript
+// Открыть виджет
+TryStyleWidgetAPI.open();
+
+// Закрыть виджет
+TryStyleWidgetAPI.close();
+
+// Переключить состояние (открыть/закрыть)
+TryStyleWidgetAPI.toggle();
+
+// Проверить, открыт ли виджет
+const isOpen = TryStyleWidgetAPI.isOpen();
+
 // Перезагрузить виджет
 TryStyleWidgetAPI.reload();
 
-// Изменить размер
+// Изменить размер виджета
 TryStyleWidgetAPI.setSize('500px', '700px');
 
 // Получить iframe элемент
 const iframe = TryStyleWidgetAPI.getIframe();
 ```
+
+## Особенности
+
+- **Плавающий виджет**: Виджет не влияет на layout вашей страницы, используя `position: fixed`
+- **Высокий z-index**: Виджет всегда отображается поверх контента страницы (z-index: 9999)
+- **Изолированные стили**: Все стили виджета изолированы и не конфликтуют со стилями вашего сайта
+- **Адаптивность**: Виджет корректно работает на всех размерах экрана
+- **Анимации**: Плавное появление и исчезновение виджета
+
+## Совместимость браузеров
+
+Виджет протестирован и работает в:
+- Chrome (последние версии)
+- Firefox (последние версии)
+- Safari (последние версии)
+- Edge (последние версии)
 
 ## Требования
 
@@ -109,4 +121,3 @@ const iframe = TryStyleWidgetAPI.getIframe();
 ## Поддержка
 
 При возникновении проблем обращайтесь к команде TryStyle.
-
