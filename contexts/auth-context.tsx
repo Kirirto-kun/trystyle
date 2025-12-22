@@ -9,6 +9,15 @@ import { toast } from "sonner" // Using sonner for toasts
 
 const API_BASE_URL = "https://closetmind.studio"
 
+// Helper function to get cookie options based on protocol
+// sameSite="none" requires secure=true, which only works on HTTPS
+const getCookieOptions = () => {
+  const isSecure = typeof window !== "undefined" && window.location.protocol === "https:"
+  return isSecure 
+    ? { expires: 365, secure: true, sameSite: "none" as const }
+    : { expires: 365 }
+}
+
 interface AuthContextType {
   user: UserResponse | null
   token: string | null
@@ -51,30 +60,51 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           if (response.ok) {
             const userData = await response.json()
             setUser(userData)
-            Cookies.set("authUser", JSON.stringify(userData), { expires: 365 })
-          } else {
-            // Token is invalid, clear auth data
+            Cookies.set("authUser", JSON.stringify(userData), getCookieOptions())
+          } else if (response.status === 401) {
+            // Token is invalid or expired, clear auth data
             Cookies.remove("authToken")
             Cookies.remove("authUser")
             setToken(null)
             setUser(null)
           }
+          // Don't clear auth on other errors (network issues, etc.)
         } catch (error) {
           console.error("Error fetching user data:", error)
           // Don't clear auth data on network errors or API_BASE_URL issues
           if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
             console.warn("Network error, using stored user data")
+            // Fallback to stored user data on network errors
+            const storedUser = Cookies.get("authUser")
+            if (storedUser) {
+              try {
+                setUser(JSON.parse(storedUser))
+              } catch (parseError) {
+                console.error("Error parsing stored user:", parseError)
+                // Don't remove cookie on parse error, just log it
+              }
+            }
           } else if (error instanceof Error && error.message.includes('API_BASE_URL')) {
             console.warn("API_BASE_URL not configured, using stored user data")
-          }
-          // Fallback to stored user data
-          const storedUser = Cookies.get("authUser")
-          if (storedUser) {
-            try {
-              setUser(JSON.parse(storedUser))
-            } catch (error) {
-              console.error("Error parsing stored user:", error)
-              Cookies.remove("authUser")
+            // Fallback to stored user data
+            const storedUser = Cookies.get("authUser")
+            if (storedUser) {
+              try {
+                setUser(JSON.parse(storedUser))
+              } catch (parseError) {
+                console.error("Error parsing stored user:", parseError)
+              }
+            }
+          } else {
+            // For other errors (like 401), we already handled clearing auth above
+            // But if we get here and there's a stored user, use it as fallback
+            const storedUser = Cookies.get("authUser")
+            if (storedUser) {
+              try {
+                setUser(JSON.parse(storedUser))
+              } catch (parseError) {
+                console.error("Error parsing stored user:", parseError)
+              }
             }
           }
         }
@@ -135,11 +165,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       const data: Token = await response.json()
-      Cookies.set("authToken", data.access_token, { 
-        expires: 365, 
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "none" // Для работы в iframe
-      })
+      Cookies.set("authToken", data.access_token, getCookieOptions())
       setToken(data.access_token)
 
       // Get user data to determine role and redirect accordingly
@@ -154,21 +180,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (userResponse.ok) {
           const userData = await userResponse.json()
           setUser(userData)
-          Cookies.set("authUser", JSON.stringify(userData), { expires: 365 })
+          Cookies.set("authUser", JSON.stringify(userData), getCookieOptions())
 
           toast.success("Login successful!")
           
-          // Route based on user role
-          if (userData.is_admin) {
-            router.push("/admin")
-          } else if (userData.is_store_admin) {
-            router.push("/store-admin")
-          } else {
-            router.push("/dashboard/chat")
+          // Only redirect if not in widget (widget handles its own navigation)
+          if (typeof window !== "undefined" && !window.location.pathname.includes("/widget")) {
+            // Route based on user role
+            if (userData.is_admin) {
+              router.push("/admin")
+            } else if (userData.is_store_admin) {
+              router.push("/store-admin")
+            } else {
+              router.push("/dashboard/chat")
+            }
           }
         } else {
-          // Fallback to chat if we can't get user data
-          router.push("/dashboard/chat")
+          // Fallback to chat if we can't get user data, only if not in widget
+          if (typeof window !== "undefined" && !window.location.pathname.includes("/widget")) {
+            router.push("/dashboard/chat")
+          }
         }
       } catch (userError) {
         console.error("Error fetching user data after login:", userError)
@@ -234,11 +265,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       const data: Token = await response.json()
-      Cookies.set("authToken", data.access_token, { 
-        expires: 365, 
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "none" // Для работы в iframe
-      })
+      Cookies.set("authToken", data.access_token, getCookieOptions())
       setToken(data.access_token)
 
       // Get user data to determine role and redirect accordingly
@@ -253,7 +280,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (userResponse.ok) {
           const userData = await userResponse.json()
           setUser(userData)
-          Cookies.set("authUser", JSON.stringify(userData), { expires: 365 })
+          Cookies.set("authUser", JSON.stringify(userData), getCookieOptions())
 
           toast.success("Google login successful!")
           
@@ -269,8 +296,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
           }
         } else {
-          // Fallback to chat if we can't get user data
-          router.push("/dashboard/chat")
+          // Fallback to chat if we can't get user data, only if not in widget
+          if (typeof window !== "undefined" && !window.location.pathname.includes("/widget")) {
+            router.push("/dashboard/chat")
+          }
         }
       } catch (userError) {
         console.error("Error fetching user data after Google login:", userError)
@@ -289,12 +318,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   const logout = () => {
+    // Remove cookies (no special options needed for removal)
     Cookies.remove("authToken")
     Cookies.remove("authUser")
     setToken(null)
     setUser(null)
-    router.push("/login")
-    toast.info("Logged out successfully.")
+    
+    // Only redirect if not in widget
+    const isWidget = typeof window !== "undefined" && window.location.pathname.includes("/widget")
+    if (!isWidget) {
+      router.push("/login")
+      toast.info("Logged out successfully.")
+    } else {
+      // In widget, just clear state and show message
+      toast.info("Logged out successfully.")
+      // Optionally reload the widget page to show login form
+      if (typeof window !== "undefined") {
+        window.location.reload()
+      }
+    }
   }
 
   return (

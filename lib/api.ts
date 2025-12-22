@@ -10,6 +10,9 @@ interface ApiCallOptions extends RequestInit {
 export async function apiCall<T>(endpoint: string, options: ApiCallOptions = {}): Promise<T> {
   const token = Cookies.get("authToken")
   
+  // Debug: log token status
+  console.log(`API Call - Token present: ${!!token}, Token value: ${token ? token.substring(0, 20) + '...' : 'null'}`)
+  
   // Check if body is FormData
   const isFormData = options.body instanceof FormData || options.isFormData
   
@@ -51,11 +54,22 @@ export async function apiCall<T>(endpoint: string, options: ApiCallOptions = {})
     if (!response.ok) {
       if (response.status === 401) {
         // Token is invalid or expired
-        toast.error("Your session has expired. Please log in again.");
-        Cookies.remove("authToken");
-        Cookies.remove("authUser");
-        // Force a reload to the login page to reset app state
-        if (typeof window !== "undefined") {
+        const isWidget = typeof window !== "undefined" && window.location.pathname.includes("/widget");
+        
+        if (isWidget) {
+          // In widget, just show error and clear auth, don't redirect
+          toast.error("Your session has expired. Please log in again.");
+          Cookies.remove("authToken");
+          Cookies.remove("authUser");
+          // Post message to parent to handle logout/redirect if needed
+          if (window.parent && window.parent !== window) {
+            window.parent.postMessage({ type: 'auth-expired' }, '*');
+          }
+        } else {
+          // In regular app, redirect to login
+          toast.error("Your session has expired. Please log in again.");
+          Cookies.remove("authToken");
+          Cookies.remove("authUser");
           window.location.href = "/login";
         }
         // Throw an error to prevent further processing
